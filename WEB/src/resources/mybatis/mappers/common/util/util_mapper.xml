@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mybatis.common.util.util_mapper">
+
+	<!--  로그 기록 HISTORY -->
+	<insert id="insertAccessHistory" parameterType="common.collection.ABox">
+		<![CDATA[
+			INSERT
+			INTO
+				TB_ACCESS_HIST
+				(				
+				PUBLIC_SEQ,
+				PUBLIC_ID,
+				NAME,
+				IP,
+				DOMAIN,
+				URL,
+				REQ_METHOD,
+				DEVICE,
+				BROWSER,
+				USR_AGENT,
+				REG_DT		
+				)
+				VALUES
+				(
+				#{loginPublicSeq},
+				#{loginPublicId},
+				#{loginName},
+				#{remoteAddr},
+				#{serverName},
+				#{remoteURI},
+				#{remoteMethod},
+				#{clientDevice},
+				#{browser},
+				#{userAgent},
+				NOW()
+				)		
+		]]>
+	</insert>	
+	
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mybatis.common.common_mapper">
+
+	<!-- 1인 유저 시퀸스 조회 MyBatis -->
+	<select id="selectUserSeqSQL" parameterType="String" resultType="String">
+		<![CDATA[
+			SELECT
+				PUBLIC_SEQ
+			FROM
+				tb_user
+			WHERE
+				PUBLIC_ID = #{publicId}
+
+		]]>
+	</select>
+	
+	<select id="selectUserSeqBirthSQL" parameterType="common.collection.ABox" resultType="common.collection.ABox">
+		<![CDATA[
+			SELECT 
+				b.USER_ID as userID, b.birthDt 
+			FROM
+				(
+				SELECT PUBLIC_SEQ
+				FROM tb_user
+				WHERE 
+					PUBLIC_ID = #{publicId}
+				) AS a
+			INNER JOIN tb_info b ON a.PUBLIC_SEQ=b.USER_ID
+
+		]]>
+	</select>
+	
+	
+	<!-- 2인 유저 시퀸스 조회 MyBatis -->
+	<select id="selectUsersSeqSQL" parameterType="common.collection.ABox" resultType="common.collection.ABox">
+	<![CDATA[
+		SELECT
+			U.PUBLIC_SEQ as userID, L.PUBLIC_SEQ as likeUserID
+		FROM
+			tb_user as U, tb_user as L
+		WHERE
+			U.PUBLIC_ID = #{publicId} AND L.PUBLIC_ID = #{likeUserId}
+	]]>
+	</select>
+</mapper>

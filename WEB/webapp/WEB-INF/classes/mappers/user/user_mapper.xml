@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mybatis.shadow.user.user_mapper">
+
+
+	<!-- 유저 목록 조회 MyBatis -->
+	<select id="testSQL" resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		SELECT 
+			PUBLIC_ID as publicId, PHONE_NUM as phoneNum, BIRTH_DT as birthDt,
+			INTRODUCE as introduce, LAT as lat, LNG as lng, MBTI as mbti, GENDER_ST as genderSt, PUBLIC_ST as publicSt, 
+			PUBLIC_BAD_ST as publicBadSt, BAD_COMMENT as badComment, SECESSION_TYPE as secessionType,
+			SECESSION_COMMENT as secessionComment, PUSH_RECV_ST as pushRecvSt, SMS_RECV_ST as smsRecvSt, 
+			RATING_RECV_ST as ratingRecvSt, ASK_RECV_ST as askRecvSt, SHADOW_FILE_NAME as shadowFileName, 
+			SHADOW_FILE_PATH as shadowFilePath, ORIGIN_FILE_NAME as originFileName, SAVE_FILE_PATH as saveFilePath, 
+			RECENT_LOGIN_DT as recentLoginDt, SEARTCH_TIME as searchTime, RATING_GRADE as ratingGrade, MATCH_FLAG as matchFlag	
+		FROM 
+			tb_user
+		WHERE
+			PUBLIC_ID = #{publicId}
+	]]>
+	</select>
+
+	<!-- 유저 목록 조회 MyBatis -->
+	<select id="selectUserListNWSQL"
+		resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		SELECT 
+			* 
+		FROM 
+			tb_user
+	]]>
+	</select>
+
+
+	<!-- 유저 목록 조회 MyBatis -->
+	<select id="selectUserListSQL"
+		resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		SELECT 
+			* 
+		FROM 
+			tb_user
+	]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="userID != '' and userID != null">
+				userID = #{userID}
+			</if>
+			<if test="nickname != '' and nickname != null">
+				and nickname = #{nickname}
+			</if>
+			<if test="email != '' and email != null">
+				and email = #{email}
+			</if>
+			<if test="pwd != '' and pwd != null">
+				and pwd = #{pwd}
+			</if>
+			<if test="gender != '' and gender != null">
+				and gender = #{gender}
+			</if>
+			<if test="birth != '' and birth != null">
+				and birth = #{birth}
+			</if>
+			<if test="emailChecked != '' and emailChecked != null">
+				and emailChecked = #{emailChecked}
+			</if>
+			<if test="pfImageName != '' and pfImageName != null">
+				and pfImageName = #{pfImageName}
+			</if>
+			<if test="pfImagePath != '' and pfImagePath != null">
+				and pfImagePath = #{pfImagePath}
+			</if>
+			<if test="pfContents != '' and pfContents != null">
+				and pfContents = #{pfContents}
+			</if>
+		</trim>
+	</select>
+
+	<!-- 유저 목록 조회 MyBatis -->
+	<select id="selectUserSQL" resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		SELECT
+			*
+		FROM
+			tb_user
+		WHERE
+			PUBLIC_ST = 'PS01'
+			AND PUBLIC_ID = #{publicId}
+	]]>
+	</select>
+
+	<update id="updateUserSQL"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		UPDATE 
+			tb_user
+	]]>
+		  <trim prefix="SET" suffixOverrides=",">
+			<if test="userID != '' and userID != null">
+				userID = #{userID},
+			</if>
+			<if test="nickname != '' and nickname != null">
+				nickname = #{nickname},
+			</if>
+			<if test="email != '' and email != null">
+				email = #{email},
+			</if>
+			<if test="pwd != '' and pwd != null">
+				pwd = #{pwd},
+			</if>
+			<if test="gender != '' and gender != null">
+				gender = #{gender},
+			</if>
+			<if test="birth != '' and birth != null">
+				birth = #{birth},
+			</if>
+			<if test="emailChecked != '' and emailChecked != null">
+				emailChecked = #{emailChecked},
+			</if>
+			<if test="pfImageName != '' and pfImageName != null">
+				pfImageName = #{pfImageName},
+			</if>
+			<if test="pfImagePath != '' and pfImagePath != null">
+				pfImagePath = #{pfImagePath},
+			</if>
+			<if test="pfContents != '' and pfContents != null">
+				pfContents = #{pfContents}
+			</if>
+		</trim>
+		WHERE
+		userID = #{userID}
+	</update>
+
+	<select id="selectMatchChatroomIdSQL"
+		resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		SELECT
+			A.ID as matchID, B.ID as chatroomID
+		
+		FROM
+			tb_match A INNER JOIN tb_chatroom B ON A.ID = B.MATCH_ID
+
+		WHERE
+			A.ID = #{matchId};
+	]]>
+	</select>
+</mapper>
