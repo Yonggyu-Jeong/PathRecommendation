@@ -1,24 +1,27 @@
 package shadow;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import common.collection.ABox;
 import common.controller.SuperController;
 
 @RestController
 public class HomeController extends SuperController {
 
-	@RequestMapping(value = {  "", "/",  "index" }, method = { RequestMethod.GET, RequestMethod.POST })
-	public ResponseEntity<String> myInfo() throws Exception {
-		String result = "";
-		try {
-			result = "OK!!!";
-		} catch (Exception e) {
-			return new ResponseEntity<String>(result, HttpStatus.SERVICE_UNAVAILABLE);
-		}
-		return new ResponseEntity<String>(result, HttpStatus.OK);
-		//자동으로 JSON으로 변환해서 보내줌.
-	}
+	@RequestMapping(value = { "", "/", "/test" }, method = { RequestMethod.GET })
+	public ModelAndView index(@ModelAttribute("initBoxs") ABox aBox, HttpServletRequest request) throws Exception {
+		ModelAndView mav = new ModelAndView("web/test");
+		mav.addObject("aBox", aBox);
+		return mav;
+	}	
+
 }
