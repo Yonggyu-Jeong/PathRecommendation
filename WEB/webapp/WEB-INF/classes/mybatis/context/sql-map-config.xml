@@ -10,21 +10,8 @@
 	</settings>
 
 	<mappers>
-		<mapper resource="mybatis/mappers/chatting/chatting_mapper.xml" />
-		<mapper resource="mybatis/mappers/join/join_mapper.xml" />
-		<mapper resource="mybatis/mappers/search/search_mapper.xml" />
 		<mapper resource="mybatis/mappers/user/user_mapper.xml" />
-		<mapper resource="mybatis/mappers/space/space_mapper.xml" />
-		<mapper resource="mybatis/mappers/visit/visit_mapper.xml" />
-		<mapper resource="mybatis/mappers/match/match_mapper.xml" />			
-		<mapper resource="mybatis/mappers/private_shadow/privateShadow_mapper.xml" />
-		
-		<mapper resource="mybatis/mappers/lounge/loungeBoard_mapper.xml" />
-		<mapper resource="mybatis/mappers/lounge/loungeMatch_mapper.xml" />	
-		
-		<mapper resource="mybatis/mappers/common/cash_mapper.xml" />
 		<mapper resource="mybatis/mappers/common/common_mapper.xml" />
-		<mapper resource="mybatis/mappers/common/util/util_mapper.xml" />
 	</mappers>
 
 </configuration>

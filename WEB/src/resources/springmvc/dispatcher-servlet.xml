@@ -57,7 +57,7 @@
 		<mvc:interceptor>
 		
 			<!-- 마이페이지 -->
-			<mvc:mapping path="/mypage/**/*.hs" />
+			<mvc:mapping path="/mypage/**/*" />
 			
 			<bean class="common.interceptor.SessionCheckInterceptor"></bean>
 		</mvc:interceptor>
