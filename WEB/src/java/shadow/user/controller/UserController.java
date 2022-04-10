@@ -34,50 +34,6 @@ public class UserController {
 		return new ResponseEntity<String>(userService.test().toString(), HttpStatus.OK);
 	}
 	
-	
-	@RequestMapping(value = "/test2", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
-	public ResponseEntity<String> test2(@RequestBody String json) throws Exception{
-		try{
-		}catch(Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<String>(json, HttpStatus.SERVICE_UNAVAILABLE);
-		}
-		return new ResponseEntity<String>(json, HttpStatus.OK);
-	}
-	
-	
-	//회원 리스트 보기(웹)
-	@RequestMapping(value = "user/userlist", produces = "application/json; charset=utf8", method = RequestMethod.GET)
-	public ResponseEntity<String> userlist(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ABox userInfo = null;
-		String result = "";
-		try {
-			userInfo = userService.test();
-			result = userInfo.aBoxToJsonObject().toString();
-		} catch (Exception e) {
-			return new ResponseEntity<String>(result, HttpStatus.SERVICE_UNAVAILABLE);
-		}
-		return new ResponseEntity<String>(result, HttpStatus.OK);
-	}
-	
-	//내 정보 확인
-	@RequestMapping(value = "user/myInfo/{publicId}", produces = "application/json; charset=utf8", method = RequestMethod.GET)
-	public ResponseEntity<String> myInfo(@PathVariable("publicId") String publicId) throws Exception {
-		ABox userInfo = null;
-		String result = "";
-		try {
-			ABox user_ID = new ABox();
-			user_ID.set("publicId", publicId);
-			userInfo = userService.searchUser(user_ID);
-			result = userInfo.aBoxToJsonObject().toString();
-			
-		} catch (Exception e) {
-			return new ResponseEntity<String>(result, HttpStatus.SERVICE_UNAVAILABLE);
-		}
-		return new ResponseEntity<String>(result, HttpStatus.OK);
-		//자동으로 JSON으로 변환해서 보내줌.
-	}
-
 	//특정 조건의 사용자 리스트 조회
 	@RequestMapping(value = "user/search", method = RequestMethod.POST)
 	public ResponseEntity<String> searchUser(@RequestBody ABox userFilter) throws Exception{
