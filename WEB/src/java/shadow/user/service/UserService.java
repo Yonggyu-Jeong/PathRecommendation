@@ -3,6 +3,7 @@ package shadow.user.service;
 import org.springframework.dao.DataAccessException;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import common.collection.ABox;
+import common.collection.ABoxList;
 
 public interface UserService {
 
@@ -16,4 +17,7 @@ public interface UserService {
 	public String deleteAccount(ABox aBox) throws DataAccessException; //회원탈퇴
 	//해당 옷장이랑 옷 데이터베이스, 사진 파일들 전부 같이 삭제해야 함.
 	
+	public ABox insertLocation(ABoxList<ABox> aBoxList) throws DataAccessException;
+
+	public ABox findLocation(ABoxList<ABox> jsonBoxList) throws DataAccessException;
 }

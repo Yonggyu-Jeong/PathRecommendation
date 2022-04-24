@@ -216,6 +216,13 @@
 			<artifactId>activation</artifactId>
 			<version>1.1.1</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
 
 		<dependency>
 			<groupId>xmlrpc</groupId>
@@ -270,6 +277,18 @@
 			<artifactId>google-api-client</artifactId>
 			<version>1.28.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.github.haifengl</groupId>
+			<artifactId>smile-core</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+
+    	<dependency>
+    	  <groupId>com.github.haifengl</groupId>
+    	  <artifactId>smile-plot</artifactId>
+    	  <version>2.6.0</version>
+    	</dependency>
 
 	</dependencies>
 

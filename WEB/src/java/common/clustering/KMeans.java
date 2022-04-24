@@ -12,12 +12,6 @@ public class KMeans extends CentroidClustering<double[], double[]> {
     private static final long serialVersionUID = 2L;
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(KMeans.class);
 
-    /**
-     * Constructor.
-     * @param distortion the total distortion.
-     * @param centroids the centroids of each cluster.
-     * @param y the cluster labels.
-     */
     public KMeans(double distortion, double[][] centroids, int[] y) {
         super(distortion, centroids, y);
     }
@@ -27,44 +21,21 @@ public class KMeans extends CentroidClustering<double[], double[]> {
         return MathEx.squaredDistance(x, y);
     }
 
-    /**
-     * Partitions data into k clusters up to 100 iterations.
-     * @param data the input data of which each row is an observation.
-     * @param k the number of clusters.
-     * @return the model.
-     */
     public static KMeans fit(double[][] data, int k) {
         return fit(data, k, 100, 1E-4);
     }
 
-    /**
-     * Partitions data into k clusters up to 100 iterations.
-     * @param data the input data of which each row is an observation.
-     * @param k the number of clusters.
-     * @param maxIter the maximum number of iterations.
-     * @param tol the tolerance of convergence test.
-     * @return the model.
-     */
     public static KMeans fit(double[][] data, int k, int maxIter, double tol) {
         return fit(new BBDTree(data), data, k, maxIter, tol);
     }
 
-    /**
-     * Partitions data into k clusters.
-     * @param bbd the BBD-tree of data for fast clustering.
-     * @param data the input data of which each row is an observation.
-     * @param k the number of clusters.
-     * @param maxIter the maximum number of iterations.
-     * @param tol the tolerance of convergence test.
-     * @return the model.
-     */
     public static KMeans fit(BBDTree bbd, double[][] data, int k, int maxIter, double tol) {
         if (k < 2) {
-            throw new IllegalArgumentException("Invalid number of clusters: " + k);
+            throw new IllegalArgumentException("잘못된 클러스터 수: " + k);
         }
 
         if (maxIter <= 0) {
-            throw new IllegalArgumentException("Invalid maximum number of iterations: " + maxIter);
+            throw new IllegalArgumentException("최대 반복 횟수가 잘못되었습니다: " + maxIter);
         }
 
         int n = data.length;
@@ -74,9 +45,8 @@ public class KMeans extends CentroidClustering<double[], double[]> {
         double[][] medoids = new double[k][];
 
         double distortion = MathEx.sum(seed(data, medoids, y, MathEx::squaredDistance));
-        logger.info(String.format("Distortion after initialization: %.4f", distortion));
+        logger.info(String.format("초기화 후 왜곡된 수: %.4f", distortion));
 
-        // Initialize the centroids
         int[] size = new int[k];
         double[][] centroids = new double[k][d];
         updateCentroids(centroids, data, y, size);
@@ -86,7 +56,7 @@ public class KMeans extends CentroidClustering<double[], double[]> {
         for (int iter = 1; iter <= maxIter && diff > tol; iter++) {
             double wcss = bbd.clustering(centroids, sum, size, y);
 
-            logger.info(String.format("Distortion after %3d iterations: %.4f", iter, wcss));
+            logger.info(String.format("%3d 회 반복 후 왜곡: %.4f", iter, wcss));
             diff = distortion - wcss;
             distortion = wcss;
         }
@@ -94,34 +64,17 @@ public class KMeans extends CentroidClustering<double[], double[]> {
         return new KMeans(distortion, centroids, y);
     }
 
-    /**
-     * The implementation of Lloyd algorithm as a benchmark. The data may
-     * contain missing values (i.e. Double.NaN). The algorithm runs up to
-     * 100 iterations.
-     * @param data the input data of which each row is an observation.
-     * @param k the number of clusters.
-     * @return the model.
-     */
     public static KMeans lloyd(double[][] data, int k) {
         return lloyd(data, k, 100, 1E-4);
     }
 
-    /**
-     * The implementation of Lloyd algorithm as a benchmark. The data may
-     * contain missing values (i.e. Double.NaN).
-     * @param data the input data of which each row is an observation.
-     * @param k the number of clusters.
-     * @param maxIter the maximum number of iterations.
-     * @param tol the tolerance of convergence test.
-     * @return the model.
-     */
     public static KMeans lloyd(double[][] data, int k, int maxIter, double tol) {
         if (k < 2) {
-            throw new IllegalArgumentException("Invalid number of clusters: " + k);
+            throw new IllegalArgumentException("잘못된 클러스터 수: " + k);
         }
 
         if (maxIter <= 0) {
-            throw new IllegalArgumentException("Invalid maximum number of iterations: " + maxIter);
+            throw new IllegalArgumentException("최대 반복 수가 잘못되었습니다: " + maxIter);
         }
 
         int n = data.length;
@@ -131,11 +84,10 @@ public class KMeans extends CentroidClustering<double[], double[]> {
         double[][] medoids = new double[k][];
 
         double distortion = MathEx.sum(seed(data, medoids, y, MathEx::squaredDistanceWithMissingValues));
-        logger.info(String.format("Distortion after initialization: %.4f", distortion));
+        logger.info(String.format("반복 후 왜곡: %.4f", distortion));
 
         int[] size = new int[k];
         double[][] centroids = new double[k][d];
-        // The number of non-missing values per cluster per variable.
         int[][] notNaN = new int[k][d];
 
         double diff = Double.MAX_VALUE;
@@ -143,13 +95,12 @@ public class KMeans extends CentroidClustering<double[], double[]> {
             updateCentroidsWithMissingValues(centroids, data, y, size, notNaN);
 
             double wcss = assign(y, data, centroids, MathEx::squaredDistanceWithMissingValues);
-            logger.info(String.format("Distortion after %3d iterations: %.4f", iter, wcss));
+            logger.info(String.format("%3d 회 반복 후 왜곡: %.4f", iter, wcss));
 
             diff = distortion - wcss;
             distortion = wcss;
         }
 
-        // In case of early stop, we should recalculate centroids.
         if (diff > tol) {
             updateCentroidsWithMissingValues(centroids, data, y, size, notNaN);
         }
