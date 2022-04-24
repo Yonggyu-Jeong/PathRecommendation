@@ -29,7 +29,7 @@ public class UserController {
 	public ResponseEntity<String> test(@PathVariable("temp") String temp) throws Exception{
 		ABox resultBox = new ABox();
 		try{
-			resultBox = userService.searchUserList();
+			resultBox = userService.test();
 			
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -52,6 +52,22 @@ public class UserController {
 		}
 		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/insert/review", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
+	public ResponseEntity<String> insertReview(@RequestBody String json) throws Exception{
+		String result = "";
+		ABoxList<ABox> jsonBoxList = new ABoxList<ABox>();
+		//jsonBoxList.setJson(json);
+		try {
+			result = userService.insertReview(jsonBoxList).toString();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(result, HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		return new ResponseEntity<String>(result, HttpStatus.OK);
+	}
+	
 	
 	@RequestMapping(value = "/locate/find", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
 	public ResponseEntity<String> findLocation(@RequestBody String json) throws Exception{

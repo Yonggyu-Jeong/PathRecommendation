@@ -12,7 +12,6 @@ public class Direction {
 		ABoxList<ABox> resultBoxList = new ABoxList<ABox>();
 		ABox directionBox = new ABox();
 		DecimalFormat df = new DecimalFormat("0.0000000");
-
 		try {
 
 			ABox startBox = aBoxList.get(0);
