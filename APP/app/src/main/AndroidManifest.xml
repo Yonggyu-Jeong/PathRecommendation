@@ -77,6 +77,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDopLZqllQK_y1KfBLBAjjTa_lCYEpE4vU" />
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="z61zcmt5wp" />
     </application>
 
 </manifest>
