@@ -2,9 +2,8 @@ package com.example.shareonfoot;
 
 
 public class Global {
-    //public static final String baseURL = "http://192.168.0.3:8080/";     //로컬 주소
-    public static final String baseURL = "http://118.67.128.228:8080/"; //AWS 주소
-
+    public static final String BASE_URL = "http://118.67.130.28/"; //api 주소
+    public static final String TAG = "LOG_RETROFIT";
     public static double bitmapWidth = 500;
 
     private static Global instance = null;
@@ -17,7 +16,7 @@ public class Global {
     }
 
     public static String getOriginalPath(String imgPath){
-        return baseURL+imgPath;
+        return BASE_URL+imgPath;
     }
 
 }
