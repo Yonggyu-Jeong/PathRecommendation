@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -45,10 +46,15 @@ import com.example.shareonfoot.util.OnBackPressedListener;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.Align;
+import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.util.MarkerIcons;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -78,8 +84,10 @@ import java.util.concurrent.Future;
 
 import static android.app.Activity.RESULT_OK;
 
-public class fragment_codi extends Fragment implements OnBackPressedListener,
-        ActivityCompat.OnRequestPermissionsResultCallback, OnMapReadyCallback {
+public class fragment_codi extends Fragment implements OnBackPressedListener, OnMapReadyCallback{
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
+    private MapView mapView;
+    private FusedLocationSource locationSource;
 
     ViewGroup viewGroup;
     Toast toast;
@@ -116,7 +124,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener,
     public TextView tv_edit_detailcategory;
     public TextView tv_edit_brand;
     public TextView weekday;
-    private MapView mapView = null;
     public static String ErrMag = "ErrMag";
     public String err;
     //tring[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -128,29 +135,38 @@ public class fragment_codi extends Fragment implements OnBackPressedListener,
     private Marker currentMarker = null;
 
 
-    // onRequestPermissionsResult에서 수신된 결과에서 ActivityCompat.requestPermissions를 사용한 퍼미션 요청을 구별하기 위해 사용됩니다.
+    private static class InfoWindowAdapter extends InfoWindow.ViewAdapter {
+        @NonNull
+        private final fragment_codi context;
+        private View rootView;
+        private ImageView icon;
+        private TextView text;
 
+        public InfoWindowAdapter(@NonNull fragment_codi fragment_codi) {
+            this.context = fragment_codi;
+        }
 
-    // 앱을 실행하기 위해 필요한 퍼미션을 정의합니다.
+        @NonNull
+        @Override
+        public View getView(@NonNull InfoWindow infoWindow) {
+            if (rootView == null) {
+                rootView = View.inflate(context.getContext(), R.layout.view_custom_info_window, null);
+                icon = rootView.findViewById(R.id.icon);
+                text = rootView.findViewById(R.id.text);
+            }
 
+            if (infoWindow.getMarker() != null) {
+                icon.setImageResource(R.drawable.ic_place_black_24dp);
+                text.setText((String)infoWindow.getMarker().getTag());
+            } else {
+                icon.setImageResource(R.drawable.ic_my_location_black_24dp);
+                text.setText(context.getString(
+                        R.string.format_coord, infoWindow.getPosition().latitude, infoWindow.getPosition().longitude));
+            }
 
-    Location mCurrentLocatiion;
-
-
- //   private LocationRequest locationRequest;
-    private Location location;
-
-
-    // The entry point to the Fused Location Provider.
- //   private FusedLocationProviderClient mFusedLocationProviderClient; // Deprecated된 FusedLocationApi를 대체
-
-    private LatLng mDefaultLocation = new LatLng(37.375280717973304, 126.63289979777781);
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private boolean mLocationPermissionGranted;
-
-    LatLng latLng=null;
-
-
+            return rootView;
+        }
+    }
 
     public fragment_codi() {
     }
@@ -170,6 +186,9 @@ public class fragment_codi extends Fragment implements OnBackPressedListener,
         viewGroup = (ViewGroup) inflater.inflate(R.layout.frag_codi, container, false);
         toast = Toast.makeText(getContext(), "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT);
         mapView = (MapView) viewGroup.findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+
+        locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         return viewGroup;
@@ -341,31 +360,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener,
         }
     };
 
-    /*
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mapView.onResume();
-        if (mLocationPermissionGranted) {
-            Log.d("TAG", "onResume : requestLocationUpdates");
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
-            if (mMap!=null)
-                mMap.setMyLocationEnabled(true);
-        }
-    }
-    */
-
     //뒤로 가기 버튼이 눌렸을 경우 드로워(메뉴)를 닫는다.
     @Override
     public void onBackPressed() {
@@ -388,32 +382,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener,
         }
     }
 
-    /*
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
-//액티비티가 처음 생성될 때 실행되는 함수
-
-        locationRequest = new LocationRequest()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY) // 정확도를 최우선적으로 고려
-                .setInterval(UPDATE_INTERVAL_MS) // 위치가 Update 되는 주기
-                .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS); // 위치 획득후 업데이트되는 주기
-
-        LocationSettingsRequest.Builder builder =
-                new LocationSettingsRequest.Builder();
-
-        builder.addLocationRequest(locationRequest);
-
-        // FusedLocationProviderClient 객체 생성
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
-        if(mapView != null)
-        {
-            mapView.onCreate(savedInstanceState);
-        }
-    }
-    */
 /*
     @Override
     public void onMapClick(LatLng latLng) {
@@ -431,9 +400,70 @@ public class fragment_codi extends Fragment implements OnBackPressedListener,
         mMap.addPolyline(polylineOptions);
     }
 */
-    @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
+        naverMap.setLocationSource(locationSource);
+        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
+        InfoWindow infoWindow = new InfoWindow();
+        infoWindow.setAnchor(new PointF(0, 1));
+        infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
+        infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
+        infoWindow.setAdapter(new InfoWindowAdapter(this));
+        infoWindow.setOnClickListener(overlay -> {
+            infoWindow.close();
+            return true;
+        });
+
+        Marker marker = new Marker();
+        marker.setPosition(new LatLng(37.57000, 126.97618));
+        marker.setOnClickListener(overlay -> {
+            infoWindow.open(marker);
+            return true;
+        });
+        marker.setMap(naverMap);
+
+        Marker markerWithCaption = new Marker();
+        markerWithCaption.setPosition(new LatLng(37.56436, 126.97499));
+        markerWithCaption.setOnClickListener(overlay -> {
+            infoWindow.open(marker);
+            return true;
+        });
+        markerWithCaption.setIcon(MarkerIcons.YELLOW);
+        markerWithCaption.setCaptionMinZoom(12);
+        markerWithCaption.setCaptionAligns(Align.Left);
+        markerWithCaption.setCaptionText(getString(R.string.marker_caption_1));
+        markerWithCaption.setMap(naverMap);
+
+        Marker markerWithSubCaption = new Marker();
+        markerWithSubCaption.setPosition(new LatLng(37.56138, 126.97970));
+        markerWithSubCaption.setOnClickListener(overlay -> {
+            infoWindow.open(marker);
+            return true;
+        });
+        markerWithSubCaption.setTag("markerWithSubCaption");
+        markerWithSubCaption.setIcon(MarkerIcons.PINK);
+        markerWithSubCaption.setCaptionTextSize(14);
+        markerWithSubCaption.setCaptionText(getString(R.string.marker_caption_2));
+        markerWithSubCaption.setCaptionMinZoom(12);
+        markerWithSubCaption.setSubCaptionTextSize(10);
+        markerWithSubCaption.setSubCaptionColor(Color.GRAY);
+        markerWithSubCaption.setSubCaptionText(getString(R.string.marker_sub_caption_2));
+        markerWithSubCaption.setSubCaptionMinZoom(13);
+        markerWithSubCaption.setMap(naverMap);
+
+        Marker tintColorMarker = new Marker();
+        tintColorMarker.setPosition(new LatLng(37.56500, 126.9783881));
+        tintColorMarker.setIcon(MarkerIcons.BLACK);
+        tintColorMarker.setIconTintColor(Color.RED);
+        tintColorMarker.setAlpha(0.5f);
+        tintColorMarker.setMap(naverMap);
+
+        infoWindow.open(marker);
+
+        naverMap.setOnMapClickListener((point, coord) -> {
+            infoWindow.setPosition(coord);
+            infoWindow.open(naverMap);
+        });
     }
 
     //클릭 리스너
@@ -755,83 +785,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener,
         return time.format(today);
     }
 
-    /*
-    public void setCurrentLocation(Location location, String markerTitle, String markerSnippet) {
-        if (currentMarker != null) currentMarker.remove();
-
-        //LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        LatLng currentLatLng = new LatLng(37.341561, 126.7328088);
-        latLng =currentLatLng;
-
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(currentLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
-
-        Log.i("lng",String.valueOf(latLng.latitude));
-
-        currentMarker = mMap.addMarker(markerOptions);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, (float) 15));
-        //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
-        //mMap.moveCamera(cameraUpdate);
-
-        mMap.setOnMapClickListener((GoogleMap.OnMapClickListener) this);
-        mMap.setOnMapLongClickListener((GoogleMap.OnMapLongClickListener) this);
-
-        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
-
-        Calendar calendar = Calendar.getInstance();
-        weekDay = dayFormat.format(calendar.getTime());
-        int day=day_return(weekDay);
-
-        String coordinates[] = {String.valueOf(latLng.latitude), String.valueOf(latLng.longitude),String.valueOf(day)};
-        //String coordinates[] = {"126.7328088", "37.341561`",String.valueOf(day)};
-        //  mMap.setOnInfoWindowClickListener((GoogleMap.OnInfoWindowClickListener) this); //정보창 클릭 리스너(마커 삭제 이벤트)
-        mMap.clear();
-        arrayPoints.clear();
-        new NearestTask().execute(coordinates);
-    }
-
-     */
-    /*
-
-    private void getDeviceLocation() {
-        try {
-            if (mLocationPermissionGranted) {
-                mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-            }
-        } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
-        }
-    }
-*/
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    /*
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
-            }
-        }
-        updateLocationUI();
-    }
-*/
     public boolean checkLocationServicesStatus() {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
