@@ -244,21 +244,10 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
         final String[] Category = {""};
 
-
-        // BitmapDescriptorFactory 생성하기 위한 소스
-/*
-        MapsInitializer.initialize(requireActivity());
-        mapView = (MapView) getView().findViewById(R.id.map);
-        mapView.getMapAsync(this);
-        arrayPoints = new ArrayList<LatLng>();
-        //탭 목록 설정
-*/
-
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
 
         Calendar calendar = Calendar.getInstance();
         weekDay = dayFormat.format(calendar.getTime());
-
 
         weekday.setText(weekDay);
         switch (day_return(weekDay)) {
@@ -311,10 +300,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 }
             }
         });
-
-        //handling each floating action button clicked
-        //fabAdd.setOnClickListener(onClickListener);
-
 
         BtnOnClickListener onClickListener = new BtnOnClickListener();
 
@@ -382,24 +367,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         }
     }
 
-
-/*
-    @Override
-    public void onMapClick(LatLng latLng) {
-        MarkerOptions markerOptions = new MarkerOptions();
-        //add marker
-        markerOptions.position(latLng);
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker2));
-        mMap.addMarker(markerOptions);
-        polylineOptions = new PolylineOptions();
-        polylineOptions.color(Color.YELLOW);
-        polylineOptions.width(8);
-        // 맵셋팅
-        arrayPoints.add(latLng);
-        polylineOptions.addAll(arrayPoints);
-        mMap.addPolyline(polylineOptions);
-    }
-*/
     public void onMapReady(@NonNull NaverMap naverMap) {
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
@@ -488,31 +455,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             ((activity_home)activity).refresh_codi(fragment_codi.this);
 
     }
-/*
-    //커스텀 함수
-    //커스텀 함수
-    @Override
-    public void onMapReady(final  map) {
 
-        mMap = map;
-
-        setDefaultLocation(); // GPS를 찾지 못하는 장소에 있을 경우 지도의 초기 위치가 필요함.
-        getLocationPermission();
-        updateLocationUI();
-        getDeviceLocation();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mapView.onStop();
-        if (mFusedLocationProviderClient != null) {
-            Log.d("TAG", "onStop : removeLocationUpdates");
-            mFusedLocationProviderClient.removeLocationUpdates(locationCallback);
-        }
-    }
-*/
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -682,43 +625,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         }
     }
 
-    /*
-    private void updateLocationUI() {
-        if (mMap == null) {
-            return;
-        }
-        try {
-            if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                mCurrentLocatiion = null;
-                getLocationPermission();
-            }
-        } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
-        }
-    }
-
-    private void setDefaultLocation() {
-        if (currentMarker != null) currentMarker.remove();
-
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(mDefaultLocation);
-        markerOptions.title("위치정보 가져올 수 없음");
-        markerOptions.snippet("위치 퍼미션과 GPS 활성 여부 확인하세요");
-        markerOptions.draggable(true);
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        currentMarker = mMap.addMarker(markerOptions);
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mDefaultLocation, (float) 15);
-        mMap.moveCamera(cameraUpdate);
-    }
-
-
-     */
     String getCurrentAddress(LatLng latlng) {
         // 위치 정보와 지역으로부터 주소 문자열을 구한다.
         List<Address> addressList = null ;
@@ -790,5 +696,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
     }
 }

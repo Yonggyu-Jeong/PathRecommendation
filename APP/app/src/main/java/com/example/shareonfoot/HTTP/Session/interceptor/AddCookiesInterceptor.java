@@ -2,7 +2,7 @@ package com.example.shareonfoot.HTTP.Session.interceptor;
 
 import android.content.Context;
 
-import com.my.shadow.HTTP.Session.preference.CookieSharedPreferences;
+import com.example.shareonfoot.HTTP.Session.preference.CookieSharedPreferences;
 
 import java.io.IOException;
 import java.util.HashSet;
