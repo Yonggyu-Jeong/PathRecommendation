@@ -3,9 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/PL/APP/app/src/main/res/drawable/rounded_rectangle.xml" value="0.253" />
         <entry key="..\:/PL/APP/app/src/main/res/layout-v21/layout_login.xml" value="0.22" />
         <entry key="..\:/PL/APP/app/src/main/res/layout/activity_cloth_info.xml" value="0.1585144927536232" />
         <entry key="..\:/PL/APP/app/src/main/res/layout/activity_coupon.xml" value="0.1585144927536232" />
+        <entry key="..\:/PL/APP/app/src/main/res/layout/activity_pivot.xml" value="0.12993920972644377" />
         <entry key="..\:/PL/APP/app/src/main/res/layout/activity_space.xml" value="0.25" />
         <entry key="..\:/PL/APP/app/src/main/res/layout/header_closets.xml" value="0.1585144927536232" />
         <entry key="..\:/PL/APP/app/src/main/res/layout/header_main.xml" value="0.33" />
