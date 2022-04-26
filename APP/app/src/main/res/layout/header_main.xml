@@ -15,15 +15,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:scale_height="110"
-        app:scale_top="42"
-        app:scale_width="260"
-        app:scale_textsize="30"
         android:layout_gravity="center"
-        android:text="걸어서 나눔나눔"
+        android:text="명소 추천"
         android:textAlignment="center"
         android:textColor="@color/black_de"
-        />
+        app:scale_height="110"
+        app:scale_textsize="30"
+        app:scale_top="42"
+        app:scale_width="260" />
 
 
 

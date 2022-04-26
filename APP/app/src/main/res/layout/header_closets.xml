@@ -77,16 +77,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="명소 추천"
+                    android:textAlignment="center"
+                    android:textColor="@color/black_de"
                     app:scale_height="100"
                     app:scale_left="400"
                     app:scale_left_baseposition="center"
-                    app:scale_top="11"
-                    app:scale_width="550"
                     app:scale_textsize="70"
-                    android:text="걸어서 나눔나눔"
-                    android:textAlignment="center"
-                    android:textColor="@color/black_de"
-                    />
+                    app:scale_top="11"
+                    app:scale_width="550" />
 
                 <Button
                     android:id="@+id/share_closet"

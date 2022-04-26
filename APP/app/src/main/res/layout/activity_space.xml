@@ -76,11 +76,12 @@
                                         android:layout_height="wrap_content"
                                         android:orientation="vertical"
                                         >
+
                                         <TextView
                                             android:id="@+id/tv_nickname"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="자바에스프레소"
+                                            android:text="정용규"
                                             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
                                         <TextView
                                             android:id="@+id/tv_id"
@@ -107,11 +108,12 @@
                                         android:gravity="center_horizontal"
                                         android:orientation="vertical"
                                         android:layout_weight="1">
+
                                         <TextView
                                             android:id="@+id/tv_numBoard"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="320"
+                                            android:text="1"
                                             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
                                         />
                                         <TextView
@@ -128,12 +130,13 @@
                                         android:background="#FdFdFd"
                                         android:layout_weight="1"
                                         >
+
                                         <TextView
                                             android:id="@+id/tv_numFollower"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="9999"
-                                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+                                            android:text="0"
+                                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -148,12 +151,13 @@
                                         android:layout_weight="1"
                                         android:background="#FdFdFd"
                                         >
+
                                         <TextView
                                             android:id="@+id/tv_numFollowing"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="1234"
-                                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+                                            android:text="0"
+                                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -214,10 +218,10 @@
 
                                 <TextView
                                     android:id="@+id/tv_following_friendsName"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="19dp"
+                                    android:layout_height="10dp"
                                     android:layout_gravity="center_vertical"
-                                    android:text="엘사" />
+                                    android:text="에프" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -309,6 +313,7 @@
                         android:layout_below="@+id/tv_view"
 
                         />
+
                     <androidx.viewpager.widget.ViewPager
                         android:id="@+id/tab_Pager"
                         android:layout_width="match_parent"

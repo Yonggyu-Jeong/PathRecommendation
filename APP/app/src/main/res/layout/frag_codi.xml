@@ -220,7 +220,7 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="내 포인트 확인"
+            fab:fab_label="테스트1"
             fab:fab_size="normal" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -231,7 +231,7 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="쿠폰 교환"
+            fab:fab_label="테스트 2"
             fab:fab_size="normal" />
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_recommend_codi"
@@ -241,7 +241,7 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="기부현황 확인"
+            fab:fab_label="테스트 3"
             fab:fab_size="normal"
             />
 
