@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".codi.addCodi.activity_addCodi">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/layout_makecodi"
+            android:layout_width="match_parent"
+            android:layout_height="420dp"
+            android:gravity="center">
+
+
+
+        </ImageView>
+
+        <LinearLayout
+            android:id="@+id/explain"
+            android:layout_margin="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_makecodi"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+
+
+
+
+                <!--
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/civ"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="end"
+                        android:src="@color/화이트"
+                        />
+                    <ImageView
+                        android:id="@+id/iv_save"
+                        android:layout_margin="6dp"
+                        android:layout_alignLeft="@+id/civ"
+                        android:layout_alignRight="@+id/civ"
+                        android:layout_alignBottom="@+id/civ"
+                        android:layout_alignTop="@+id/civ"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="end"
+                        app:srcCompat="@drawable/inbox"
+                        app:tint="@color/fab" />
+
+                </RelativeLayout>
+                -->
+
+
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/iv_save"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end"
+                app:srcCompat="@drawable/inbox"
+                app:tint="#aa000000" />
+            <TextView
+                android:id="@+id/tv_comment"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="강력 추천!"
+                android:textColor="@color/블랙">
+            </TextView>
+
+            <TextView
+                android:id="@+id/tv_mood"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="도시적인 세련미"
+                android:shadowColor="#444444"
+                android:shadowRadius="2.0"
+                android:shadowDx="1.0"
+                android:shadowDy="1.0"
+                android:textColor="@color/네이비">
+            </TextView>
+
+            <TextView
+                android:id="@+id/tv_weather_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="10dp"
+                android:text="너무 맛있는 디저트 \n 달달한 분위기!"></TextView>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+
+</ScrollView>
