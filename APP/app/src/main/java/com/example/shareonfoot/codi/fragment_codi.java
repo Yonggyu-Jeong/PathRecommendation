@@ -44,24 +44,11 @@ import com.example.shareonfoot.home.activity_home;
 import com.example.shareonfoot.util.OnBackPressedListener;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.JointType;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.MapView;
+import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.Marker;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -91,23 +78,18 @@ import java.util.concurrent.Future;
 
 import static android.app.Activity.RESULT_OK;
 
-public class fragment_codi extends Fragment implements OnBackPressedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener,
-        ActivityCompat.OnRequestPermissionsResultCallback {
+public class fragment_codi extends Fragment implements OnBackPressedListener,
+        ActivityCompat.OnRequestPermissionsResultCallback, OnMapReadyCallback {
 
     ViewGroup viewGroup;
     Toast toast;
     long backKeyPressedTime;
-    private GoogleMap mMap;
 
     int MAKE_CODI = 120;
     int WEATHER_CODI = 191;
     int RECO_CODI = 255;
 
     Activity activity;
-    private PolylineOptions polylineOptions;
-    private ArrayList<LatLng> arrayPoints;
-
-
 
     DrawerLayout drawer;
     public RelativeLayout Cloth_Info;
@@ -155,12 +137,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     Location mCurrentLocatiion;
 
 
-    private LocationRequest locationRequest;
+ //   private LocationRequest locationRequest;
     private Location location;
 
 
     // The entry point to the Fused Location Provider.
-    private FusedLocationProviderClient mFusedLocationProviderClient; // Deprecated된 FusedLocationApi를 대체
+ //   private FusedLocationProviderClient mFusedLocationProviderClient; // Deprecated된 FusedLocationApi를 대체
 
     private LatLng mDefaultLocation = new LatLng(37.375280717973304, 126.63289979777781);
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -184,10 +166,11 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.frag_codi, container, false);
         toast = Toast.makeText(getContext(), "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT);
         mapView = (MapView) viewGroup.findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         return viewGroup;
     }
@@ -244,13 +227,13 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
 
         // BitmapDescriptorFactory 생성하기 위한 소스
-
+/*
         MapsInitializer.initialize(requireActivity());
         mapView = (MapView) getView().findViewById(R.id.map);
         mapView.getMapAsync(this);
         arrayPoints = new ArrayList<LatLng>();
         //탭 목록 설정
-
+*/
 
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
 
@@ -358,6 +341,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         }
     };
 
+    /*
 
     @Override
     public void onResume() {
@@ -380,6 +364,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 mMap.setMyLocationEnabled(true);
         }
     }
+    */
 
     //뒤로 가기 버튼이 눌렸을 경우 드로워(메뉴)를 닫는다.
     @Override
@@ -403,6 +388,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         }
     }
 
+    /*
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -427,11 +413,11 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             mapView.onCreate(savedInstanceState);
         }
     }
-
-
+    */
+/*
     @Override
     public void onMapClick(LatLng latLng) {
-      /*  MarkerOptions markerOptions = new MarkerOptions();
+        MarkerOptions markerOptions = new MarkerOptions();
         //add marker
         markerOptions.position(latLng);
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker2));
@@ -442,7 +428,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         // 맵셋팅
         arrayPoints.add(latLng);
         polylineOptions.addAll(arrayPoints);
-        mMap.addPolyline(polylineOptions);*/
+        mMap.addPolyline(polylineOptions);
+    }
+*/
+    @Override
+    public void onMapReady(@NonNull NaverMap naverMap) {
+
     }
 
     //클릭 리스너
@@ -467,11 +458,11 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             ((activity_home)activity).refresh_codi(fragment_codi.this);
 
     }
-
+/*
     //커스텀 함수
     //커스텀 함수
     @Override
-    public void onMapReady(final GoogleMap map) {
+    public void onMapReady(final  map) {
 
         mMap = map;
 
@@ -491,7 +482,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             mFusedLocationProviderClient.removeLocationUpdates(locationCallback);
         }
     }
-
+*/
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -516,15 +507,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     public void onDestroy() {
         super.onDestroy();
         mapView.onLowMemory();
-    }
-
-    @Override
-    public void onMapLongClick(LatLng latLng) {
-
-      /*  mMap.clear();
-        arrayPoints.clear();*/
-
-
     }
 
     class NearestTask extends AsyncTask<String, String, String> {
@@ -616,6 +598,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                         double dst = Double.parseDouble(jsonObject.getString("store_dst"));
                         //Toast.makeText(getContext(), String.valueOf(dst), Toast.LENGTH_SHORT).show();
                         LatLng position=new LatLng(lat,lng);
+                        /*
                         MarkerOptions markerOptions = new MarkerOptions();
                         markerOptions.position(position)
                                 .title(name)
@@ -657,6 +640,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                         Log.i("qw", name + "/" + lng+ "/" + lat);
 
                         i++;
+
+                         */
                     }
                 } else {
                     Toast.makeText(getContext(), "가까운 곳 없습니다.", Toast.LENGTH_SHORT).show();
@@ -667,6 +652,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         }
     }
 
+    /*
     private void updateLocationUI() {
         if (mMap == null) {
             return;
@@ -701,6 +687,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         mMap.moveCamera(cameraUpdate);
     }
 
+
+     */
     String getCurrentAddress(LatLng latlng) {
         // 위치 정보와 지역으로부터 주소 문자열을 구한다.
         List<Address> addressList = null ;
@@ -731,6 +719,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         return addressStringBuilder.toString();
     }
 
+    /*
     LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -758,7 +747,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         }
 
     };
-
+*/
     private String CurrentTime(){
         Date today = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd");
@@ -766,6 +755,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         return time.format(today);
     }
 
+    /*
     public void setCurrentLocation(Location location, String markerTitle, String markerSnippet) {
         if (currentMarker != null) currentMarker.remove();
 
@@ -800,6 +790,9 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         new NearestTask().execute(coordinates);
     }
 
+     */
+    /*
+
     private void getDeviceLocation() {
         try {
             if (mLocationPermissionGranted) {
@@ -809,7 +802,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             Log.e("Exception: %s", e.getMessage());
         }
     }
-
+*/
     private void getLocationPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -822,6 +815,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         }
     }
 
+    /*
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
@@ -837,7 +831,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         }
         updateLocationUI();
     }
-
+*/
     public boolean checkLocationServicesStatus() {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 

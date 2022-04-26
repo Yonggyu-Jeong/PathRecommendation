@@ -63,16 +63,15 @@
                             android:id="@+id/reco_t"
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
-                            android:text="오늘의 추천 나눔길"
-                            android:textSize="24sp"
-                            android:layout_marginTop="1dp"
-                            android:layout_marginLeft="20dp"
-                            android:padding="10dp"
-                            android:background="@color/화이트"
-                            android:textAlignment="center"
-                            android:textColor="@color/스카이블루"
                             android:layout_centerHorizontal="true"
-                            />
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="1dp"
+                            android:background="@color/화이트"
+                            android:padding="10dp"
+                            android:text="오늘의 추천 나눔길"
+                            android:textAlignment="center"
+                            android:textColor="#039BE5"
+                            android:textSize="24sp" />
                         <TextView
                             android:id="@+id/tabLayout"
                             android:layout_width="90dp"
@@ -89,17 +88,17 @@
                             />
 
                         <TextView
+                            android:id="@+id/day_theme"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/day_theme"
-                            android:text="오늘은 카페랑 디저트!!"
-                            android:textSize="20sp"
-                            android:padding="10dp"
                             android:layout_below="@+id/reco_t"
-                            android:textAlignment="center"
-                            android:background="@color/화이트"
+                            android:layout_marginLeft="100dp"
                             android:layout_marginTop="1dp"
-                            android:layout_marginLeft="100dp"/>
+                            android:background="@color/화이트"
+                            android:padding="10dp"
+                            android:text="오늘은 카페랑 디저트!!"
+                            android:textAlignment="center"
+                            android:textSize="20sp" />
                         <View
                             android:layout_width="324dp"
                             android:layout_height="2dp"
@@ -132,18 +131,18 @@
                             android:layout_below="@+id/day_theme"
                             android:layout_marginTop="34dp"
                             />
-                        <com.google.android.gms.maps.MapView
+
+                        <com.naver.maps.map.MapView xmlns:android="http://schemas.android.com/apk/res/android"
                             android:id="@+id/map"
-                            android:name="com.google.android.gms.maps.MapFragment"
-                            android:layout_width="320dp"
-                            android:layout_height="416dp"
+                            android:name="naverMap"
+                            android:layout_width="376dp"
+                            android:layout_height="497dp"
+                            android:layout_below="@+id/view1231"
                             android:layout_centerHorizontal="true"
+                            android:layout_marginTop="-23dp"
                             app:uiRotateGestures="true"
                             app:uiTiltGestures="true"
-                            app:uiZoomGestures="true"
-                            android:layout_below="@+id/view1231"
-                             />
-
+                            app:uiZoomGestures="true" />
 
                     </RelativeLayout>
 
@@ -163,8 +162,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="invisible">
-                <include
-                    layout="@layout/cardview_cloth_info_edit" />
+
+                <include layout="@layout/cardview_cloth_info_edit" />
             </RelativeLayout>
 
         </RelativeLayout>
