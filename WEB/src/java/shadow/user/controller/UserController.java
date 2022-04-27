@@ -72,11 +72,27 @@ public class UserController {
 	@RequestMapping(value = "/locate/find", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
 	public ResponseEntity<String> findLocation(@RequestBody String json) throws Exception{
 		String result = "";
-		ABoxList<ABox> jsonBoxList = new ABoxList<ABox>();
-		jsonBoxList.setJson(json);
+		//{"goal":{"lng":"126.742808813","lat":"37.351836439"},"start":{"lng":"126.738518735","lat":"37.36192753"},"user":{"userId":"zxzx","publicId":"hello"}}
+		ABox jsonBox = new ABox();
+		jsonBox.setJson(json);
 		try {
-			result = userService.findLocation(jsonBoxList).aBoxToJsonObject().toString();
+			result = userService.findLocation(jsonBox).aBoxToJsonObject().toString();
 			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(result, HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		return new ResponseEntity<String>(result.toString(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/locate/finds", method = RequestMethod.GET)
+	public ResponseEntity<String> findLocationTest() throws Exception{
+		String result = "";
+		String json = "{\"goal\":{\"lng\":\" 126.8168689179\",\"lat\":\"37.7731737\"},\"start\":{\"lng\":\"126.9890598\",\"lat\":\"37.2073238\"},\"user\":{\"userId\":\"1\",\"publicId\":\"ccen\"}}";
+		ABox jsonBox = new ABox();
+		jsonBox.setJson(json);
+		try {
+			result = userService.findLocation(jsonBox).aBoxToJsonObject().toString();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<String>(result, HttpStatus.SERVICE_UNAVAILABLE);

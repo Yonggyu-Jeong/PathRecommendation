@@ -51,18 +51,9 @@ public class MapService extends APIAdapter {
         @GET("https://openapi.naver.com/v1/search/local.json?")
         Call<JsonObject> getLocalName(@Query("query") String query);
 
-
-        @GET("user/join/sms/examine/{phoneNum}&{code}")
-        @Headers("Content-Type:application/x-www-form-urlencoded; charset=utf-8")
-        Call<JsonObject> examineSMS(@Path("phoneNum") String phoneNum, @Path("code") String code);
-
-        @Multipart
-        @POST("user/join/add")
-        Call<JsonObject> addUser(@PartMap() LinkedHashMap<String, RequestBody> partMap);
-
-        @Headers("Content-Type: application/json")
-        @POST("user/join/checkId")
-        Call<JsonObject> checkId(@Body HashMap hashMap);
+        @Headers("Content-Type: application/json; charset=utf-8")
+        @POST("/locate/find")
+        Call<JsonObject> getLocate(@Body HashMap hashMap);
 
         @Headers("Content-Type: application/json")
         @POST("user/join/checkemail")

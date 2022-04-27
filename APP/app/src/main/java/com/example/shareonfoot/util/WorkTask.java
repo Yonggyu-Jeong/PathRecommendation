@@ -14,17 +14,18 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import retrofit2.Call;
 
 public class WorkTask {
-    public static class SetGetLocateNameTask extends AsyncTask<String, Void, HashMap> {
+    public static class GetLocateNameTask extends AsyncTask<String, Void, HashMap> {
 
         public Context context;
         private HashMap hashMap;
 
-        public SetGetLocateNameTask(Context getContext) {
+        public GetLocateNameTask(Context getContext) {
             context = getContext;
         }
 
@@ -66,12 +67,12 @@ public class WorkTask {
         }
     }
 
-    /*
-       public static class SetMapTask extends AsyncTask<String, Void, String> {
+
+       public static class GetLocateTask extends AsyncTask<String, Void, String> {
 
         public Context context;
 
-        public SetMapTask(Context getContext) {
+        public GetLocateTask(Context getContext) {
             context = getContext;
         }
 
@@ -83,16 +84,28 @@ public class WorkTask {
         @Override
         protected String doInBackground(String... obj) {
             HashMap hashMap = new HashMap();
-            hashMap.put("publicId", obj[0]);
-            hashMap.put("cash", obj[1]);
-            hashMap.put("histSt", obj[2]);
+            HashMap hashMap1 = new HashMap();
+            hashMap1.put("publicId", obj[0]);
+            hashMap1.put("userId", obj[1]);
 
-            Call<JsonObject> objectCall = MapService.getRetrofit(context).getLocalName(obj[0]);
+            HashMap hashMap2 = new HashMap();
+            hashMap2.put("lat", obj[2]);
+            hashMap2.put("lng", obj[3]);
+
+            HashMap hashMap3 = new HashMap();
+            hashMap3.put("lat", obj[4]);
+            hashMap3.put("lng", obj[5]);
+
+            hashMap.put("user", hashMap1);
+            hashMap.put("start", hashMap2);
+            hashMap.put("goal", hashMap3);
+
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getLocate(hashMap);
             try {
                 Object result = objectCall.execute().body();
                 Gson gson = new Gson();
                 JsonObject json = gson.toJsonTree(result).getAsJsonObject();
-                return json.get("check").toString().replaceAll("\"", "");
+                return json.toString();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -108,6 +121,5 @@ public class WorkTask {
             }
         }
     }
-     */
 
 }

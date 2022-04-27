@@ -195,24 +195,16 @@ public class UserServiceImpl extends SuperService implements UserService {
 	}
 	
 	@Override
-	public ABox findLocation(ABoxList<ABox> aBoxList) throws DataAccessException {
+	public ABox findLocation(ABox aBox) throws DataAccessException {
 		ABox resultABox = new ABox();
 		KMeans kmeans = null;
 		Weather weather = new Weather();
 		try { 
 			ABoxList<ABox> locateList = new ABoxList<ABox>();			
 			ABoxList<ABox> locateDataList = new ABoxList<ABox>();
-			ABox userABox = new ABox();
 			ABox locationABox = new ABox();
-
-			for(int i=0; i<aBoxList.size(); i++) {
-				if(aBoxList.get(i).containsKey("id")) {
-					userABox = aBoxList.get(i);
-					aBoxList.remove(i);
-				}
-			}
 			
-			ABoxList<ABox> directList = Direction.getDirection(aBoxList);
+			ABoxList<ABox> directList = Direction.getDirection(aBox);
 			for(int i=0; i<directList.size(); i++) {
 				locateList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList", directList.get(i));
 				locationABox.set("locateList", locateList);

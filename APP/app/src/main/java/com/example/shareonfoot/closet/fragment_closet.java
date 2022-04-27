@@ -106,7 +106,6 @@ public class fragment_closet extends Fragment implements OnBackPressedListener {
         return fragment;
 
 
-
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

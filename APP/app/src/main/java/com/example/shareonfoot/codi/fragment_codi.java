@@ -25,10 +25,12 @@ import android.view.ViewGroup;
 import android.view.animation.CycleInterpolator;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
@@ -95,7 +97,7 @@ import java.util.concurrent.Future;
 
 import static android.app.Activity.RESULT_OK;
 
-public class fragment_codi extends Fragment implements OnBackPressedListener, OnMapReadyCallback{
+public class fragment_codi extends Fragment implements OnBackPressedListener, OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private MapView mapView;
     private FusedLocationSource locationSource;
@@ -135,11 +137,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     public TextView tv_edit_detailcategory;
     public TextView tv_edit_brand;
     public TextView weekday;
+    public EditText editText;
     public static String ErrMag = "ErrMag";
     public String err;
     //tring[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private FloatingActionMenu fam;
-    private FloatingActionButton fabMake, fabRecommend;
+    private FloatingActionButton fabMake, fabRecommend, fabAdd;
 
     private static final int UPDATE_INTERVAL_MS = 300000;  // 1초
     private static final int FASTEST_UPDATE_INTERVAL_MS = 300000; // 0.5초
@@ -168,7 +171,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
             if (infoWindow.getMarker() != null) {
                 icon.setImageResource(R.drawable.ic_place_black_24dp);
-                text.setText((String)infoWindow.getMarker().getTag());
+                text.setText((String) infoWindow.getMarker().getTag());
             } else {
                 icon.setImageResource(R.drawable.ic_my_location_black_24dp);
                 text.setText(context.getString(
@@ -253,6 +256,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         tv_edit_date = (TextView) getView().findViewById(R.id.tv_edit_date);
         theme = (TextView) getView().findViewById(R.id.day_theme);
 
+        editText = (EditText) getView().findViewById(R.id.editText);
+
         final String[] Category = {""};
 
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
@@ -295,7 +300,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
         //플로팅 액션 버튼 설정
 
-        //fabAdd = (FloatingActionButton) getView().findViewById(R.id.fab_add_photo);
+        fabAdd = (FloatingActionButton) getView().findViewById(R.id.fab_add_photo);
         fabMake = (FloatingActionButton) getView().findViewById(R.id.fab_make_codi);
         fabRecommend = (FloatingActionButton) getView().findViewById(R.id.fab_recommend_codi);
         fam = (FloatingActionMenu) getView().findViewById(R.id.fab_menu);
@@ -314,9 +319,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
         BtnOnClickListener onClickListener = new BtnOnClickListener();
 
-        fabMake.setOnClickListener(onClickListener);
-        fabRecommend.setOnClickListener(onClickListener);
-
         fam.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -334,8 +336,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         fam.getMenuIconView().setColorFilter(Color.parseColor("#000000"));
 
     }
-
-
 
 
     public int day_return(String day) {
@@ -362,17 +362,17 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if(fam.isOpened()){
+        } else if (fam.isOpened()) {
             fam.close(true);
         } else if (Cloth_Info_edit.getVisibility() == View.VISIBLE) {
             Cloth_Info_edit.setVisibility(View.GONE);
         } else if (Cloth_Info.getVisibility() == View.VISIBLE) {
             Cloth_Info.setVisibility(View.GONE);
-        } else if(System.currentTimeMillis() > backKeyPressedTime + 2000){
+        } else if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
             backKeyPressedTime = System.currentTimeMillis();
             toast.show();
             return;
-        } else if(System.currentTimeMillis() <= backKeyPressedTime + 2000){
+        } else if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
             activity.finish();
             toast.cancel();
         }
@@ -380,17 +380,29 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
     public void onMapReady(@NonNull NaverMap naverMap) {
         naverMap.setLocationSource(locationSource);
+
+        Double lat = 37.361927530;
+        //locationSource.getLastLocation().getLatitude();
+        Double lng = 126.738518735;
+                //locationSource.getLastLocation().getLongitude();
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         InfoWindow infoWindow = new InfoWindow();
 
+        fabAdd.setOnClickListener(view -> {
+            getLocateName("권가네갈비", naverMap, infoWindow);
+            Toast.makeText(getContext(), "fabAdd", Toast.LENGTH_SHORT).show();
+            fam.close(true);
+        });
+        fabMake.setOnClickListener(view -> {
 
-        /*
-        naverMap.setOnMapLongClickListener((point, coord) ->
-          */
-
-
-//TODO
-        getLocateName("함흥냉면", naverMap, infoWindow);
+            Toast.makeText(getContext(), "fabMake", Toast.LENGTH_SHORT).show();
+            fam.close(true);
+        });
+        fabRecommend.setOnClickListener(view -> {
+            getLocate(naverMap, infoWindow, "hello", "zxzx", lat.toString(), lng.toString(), "37.351836439", "126.742808813");
+            Toast.makeText(getContext(), "fabRecommend", Toast.LENGTH_SHORT).show();
+            fam.close(true);
+        });
 
         infoWindow.setAnchor(new PointF(0, 1));
         infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
@@ -495,15 +507,137 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         mapView.onLowMemory();
     }
 
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         mapView.onLowMemory();
     }
 
-    class NearestTask extends AsyncTask<String, String, String> {
+    String getCurrentAddress(LatLng latlng) {
+        // 위치 정보와 지역으로부터 주소 문자열을 구한다.
+        List<Address> addressList = null ;
+        Geocoder geocoder = new Geocoder( getActivity(), Locale.getDefault());
+
+        // 지오코더를 이용하여 주소 리스트를 구한다.
+        try {
+            addressList = geocoder.getFromLocation(latlng.latitude,latlng.longitude,1);
+        } catch (IOException e) {
+            Toast. makeText( getActivity(), "위치로부터 주소를 인식할 수 없습니다. 네트워크가 연결되어 있는지 확인해 주세요.", Toast.LENGTH_SHORT ).show();
+            e.printStackTrace();
+            return "주소 인식 불가" ;
+        }
+
+        if (addressList.size() < 1) { // 주소 리스트가 비어있는지 비어 있으면
+            return "해당 위치에 주소 없음" ;
+        }
+
+        // 주소를 담는 문자열을 생성하고 리턴
+        Address address = addressList.get(0);
+        StringBuilder addressStringBuilder = new StringBuilder();
+        for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+            addressStringBuilder.append(address.getAddressLine(i));
+            if (i < address.getMaxAddressLineIndex())
+                addressStringBuilder.append("\n");
+        }
+
+        return addressStringBuilder.toString();
+    }
+
+    /*
+    LocationCallback locationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            super.onLocationResult(locationResult);
+
+            List<Location> locationList = locationResult.getLocations();
+
+            if (locationList.size() > 0) {
+                Location location = locationList.get(locationList.size() - 1);
+
+                LatLng currentPosition
+                        = new LatLng(location.getLatitude(), location.getLongitude());
+
+                String markerTitle = getCurrentAddress(currentPosition);
+                String markerSnippet = "위도:" + String.valueOf(location.getLatitude())
+                        + " 경도:" + String.valueOf(location.getLongitude());
+
+                Log.d("TAG", "Time :" + CurrentTime() + " onLocationResult : " + markerSnippet);
+
+                //현재 위치에 마커 생성하고 이동
+                setCurrentLocation(location, markerTitle, markerSnippet);
+                mCurrentLocatiion = location;
+
+            }
+        }
+
+    };
+*/
+    private String CurrentTime(){
+        Date today = new Date();
+        SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat time = new SimpleDateFormat("hh:mm:ss a");
+        return time.format(today);
+    }
+
+    public boolean checkLocationServicesStatus() {
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+    }
+
+    public void getLocateName(String name, NaverMap naverMap, InfoWindow infoWindow) {
+        WorkTask.GetLocateNameTask mapTask = new WorkTask.GetLocateNameTask(requireContext());
+        HashMap hashMap = new HashMap();
+        try {
+            hashMap = mapTask.execute(name).get();
+
+            Marker marker = new Marker();
+            Tm128 tm128 = new Tm128((Double)hashMap.get("mapx"), (Double)hashMap.get("mapy"));
+            marker.setPosition(tm128.toLatLng());
+
+            marker.setOnClickListener(overlay -> {
+                infoWindow.open(marker);
+                return true;
+            });
+            marker.setMap(naverMap);
+
+            Toast.makeText(getContext(), tm128.toLatLng().toString(), Toast.LENGTH_LONG).show();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getLocate(NaverMap naverMap, InfoWindow infoWindow, String... obj) {
+        WorkTask.GetLocateTask mapTask = new WorkTask.GetLocateTask(requireContext());
+        String result = "";
+        try {
+            result = mapTask.execute(obj).get();
+
+            /*
+            Marker marker = new Marker();
+            //Tm128 tm128 = new Tm128((Double)hashMap.get("mapx"), (Double)hashMap.get("mapy"));
+            //marker.setPosition(tm128.toLatLng());
+
+            marker.setOnClickListener(overlay -> {
+                infoWindow.open(marker);
+                return true;
+            });
+            marker.setMap(naverMap);
+*/
+            Toast.makeText(getContext(), result.toString(), Toast.LENGTH_LONG).show();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+        class NearestTask extends AsyncTask<String, String, String> {
         String sendMsg, receiveMsg;
         StringBuffer Buffer = new StringBuffer();
         URL url;
@@ -635,112 +769,15 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
                         i++;
 
-                         */
-                    }
+
+}
                 } else {
-                    Toast.makeText(getContext(), "가까운 곳 없습니다.", Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                Log.e(ErrMag, "7");
-            }
-        }
-    }
-
-    String getCurrentAddress(LatLng latlng) {
-        // 위치 정보와 지역으로부터 주소 문자열을 구한다.
-        List<Address> addressList = null ;
-        Geocoder geocoder = new Geocoder( getActivity(), Locale.getDefault());
-
-        // 지오코더를 이용하여 주소 리스트를 구한다.
-        try {
-            addressList = geocoder.getFromLocation(latlng.latitude,latlng.longitude,1);
-        } catch (IOException e) {
-            Toast. makeText( getActivity(), "위치로부터 주소를 인식할 수 없습니다. 네트워크가 연결되어 있는지 확인해 주세요.", Toast.LENGTH_SHORT ).show();
-            e.printStackTrace();
-            return "주소 인식 불가" ;
-        }
-
-        if (addressList.size() < 1) { // 주소 리스트가 비어있는지 비어 있으면
-            return "해당 위치에 주소 없음" ;
-        }
-
-        // 주소를 담는 문자열을 생성하고 리턴
-        Address address = addressList.get(0);
-        StringBuilder addressStringBuilder = new StringBuilder();
-        for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
-            addressStringBuilder.append(address.getAddressLine(i));
-            if (i < address.getMaxAddressLineIndex())
-                addressStringBuilder.append("\n");
-        }
-
-        return addressStringBuilder.toString();
-    }
-
-    /*
-    LocationCallback locationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            super.onLocationResult(locationResult);
-
-            List<Location> locationList = locationResult.getLocations();
-
-            if (locationList.size() > 0) {
-                Location location = locationList.get(locationList.size() - 1);
-
-                LatLng currentPosition
-                        = new LatLng(location.getLatitude(), location.getLongitude());
-
-                String markerTitle = getCurrentAddress(currentPosition);
-                String markerSnippet = "위도:" + String.valueOf(location.getLatitude())
-                        + " 경도:" + String.valueOf(location.getLongitude());
-
-                Log.d("TAG", "Time :" + CurrentTime() + " onLocationResult : " + markerSnippet);
-
-                //현재 위치에 마커 생성하고 이동
-                setCurrentLocation(location, markerTitle, markerSnippet);
-                mCurrentLocatiion = location;
-
-            }
-        }
-
-    };
-*/
-    private String CurrentTime(){
-        Date today = new Date();
-        SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd");
-        SimpleDateFormat time = new SimpleDateFormat("hh:mm:ss a");
-        return time.format(today);
-    }
-
-    public boolean checkLocationServicesStatus() {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-    }
-
-    public void getLocateName(String name, NaverMap naverMap, InfoWindow infoWindow) {
-        WorkTask.SetGetLocateNameTask check_searchTimeTask = new WorkTask.SetGetLocateNameTask(requireContext());
-        HashMap hashMap = new HashMap();
-        try {
-            hashMap = check_searchTimeTask.execute(name).get();
-
-            Marker marker = new Marker();
-            Tm128 tm128 = new Tm128((Double)hashMap.get("mapx"), (Double)hashMap.get("mapy"));
-            marker.setPosition(tm128.toLatLng());
-
-            marker.setOnClickListener(overlay -> {
-                infoWindow.open(marker);
-                return true;
-            });
-            marker.setMap(naverMap);
-
-            Toast.makeText(getContext(), tm128.toLatLng().toString(), Toast.LENGTH_LONG).show();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+                        Toast.makeText(getContext(), "가까운 곳 없습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        } catch (Exception e) {
+                        Log.e(ErrMag, "7");
+                        }
+                        }
+                        }
+     */
 }

@@ -8,14 +8,14 @@ import common.collection.ABox;
 import common.collection.ABoxList;
 
 public class Direction {
-	public static ABoxList<ABox> getDirection(ABoxList<ABox> aBoxList) {
+	public static ABoxList<ABox> getDirection(ABox aBox) {
 		ABoxList<ABox> resultBoxList = new ABoxList<ABox>();
 		ABox directionBox = new ABox();
 		DecimalFormat df = new DecimalFormat("0.0000000");
 		try {
 
-			ABox startBox = aBoxList.get(0);
-			ABox goalBox = aBoxList.get(1);
+			ABox startBox = aBox.get("start");
+			ABox goalBox = aBox.get("goal");
 
 			double distance = 0.0;
 			double lng_start = startBox.getDouble("lng");
