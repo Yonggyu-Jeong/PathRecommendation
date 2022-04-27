@@ -59,6 +59,17 @@
 
                         >
 
+                        <EditText
+                            android:id="@+id/editText"
+                            android:layout_width="381dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="126dp"
+                            android:ems="10"
+                            android:hint="목적지를 입력하세요"
+                            android:inputType="textPersonName"
+                            android:minHeight="48dp" />
+
                         <TextView
                             android:id="@+id/reco_t"
                             android:layout_width="wrap_content"
@@ -72,18 +83,19 @@
                             android:textAlignment="center"
                             android:textColor="#039BE5"
                             android:textSize="24sp" />
+
                         <TextView
                             android:id="@+id/tabLayout"
                             android:layout_width="90dp"
                             android:layout_height="50dp"
-                            android:text="월요일"
-                            android:textSize="20sp"
-                            android:layout_marginTop="1dp"
-                            android:layout_marginLeft="20dp"
-                            android:padding="10dp"
-                            android:textColor="@color/스카이블루"
-                            android:textAlignment="center"
                             android:layout_below="@+id/reco_t"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="1dp"
+                            android:padding="10dp"
+                            android:text="월요일"
+                            android:textAlignment="center"
+                            android:textColor="@color/스카이블루"
+                            android:textSize="20sp"
 
                             />
 
@@ -99,6 +111,7 @@
                             android:text="오늘은 카페랑 디저트!!"
                             android:textAlignment="center"
                             android:textSize="20sp" />
+
                         <View
                             android:layout_width="324dp"
                             android:layout_height="2dp"
@@ -132,17 +145,20 @@
                             android:layout_marginTop="34dp"
                             />
 
-                        <com.naver.maps.map.MapView xmlns:android="http://schemas.android.com/apk/res/android"
+                        <com.naver.maps.map.MapView
                             android:id="@+id/map"
                             android:name="naverMap"
                             android:layout_width="376dp"
                             android:layout_height="497dp"
                             android:layout_below="@+id/view1231"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="-23dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="-24dp"
+                            android:layout_marginEnd="17dp"
                             app:uiRotateGestures="true"
                             app:uiTiltGestures="true"
-                            app:uiZoomGestures="true" />
+                            app:uiZoomGestures="true">
+
+                        </com.naver.maps.map.MapView>
 
                     </RelativeLayout>
 
@@ -219,7 +235,7 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="테스트1"
+            fab:fab_label="출발지"
             fab:fab_size="normal" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -230,7 +246,7 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="테스트 2"
+            fab:fab_label="목적지"
             fab:fab_size="normal" />
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_recommend_codi"
@@ -240,7 +256,7 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="테스트 3"
+            fab:fab_label="경유지"
             fab:fab_size="normal"
             />
 

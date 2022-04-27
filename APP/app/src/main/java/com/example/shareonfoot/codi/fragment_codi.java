@@ -15,6 +15,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
@@ -28,6 +29,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+
+import com.example.shareonfoot.HTTP.APIAdapter;
+import com.example.shareonfoot.HTTP.Service.MapService;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,9 +49,13 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.shareonfoot.R;
 import com.example.shareonfoot.home.activity_home;
 import com.example.shareonfoot.util.OnBackPressedListener;
+import com.example.shareonfoot.util.WorkTask;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
+import com.google.gson.JsonObject;
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.geometry.Tm128;
+import com.naver.maps.geometry.Utmk;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
@@ -73,6 +83,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
@@ -370,8 +381,17 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     public void onMapReady(@NonNull NaverMap naverMap) {
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-
         InfoWindow infoWindow = new InfoWindow();
+
+
+        /*
+        naverMap.setOnMapLongClickListener((point, coord) ->
+          */
+
+
+//TODO
+        getLocateName("함흥냉면", naverMap, infoWindow);
+
         infoWindow.setAnchor(new PointF(0, 1));
         infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
         infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
@@ -380,6 +400,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             infoWindow.close();
             return true;
         });
+
 
         Marker marker = new Marker();
         marker.setPosition(new LatLng(37.57000, 126.97618));
@@ -697,5 +718,29 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
+    }
+
+    public void getLocateName(String name, NaverMap naverMap, InfoWindow infoWindow) {
+        WorkTask.SetGetLocateNameTask check_searchTimeTask = new WorkTask.SetGetLocateNameTask(requireContext());
+        HashMap hashMap = new HashMap();
+        try {
+            hashMap = check_searchTimeTask.execute(name).get();
+
+            Marker marker = new Marker();
+            Tm128 tm128 = new Tm128((Double)hashMap.get("mapx"), (Double)hashMap.get("mapy"));
+            marker.setPosition(tm128.toLatLng());
+
+            marker.setOnClickListener(overlay -> {
+                infoWindow.open(marker);
+                return true;
+            });
+            marker.setMap(naverMap);
+
+            Toast.makeText(getContext(), tm128.toLatLng().toString(), Toast.LENGTH_LONG).show();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

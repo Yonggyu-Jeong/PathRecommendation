@@ -2,6 +2,7 @@ package com.example.shareonfoot.HTTP;
 
 import android.content.Context;
 
+import com.example.shareonfoot.HTTP.Service.MapService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.example.shareonfoot.Global;
@@ -22,6 +23,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @autor devetude
  */
 public class APIAdapter {
+
+
+
     /**
      * Retrofit 객체를 초기화하는 메소드
      *
@@ -77,7 +81,6 @@ public class APIAdapter {
                 .client(okHttpClient)
                 .build();
 
-
         /**
          * 서비스객체의 이름으로 Retrofit 객체 생성 및 반환
          *
@@ -85,4 +88,5 @@ public class APIAdapter {
          */
         return retrofit.create(serviceName);
     }
+
 }
