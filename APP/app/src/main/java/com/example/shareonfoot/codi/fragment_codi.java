@@ -42,6 +42,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -63,8 +65,10 @@ import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.Align;
+import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 
@@ -83,6 +87,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -143,7 +148,15 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     //tring[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private FloatingActionMenu fam;
     private FloatingActionButton fabMake, fabRecommend, fabAdd;
-
+    private Boolean checkStart = false;
+    private Boolean checkGoal = false;
+    private Double start_lng = 0.0;
+    private Double start_lat = 0.0;
+    private Double goal_lng = 0.0;
+    private Double goal_lat = 0.0;
+    private String user_id = "hello";
+    private String user_password = "1";
+    private static List<LatLng> COORDS = null;
     private static final int UPDATE_INTERVAL_MS = 300000;  // 1초
     private static final int FASTEST_UPDATE_INTERVAL_MS = 300000; // 0.5초
     private Marker currentMarker = null;
@@ -202,7 +215,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         mapView = (MapView) viewGroup.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
 
-        locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         return viewGroup;
@@ -385,84 +398,46 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         //locationSource.getLastLocation().getLatitude();
         Double lng = 126.738518735;
                 //locationSource.getLastLocation().getLongitude();
+
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         InfoWindow infoWindow = new InfoWindow();
 
         fabAdd.setOnClickListener(view -> {
-            getLocateName("권가네갈비", naverMap, infoWindow);
-            Toast.makeText(getContext(), "fabAdd", Toast.LENGTH_SHORT).show();
-            fam.close(true);
-        });
-        fabMake.setOnClickListener(view -> {
 
+
+            getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
             Toast.makeText(getContext(), "fabMake", Toast.LENGTH_SHORT).show();
             fam.close(true);
         });
+
+        // 출발지
+        fabMake.setOnClickListener(view -> {
+            if(editText.getText() != null) {
+                getLocateNameforStart(editText.getText().toString(), naverMap, infoWindow);
+                Toast.makeText(getContext(), "fabAdd", Toast.LENGTH_SHORT).show();
+                checkStart = true;
+                if(checkStart && checkGoal) {
+                    setCircle(naverMap, start_lng, goal_lng, start_lat, goal_lat);
+                    //getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
+                }
+                fam.close(true);
+            }
+        });
+
+        //목적지
         fabRecommend.setOnClickListener(view -> {
-            getLocate(naverMap, infoWindow, "hello", "zxzx", lat.toString(), lng.toString(), "37.351836439", "126.742808813");
-            Toast.makeText(getContext(), "fabRecommend", Toast.LENGTH_SHORT).show();
-            fam.close(true);
-        });
-
-        infoWindow.setAnchor(new PointF(0, 1));
-        infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
-        infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
-        infoWindow.setAdapter(new InfoWindowAdapter(this));
-        infoWindow.setOnClickListener(overlay -> {
-            infoWindow.close();
-            return true;
-        });
-
-
-        Marker marker = new Marker();
-        marker.setPosition(new LatLng(37.57000, 126.97618));
-        marker.setOnClickListener(overlay -> {
-            infoWindow.open(marker);
-            return true;
-        });
-        marker.setMap(naverMap);
-
-        Marker markerWithCaption = new Marker();
-        markerWithCaption.setPosition(new LatLng(37.56436, 126.97499));
-        markerWithCaption.setOnClickListener(overlay -> {
-            infoWindow.open(marker);
-            return true;
-        });
-        markerWithCaption.setIcon(MarkerIcons.YELLOW);
-        markerWithCaption.setCaptionMinZoom(12);
-        markerWithCaption.setCaptionAligns(Align.Left);
-        markerWithCaption.setCaptionText(getString(R.string.marker_caption_1));
-        markerWithCaption.setMap(naverMap);
-
-        Marker markerWithSubCaption = new Marker();
-        markerWithSubCaption.setPosition(new LatLng(37.56138, 126.97970));
-        markerWithSubCaption.setOnClickListener(overlay -> {
-            infoWindow.open(marker);
-            return true;
-        });
-        markerWithSubCaption.setTag("markerWithSubCaption");
-        markerWithSubCaption.setIcon(MarkerIcons.PINK);
-        markerWithSubCaption.setCaptionTextSize(14);
-        markerWithSubCaption.setCaptionText(getString(R.string.marker_caption_2));
-        markerWithSubCaption.setCaptionMinZoom(12);
-        markerWithSubCaption.setSubCaptionTextSize(10);
-        markerWithSubCaption.setSubCaptionColor(Color.GRAY);
-        markerWithSubCaption.setSubCaptionText(getString(R.string.marker_sub_caption_2));
-        markerWithSubCaption.setSubCaptionMinZoom(13);
-        markerWithSubCaption.setMap(naverMap);
-
-        Marker tintColorMarker = new Marker();
-        tintColorMarker.setPosition(new LatLng(37.56500, 126.9783881));
-        tintColorMarker.setIcon(MarkerIcons.BLACK);
-        tintColorMarker.setIconTintColor(Color.RED);
-        tintColorMarker.setAlpha(0.5f);
-        tintColorMarker.setMap(naverMap);
-
-        infoWindow.open(marker);
-
-        naverMap.setOnMapClickListener((point, coord) -> {
-            infoWindow.setPosition(coord);
-            infoWindow.open(naverMap);
+            if(editText.getText() != null) {
+                getLocateNameforGoal(editText.getText().toString(), naverMap, infoWindow);
+                Toast.makeText(getContext(), "fabAdd", Toast.LENGTH_SHORT).show();
+                checkGoal = true;
+                if(checkStart && checkGoal) {
+                    if(checkStart && checkGoal) {
+                        setCircle(naverMap, start_lng, goal_lng, start_lat, goal_lat);
+                        //getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
+                    }
+                }
+                fam.close(true);
+            }
         });
     }
 
@@ -587,21 +562,69 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
     }
 
-    public void getLocateName(String name, NaverMap naverMap, InfoWindow infoWindow) {
+    public void getLocateNameforStart(String name, NaverMap naverMap, InfoWindow infoWindow) {
         WorkTask.GetLocateNameTask mapTask = new WorkTask.GetLocateNameTask(requireContext());
         HashMap hashMap = new HashMap();
         try {
             hashMap = mapTask.execute(name).get();
 
-            Marker marker = new Marker();
+            Marker markerStart = new Marker();
             Tm128 tm128 = new Tm128((Double)hashMap.get("mapx"), (Double)hashMap.get("mapy"));
-            marker.setPosition(tm128.toLatLng());
-
-            marker.setOnClickListener(overlay -> {
-                infoWindow.open(marker);
+            markerStart.setPosition(tm128.toLatLng());
+            markerStart.setOnClickListener(overlay -> {
+                infoWindow.open(markerStart);
                 return true;
             });
-            marker.setMap(naverMap);
+            start_lat = tm128.toLatLng().latitude;
+            start_lng = tm128.toLatLng().longitude;
+
+            markerStart.setTag("출발지");
+            markerStart.setIcon(MarkerIcons.RED);
+            markerStart.setCaptionTextSize(14);
+            markerStart.setCaptionText(getString(R.string.marker_sub_caption_start));
+            markerStart.setCaptionMinZoom(12);
+            markerStart.setSubCaptionTextSize(10);
+            markerStart.setSubCaptionColor(Color.GRAY);
+            markerStart.setSubCaptionText(getString(R.string.marker_sub_caption_start));
+            markerStart.setSubCaptionMinZoom(13);
+            markerStart.setMap(naverMap);
+
+            Toast.makeText(getContext(), tm128.toLatLng().toString(), Toast.LENGTH_LONG).show();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getLocateNameforGoal(String name, NaverMap naverMap, InfoWindow infoWindow) {
+        WorkTask.GetLocateNameTask mapTask = new WorkTask.GetLocateNameTask(requireContext());
+        HashMap hashMap = new HashMap();
+
+        try {
+            hashMap = mapTask.execute(name).get();
+
+            Marker markerStart = new Marker();
+            Tm128 tm128 = new Tm128((Double)hashMap.get("mapx"), (Double)hashMap.get("mapy"));
+            markerStart.setPosition(tm128.toLatLng());
+
+            markerStart.setOnClickListener(overlay -> {
+                infoWindow.open(markerStart);
+                return true;
+            });
+            goal_lat = tm128.toLatLng().latitude;
+            goal_lng = tm128.toLatLng().longitude;
+
+            markerStart.setTag("도착지");
+            markerStart.setIcon(MarkerIcons.BLUE);
+            markerStart.setCaptionTextSize(14);
+            markerStart.setCaptionText(getString(R.string.marker_sub_caption_goal));
+            markerStart.setCaptionMinZoom(12);
+            markerStart.setSubCaptionTextSize(10);
+            markerStart.setSubCaptionColor(Color.GRAY);
+            markerStart.setSubCaptionText(getString(R.string.marker_sub_caption_goal));
+            markerStart.setSubCaptionMinZoom(13);
+            markerStart.setMap(naverMap);
 
             Toast.makeText(getContext(), tm128.toLatLng().toString(), Toast.LENGTH_LONG).show();
         } catch (ExecutionException e) {
@@ -616,24 +639,82 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         String result = "";
         try {
             result = mapTask.execute(obj).get();
-
-            /*
-            Marker marker = new Marker();
-            //Tm128 tm128 = new Tm128((Double)hashMap.get("mapx"), (Double)hashMap.get("mapy"));
-            //marker.setPosition(tm128.toLatLng());
-
-            marker.setOnClickListener(overlay -> {
-                infoWindow.open(marker);
-                return true;
-            });
-            marker.setMap(naverMap);
-*/
             Toast.makeText(getContext(), result.toString(), Toast.LENGTH_LONG).show();
+
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setCircle(NaverMap naverMap, Double lng_start, Double lng_goal, Double lat_start, Double lat_goal) {
+
+        COORDS = Arrays.asList( new LatLng(start_lat, start_lng), new LatLng(goal_lat, goal_lng));
+        HashMap hashMap = getRangeCircle(start_lng, goal_lng, start_lat, goal_lat);
+        HashMap temMap = new HashMap();
+        PolylineOverlay polylineOverlay1 = new PolylineOverlay();
+        polylineOverlay1.setWidth(3);
+        polylineOverlay1.setCoords(COORDS);
+        polylineOverlay1.setMap(naverMap);
+
+        temMap = (HashMap) hashMap.get("first");
+        CircleOverlay circleOverlay1 = new CircleOverlay();
+        circleOverlay1.setCenter(new LatLng((Double)temMap.get("lat"), (Double)temMap.get("lng")));
+        circleOverlay1.setRadius(500);
+        circleOverlay1.setColor(ColorUtils.setAlphaComponent(Color.YELLOW, 31));
+        circleOverlay1.setOutlineColor(Color.YELLOW);
+        circleOverlay1.setOutlineWidth(getResources().getDimensionPixelSize(R.dimen.overlay_line_width));
+        circleOverlay1.setMap(naverMap);
+
+        temMap = (HashMap) hashMap.get("second");
+        CircleOverlay circleOverlay2 = new CircleOverlay();
+        circleOverlay2.setCenter(new LatLng((Double)temMap.get("lat"), (Double)temMap.get("lng")));
+        circleOverlay2.setRadius(500);
+        circleOverlay2.setColor(ColorUtils.setAlphaComponent(Color.GREEN, 31));
+        circleOverlay2.setOutlineColor(Color.GREEN);
+        circleOverlay2.setOutlineWidth(getResources().getDimensionPixelSize(R.dimen.overlay_line_width));
+        circleOverlay2.setMap(naverMap);
+
+        temMap = (HashMap) hashMap.get("third");
+        CircleOverlay circleOverlay3 = new CircleOverlay();
+        circleOverlay3.setCenter(new LatLng((Double)temMap.get("lat"), (Double)temMap.get("lng")));
+        circleOverlay3.setRadius(500);
+        circleOverlay3.setColor(ColorUtils.setAlphaComponent(Color.BLUE, 31));
+        circleOverlay3.setOutlineColor(Color.BLUE);
+        circleOverlay3.setOutlineWidth(getResources().getDimensionPixelSize(R.dimen.overlay_line_width));
+        circleOverlay3.setMap(naverMap);
+    }
+
+    public HashMap getRangeCircle(Double lng_start, Double lng_goal, Double lat_start, Double lat_goal) {
+        HashMap hashMap = new HashMap();
+        HashMap firstMap = new HashMap();
+        HashMap secondMap = new HashMap();
+        HashMap thirdMap = new HashMap();
+
+        double distance = 0.0;
+        double lng = lng_start - lng_goal;
+        double lat = lat_start - lat_goal;
+        double lng_standard2 = 0;
+        double lat_standard2 = 0;
+
+        distance = Math.sqrt((lng * lng) + (lat * lat));
+        distance = distance / 3;
+
+        firstMap.put("lat", lat_start - (lat/3)*0.6);
+        firstMap.put("lng", lng_start - (lng/3)*0.6);
+
+        secondMap.put("lat", lat_start - (lat/3)*1.7);
+        secondMap.put("lng", lng_start - (lng/3)*1.7);
+
+        thirdMap.put("lat", lat_start - (lat/3)*3);
+        thirdMap.put("lng", lng_start - (lng/3)*3);
+
+        hashMap.put("first", firstMap);
+        hashMap.put("second", secondMap);
+        hashMap.put("third", thirdMap);
+
+        return hashMap;
     }
 
     /*

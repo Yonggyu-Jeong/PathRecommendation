@@ -13,9 +13,11 @@ public class Direction {
 		ABox directionBox = new ABox();
 		DecimalFormat df = new DecimalFormat("0.0000000");
 		try {
-
-			ABox startBox = aBox.get("start");
-			ABox goalBox = aBox.get("goal");
+			ABox startBox = new ABox();
+			ABox goalBox = new ABox();
+			
+			startBox.setJson(aBox.get("start").toString());
+			goalBox.setJson(aBox.get("goal").toString());
 
 			double distance = 0.0;
 			double lng_start = startBox.getDouble("lng");
@@ -63,7 +65,9 @@ public class Direction {
 				resultBoxList.set(directionBox);
 			}
 
+
 		} catch (Exception e) {
+			e.printStackTrace();
 			return resultBoxList;
 		}
 		return resultBoxList;

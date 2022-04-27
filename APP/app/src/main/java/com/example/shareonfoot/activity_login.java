@@ -71,6 +71,10 @@ public class activity_login extends AppCompatActivity {
                     String loginpwd = userPwd.getText().toString();
                     SharedPreferences sharedPreferences=getSharedPreferences("pref",0);
 
+                    Intent intent = new Intent(activity_login.this, activity_home.class);
+                    startActivity(intent);
+                    finish();
+                     /*
                     if (loginid.length() == 0||loginpwd.length()==0) {
                         Toast.makeText(activity_login.this, "회원정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
                     }
@@ -79,7 +83,7 @@ public class activity_login extends AppCompatActivity {
                             Intent intent = new Intent(activity_login.this, activity_home.class);
                             startActivity(intent);
                             finish();
-                            /*
+
                             String result = new LoginTask().execute(loginid, loginpwd).get();
                             if (result.equals("true")) {
 
@@ -103,7 +107,7 @@ public class activity_login extends AppCompatActivity {
                                 userPwd.setText("");
                             }
 
-                             */
+
                         } catch (Exception e) {
                         }
                     }
@@ -138,6 +142,7 @@ public class activity_login extends AppCompatActivity {
                     Intent intent = new Intent(activity_login.this, activity_signup.class);
                     startActivity(intent);
                     break;
+                     */
             }
         }
     }

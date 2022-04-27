@@ -54,7 +54,6 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:descendantFocusability="blocksDescendants"
                         android:background="@color/화이트"
 
                         >
@@ -235,7 +234,7 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="출발지"
+            fab:fab_label="검색"
             fab:fab_size="normal" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -246,7 +245,7 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="목적지"
+            fab:fab_label="출발지"
             fab:fab_size="normal" />
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_recommend_codi"
@@ -256,7 +255,7 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="경유지"
+            fab:fab_label="목적지"
             fab:fab_size="normal"
             />
 

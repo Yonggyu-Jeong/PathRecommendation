@@ -684,6 +684,8 @@
     <string name="marker_caption_1">☀캡션이 있는 마커🎉</string>
     <string name="marker_caption_2">서브 캡션이 있는 마커</string>
     <string name="marker_sub_caption_2">🇰🇷서브 캡션👩🏿‍🍳</string>
+    <string name="marker_sub_caption_start">출발지</string>
+    <string name="marker_sub_caption_goal">도착지</string>
 
     <string name="name_info_window">Info Window</string>
     <string name="description_info_window">정보 창</string>

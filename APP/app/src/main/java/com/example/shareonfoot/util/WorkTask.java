@@ -83,24 +83,23 @@ public class WorkTask {
 
         @Override
         protected String doInBackground(String... obj) {
-            HashMap hashMap = new HashMap();
-            HashMap hashMap1 = new HashMap();
-            hashMap1.put("publicId", obj[0]);
-            hashMap1.put("userId", obj[1]);
+            HashMap map = new HashMap();
+            HashMap mapUser = new HashMap();
+            HashMap mapStart = new HashMap();
+            HashMap mapGoal = new HashMap();
 
-            HashMap hashMap2 = new HashMap();
-            hashMap2.put("lat", obj[2]);
-            hashMap2.put("lng", obj[3]);
+            mapUser.put("id", obj[0]);
+            mapUser.put("password", obj[1]);
+            mapStart.put("lng", obj[2]);
+            mapStart.put("lat", obj[3]);
+            mapGoal.put("lng", obj[4]);
+            mapGoal.put("lat", obj[5]);
 
-            HashMap hashMap3 = new HashMap();
-            hashMap3.put("lat", obj[4]);
-            hashMap3.put("lng", obj[5]);
+            map.put("user", mapUser);
+            map.put("start", mapStart);
+            map.put("goal", mapGoal);
 
-            hashMap.put("user", hashMap1);
-            hashMap.put("start", hashMap2);
-            hashMap.put("goal", hashMap3);
-
-            Call<JsonObject> objectCall = MapService.getRetrofit(context).getLocate(hashMap);
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getLocate(map);
             try {
                 Object result = objectCall.execute().body();
                 Gson gson = new Gson();

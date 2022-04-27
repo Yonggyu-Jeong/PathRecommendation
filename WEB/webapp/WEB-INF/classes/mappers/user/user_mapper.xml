@@ -14,7 +14,7 @@
 		FROM 
 			member
 		WHERE 
-			id = #{id}
+			id = #{id} AND
 			password = #{password}
 	]]>
 	</select>
@@ -108,18 +108,35 @@
 		parameterType="common.collection.ABox">
 	<![CDATA[
 		SELECT 
-			AVG(a.star), b.*
+			AVG(a.star) AS star, b.*
 		FROM 
 			review_maps a, locate_label b
 		WHERE 
 	]]>
 		a.locate_seq IN 
      	<foreach collection="locateIdList" item="location" index="idx" open='(' close=')' separator=','>
-        	#{location.locate_id}
+        	#{location.location}
         </foreach>
-        AND a.locate_seq = b.locate_seq;
+        AND a.locate_seq = b.locate_seq
+        group BY a.star;
 
 	</select>
+	
+	<select id="selectLocateList2"
+		resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		SELECT 
+			a.name, a.category, a.road, a.lng, a.lat
+		FROM 
+			locate a
+		WHERE
+			a.locate_id IN
+	]]>
+		<foreach collection="locateIdList" item="location" index="idx" open='(' close=')' separator=','>
+        	#{location.location}
+        </foreach>
+	</select>	
 
 
 </mapper>
