@@ -1,5 +1,7 @@
 package shadow.user.service;
 
+import java.io.IOException;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import common.collection.ABox;
@@ -16,8 +18,10 @@ public interface UserService {
 	
 	public ABox insertLocation(ABoxList<ABox> aBoxList) throws DataAccessException;
 
-	public ABox findLocation(ABox aBox) throws DataAccessException;
+	public ABox findLocation(ABox aBox) throws DataAccessException, IOException;
 
 	public Object insertReview(ABoxList<ABox> jsonBoxList) throws DataAccessException;
+
+	public ABox testLocation(ABox jsonBox);
 
 }

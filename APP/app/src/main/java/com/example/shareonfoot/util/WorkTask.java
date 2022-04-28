@@ -121,4 +121,57 @@ public class WorkTask {
         }
     }
 
+    public static class GetTestLocateTask extends AsyncTask<String, Void, String> {
+
+        public Context context;
+
+        public GetTestLocateTask(Context getContext) {
+            context = getContext;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... obj) {
+            HashMap map = new HashMap();
+            HashMap mapUser = new HashMap();
+            HashMap mapStart = new HashMap();
+            HashMap mapGoal = new HashMap();
+
+            mapUser.put("id", obj[0]);
+            mapUser.put("password", obj[1]);
+            mapStart.put("lng", obj[2]);
+            mapStart.put("lat", obj[3]);
+            mapGoal.put("lng", obj[4]);
+            mapGoal.put("lat", obj[5]);
+
+            map.put("user", mapUser);
+            map.put("start", mapStart);
+            map.put("goal", mapGoal);
+
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getTestLocate(map);
+            try {
+                Object result = objectCall.execute().body();
+                Gson gson = new Gson();
+                JsonObject json = gson.toJsonTree(result).getAsJsonObject();
+                return json.toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "fail";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s.equals("fail")) {
+                Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 }

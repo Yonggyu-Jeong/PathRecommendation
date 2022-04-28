@@ -403,9 +403,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         InfoWindow infoWindow = new InfoWindow();
 
         fabAdd.setOnClickListener(view -> {
-
-
-            getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
+            getTestLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
             Toast.makeText(getContext(), "fabMake", Toast.LENGTH_SHORT).show();
             fam.close(true);
         });
@@ -627,6 +625,20 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             markerStart.setMap(naverMap);
 
             Toast.makeText(getContext(), tm128.toLatLng().toString(), Toast.LENGTH_LONG).show();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getTestLocate(NaverMap naverMap, InfoWindow infoWindow, String... obj) {
+        WorkTask.GetTestLocateTask mapTask = new WorkTask.GetTestLocateTask(requireContext());
+        String result = "";
+        try {
+            result = mapTask.execute(obj).get();
+            Toast.makeText(getContext(), result.toString(), Toast.LENGTH_LONG).show();
+
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

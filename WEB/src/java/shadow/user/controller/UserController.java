@@ -77,4 +77,20 @@ public class UserController {
 		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/testData", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
+	public ResponseEntity<String> testLocation(@RequestBody String json) throws Exception{
+		String result = "";
+		ABox jsonBox = new ABox();
+		jsonBox.setJson(json);
+
+		try {
+			result = userService.testLocation(jsonBox).aBoxToJsonObject().toString();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(result, HttpStatus.SERVICE_UNAVAILABLE);
+
+		}
+		return new ResponseEntity<String>(result, HttpStatus.OK);
+	}
 }

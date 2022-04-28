@@ -130,61 +130,61 @@ public class UserServiceImpl extends SuperService implements UserService {
 		ABox aBox = new ABox();
 
 		try {
-			
-			for(int i=0; i<1000; i++) {
+
+			for (int i = 0; i < 1000; i++) {
 				aBox = new ABox();
 				aBox.set("locateSeq", i);
-				aBox.set("star", random.nextInt(5)+1);
-				
-				int randomCnt = random.nextInt(15)+1;
-				switch (randomCnt){
-					case 1:
-						aBox.set("review", "음식이 맛있어요");
-						break;
-					case 2:
-						aBox.set("review", "매장이 넓어요");
-						break;
-					case 3:
-						aBox.set("review", "주차하기 편해요");
-						break;
-					case 4:
-						aBox.set("review", "친절해요");
-						break;
-					case 5:
-						aBox.set("review", "매장이 청결해요");
-						break;
-					case 6:
-						aBox.set("review", "가성비가 좋아요");
-						break;
-					case 7:
-						aBox.set("review", "양이 많아요");
-						break;
-					case 8:
-						aBox.set("review", "혼밥하기 좋아요");
-						break;
-					case 9:
-						aBox.set("review", "재료가 신선해요");
-						break;
-					case 10:
-						aBox.set("review", "화장실이 깨끗해요");
-						break;
-					case 11:
-						aBox.set("review", "단체모임 하기 좋아요");
-						break;
-					case 12:
-						aBox.set("review", "특별한 메뉴가 있어요");
-						break;
-					case 13:
-						aBox.set("review", "특별한 날 가기 좋아요");
-						break;
-					case 14:
-						aBox.set("review", "뷰가 좋아요");
-						break;
-					default:
-						aBox.set("review", "인테리어가 멋져요");
-						break;
+				aBox.set("star", random.nextInt(5) + 1);
+
+				int randomCnt = random.nextInt(15) + 1;
+				switch (randomCnt) {
+				case 1:
+					aBox.set("review", "음식이 맛있어요");
+					break;
+				case 2:
+					aBox.set("review", "매장이 넓어요");
+					break;
+				case 3:
+					aBox.set("review", "주차하기 편해요");
+					break;
+				case 4:
+					aBox.set("review", "친절해요");
+					break;
+				case 5:
+					aBox.set("review", "매장이 청결해요");
+					break;
+				case 6:
+					aBox.set("review", "가성비가 좋아요");
+					break;
+				case 7:
+					aBox.set("review", "양이 많아요");
+					break;
+				case 8:
+					aBox.set("review", "혼밥하기 좋아요");
+					break;
+				case 9:
+					aBox.set("review", "재료가 신선해요");
+					break;
+				case 10:
+					aBox.set("review", "화장실이 깨끗해요");
+					break;
+				case 11:
+					aBox.set("review", "단체모임 하기 좋아요");
+					break;
+				case 12:
+					aBox.set("review", "특별한 메뉴가 있어요");
+					break;
+				case 13:
+					aBox.set("review", "특별한 날 가기 좋아요");
+					break;
+				case 14:
+					aBox.set("review", "뷰가 좋아요");
+					break;
+				default:
+					aBox.set("review", "인테리어가 멋져요");
+					break;
 				}
-				
+
 				commonDao.insert("mybatis.shadow.user.user_mapper.insertReviewSQL", aBox);
 			}
 			resultABox.set("check", "ok");
@@ -195,59 +195,89 @@ public class UserServiceImpl extends SuperService implements UserService {
 		}
 		return resultABox;
 	}
-	
+
+	@SuppressWarnings("finally")
 	@Override
 	public ABox findLocation(ABox aBox) throws DataAccessException, IOException {
 		ABox resultABox = new ABox();
-		
-		//KMeans kmeans = null;
+
+		// KMeans kmeans = null;
 		Weather weather = new Weather();
-		try { 				
+		try {
 			ABox userABox = new ABox();
 			ABox userBox = new ABox();
 			userBox.set("id", "hello");
 			userBox.set("password", "1");
-			Random random = new Random(); 
+			Random random = new Random();
 			ABox locationABox = new ABox();
-			ABoxList<ABox> locateList = new ABoxList<ABox>();			
+			ABoxList<ABox> locateList = new ABoxList<ABox>();
 			ABoxList<ABox> locateDataList = new ABoxList<ABox>();
 			ABoxList<ABox> directList = Direction.getDirection(aBox);
 			ABoxList<ABox> returnDataList = new ABoxList<ABox>();
 			ABox weatherBox = weather.getWeather();
 			userABox = commonDao.select("mybatis.shadow.user.user_mapper.selectUserListSQL", userBox);
 
-			for(int i=0; i<directList.size(); i++) {
-				locateList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList", directList.get(i));
+			for (int i = 0; i < directList.size(); i++) {
+				locateList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList",
+						directList.get(i));
 				locationABox.set("locateList", locateList);
-				
-				for(int j=0; j<locateList.size(); j++) {
-					if((weatherBox.getString("wf").equals("흐리고 비") || weatherBox.getString("wf").equals("구름많고 비") || weatherBox.getInt("tmn") <= 12 
-							|| weatherBox.getInt("tmx") >= 27) && locateList.get(i).get("door_tag").equals("DC01") ) {
+
+				for (int j = 0; j < locateList.size(); j++) {
+					if ((weatherBox.getString("wf").equals("흐리고 비") || weatherBox.getString("wf").equals("구름많고 비")
+							|| weatherBox.getInt("tmn") <= 12 || weatherBox.getInt("tmx") >= 27)
+							&& locateList.get(i).get("door_tag").equals("DC01")) {
 						locateList.remove(j);
 					}
 				}
-				
+
 				ABoxList<ABox> locateIdList = new ABoxList<ABox>();
-				for(int j=0; j<locateList.size(); j++) {
+				for (int j = 0; j < locateList.size(); j++) {
 					locateIdList.add(new ABox().set("location", locateList.get(j).getInt("locate_id")));
 				}
-				locateDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateDataSQL", new ABox().set("locateIdList", locateIdList));
-	
+				locateDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateDataSQL",
+						new ABox().set("locateIdList", locateIdList));
+
 				Double[][] dataFrame = mDataFrame.getDoubleFrame(locateDataList, userABox);
-	
-				returnDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList2", new ABox().set("locateIdList", locateIdList));
-				for(int j=0; j<returnDataList.size(); j++) {
-					returnDataList.get(j).set("rate", random.nextInt(5)+1);
+
+				returnDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList2",
+						new ABox().set("locateIdList", locateIdList));
+				for (int j = 0; j < returnDataList.size(); j++) {
+					returnDataList.get(j).set("rate", random.nextInt(5) + 1);
 				}
-				resultABox.set("returnDataList"+i, returnDataList);
+				resultABox.set("returnDataList" + i, returnDataList);
 			}
 			resultABox.set("check", "ok");
 
 		} catch (Exception ex) {
 			resultABox.set("check", "fail");
 			ex.printStackTrace();
-		}
-		return resultABox;		
+		} finally {
 
+			return resultABox;
+		}
+	}
+
+	@Override
+	public ABox testLocation(ABox jsonBox) {
+		ABox resultABox = new ABox();
+		try {
+			Random random = new Random();
+			ABoxList<ABox> locationList = null;
+			ABoxList<ABox> directList = Direction.getDirection(jsonBox);
+			
+			for(int i=0; i<directList.size(); i++) {
+				locationList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList", directList.get(i));
+				for(int j=0; j<locationList.size(); j++) {
+					locationList.get(i).set("rate", random.nextInt(5) + 1);
+				}
+				resultABox.set("locationList"+i, locationList);
+			}
+			resultABox.set("check", "ok");
+			
+		} catch (Exception ex) {
+			resultABox.set("check", "fail");
+			ex.printStackTrace();
+		} 
+		return resultABox;
 	}
 }
