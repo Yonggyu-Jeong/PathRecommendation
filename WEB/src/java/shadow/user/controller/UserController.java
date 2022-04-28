@@ -60,7 +60,7 @@ public class UserController {
 
 	
 	
-	@RequestMapping(value = "/locate/find", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
+	@RequestMapping(value = "/find", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
 	public ResponseEntity<String> findLocation(@RequestBody String json) throws Exception{
 		String result = "";
 		ABox jsonBox = new ABox();
@@ -72,9 +72,9 @@ public class UserController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<String>(result, HttpStatus.SERVICE_UNAVAILABLE);
+
 		}
-		return new ResponseEntity<String>(result.toString(), HttpStatus.OK);
+		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
-	
 	
 }

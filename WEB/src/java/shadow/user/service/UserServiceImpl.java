@@ -1,5 +1,6 @@
 package shadow.user.service;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.Random;
 
@@ -196,28 +197,29 @@ public class UserServiceImpl extends SuperService implements UserService {
 	}
 	
 	@Override
-	public ABox findLocation(ABox aBox) throws DataAccessException {
+	public ABox findLocation(ABox aBox) throws DataAccessException, IOException {
 		ABox resultABox = new ABox();
-		KMeans kmeans = null;
+		
+		//KMeans kmeans = null;
 		Weather weather = new Weather();
-		try { 
-			ABox locationABox = new ABox();
+		try { 				
 			ABox userABox = new ABox();
 			ABox userBox = new ABox();
+			userBox.set("id", "hello");
+			userBox.set("password", "1");
 			Random random = new Random(); 
+			ABox locationABox = new ABox();
 			ABoxList<ABox> locateList = new ABoxList<ABox>();			
 			ABoxList<ABox> locateDataList = new ABoxList<ABox>();
 			ABoxList<ABox> directList = Direction.getDirection(aBox);
 			ABoxList<ABox> returnDataList = new ABoxList<ABox>();
 			ABox weatherBox = weather.getWeather();
-
-			userBox.setJson(aBox.get("user").toString());
 			userABox = commonDao.select("mybatis.shadow.user.user_mapper.selectUserListSQL", userBox);
 
-			for(int i=0; i<1/*directList.size()*/; i++) {
+			for(int i=0; i<directList.size(); i++) {
 				locateList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList", directList.get(i));
 				locationABox.set("locateList", locateList);
-
+				
 				for(int j=0; j<locateList.size(); j++) {
 					if((weatherBox.getString("wf").equals("흐리고 비") || weatherBox.getString("wf").equals("구름많고 비") || weatherBox.getInt("tmn") <= 12 
 							|| weatherBox.getInt("tmx") >= 27) && locateList.get(i).get("door_tag").equals("DC01") ) {
@@ -230,31 +232,22 @@ public class UserServiceImpl extends SuperService implements UserService {
 					locateIdList.add(new ABox().set("location", locateList.get(j).getInt("locate_id")));
 				}
 				locateDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateDataSQL", new ABox().set("locateIdList", locateIdList));
-						
+	
 				Double[][] dataFrame = mDataFrame.getDoubleFrame(locateDataList, userABox);
 	
 				returnDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList2", new ABox().set("locateIdList", locateIdList));
 				for(int j=0; j<returnDataList.size(); j++) {
-					returnDataList.get(j).set("rate", random.nextInt(4)+1);
+					returnDataList.get(j).set("rate", random.nextInt(5)+1);
 				}
-				
-				// 자바 커넥션 및 힙 메모리 문제 발생 해겷
-				//for(int j=0; j<returnDataList.size(); j++) {
-				//	returnDataList.get(j).set("rate", dataFrame[j][4]);
-				//}
-				resultABox.set("returnDataList", returnDataList);
-
-				
+				resultABox.set("returnDataList"+i, returnDataList);
 			}
 			resultABox.set("check", "ok");
 
 		} catch (Exception ex) {
 			resultABox.set("check", "fail");
 			ex.printStackTrace();
-		}		
+		}
 		return resultABox;		
 
 	}
-	
-	
 }

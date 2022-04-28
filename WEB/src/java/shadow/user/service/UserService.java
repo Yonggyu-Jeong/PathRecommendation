@@ -19,4 +19,5 @@ public interface UserService {
 	public ABox findLocation(ABox aBox) throws DataAccessException;
 
 	public Object insertReview(ABoxList<ABox> jsonBoxList) throws DataAccessException;
+
 }

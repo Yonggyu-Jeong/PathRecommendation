@@ -18,7 +18,7 @@
 			password = #{password}
 	]]>
 	</select>
-	
+
 	<select id="selectLocationLabelCountSQL"
 		resultType="common.collection.ABox"
 		parameterType="common.collection.ABox">
@@ -31,7 +31,8 @@
 	]]>
 	</select>
 
-	<insert id="insertLocationSQL" parameterType="common.collection.ABox">
+	<insert id="insertLocationSQL"
+		parameterType="common.collection.ABox">
 		<![CDATA[
 			INSERT INTO locate
 				( name,
@@ -53,8 +54,9 @@
 				#{REFINE_WGS84_LAT} )
 		]]>
 	</insert>
-	
-	<insert id="insertReviewSQL" parameterType="common.collection.ABox">
+
+	<insert id="insertReviewSQL"
+		parameterType="common.collection.ABox">
 		<![CDATA[
 			INSERT INTO review_maps
 				(
@@ -68,9 +70,10 @@
 				#{star},
 				#{category} )
 		]]>
-	</insert>	
-	
-	<insert id="insertLocationLabelSQL" parameterType="common.collection.ABox">
+	</insert>
+
+	<insert id="insertLocationLabelSQL"
+		parameterType="common.collection.ABox">
 		<![CDATA[
 			INSERT INTO locate_label
 				( locate_seq,
@@ -88,7 +91,7 @@
 				#{tag4} )
 		]]>
 	</insert>
-		<select id="selectLocateList"
+	<select id="selectLocateList"
 		resultType="common.collection.ABox"
 		parameterType="common.collection.ABox">
 		<![CDATA[
@@ -113,15 +116,16 @@
 			review_maps a, locate_label b
 		WHERE 
 	]]>
-		a.locate_seq IN 
-     	<foreach collection="locateIdList" item="location" index="idx" open='(' close=')' separator=','>
-        	#{location.location}
-        </foreach>
-        AND a.locate_seq = b.locate_seq
-        group BY a.star;
+		a.locate_seq IN
+		<foreach collection="locateIdList" item="location" index="idx"
+			open='(' close=')' separator=','>
+			#{location.location}
+		</foreach>
+		AND a.locate_seq = b.locate_seq
+		group BY a.star;
 
 	</select>
-	
+
 	<select id="selectLocateList2"
 		resultType="common.collection.ABox"
 		parameterType="common.collection.ABox">
@@ -133,10 +137,11 @@
 		WHERE
 			a.locate_id IN
 	]]>
-		<foreach collection="locateIdList" item="location" index="idx" open='(' close=')' separator=','>
-        	#{location.location}
-        </foreach>
-	</select>	
+		<foreach collection="locateIdList" item="location" index="idx"
+			open='(' close=')' separator=','>
+			#{location.location}
+		</foreach>
+	</select>
 
 
 </mapper>
