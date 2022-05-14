@@ -25,19 +25,17 @@ public class TabPagerAdapter_closet extends FragmentStatePagerAdapter {
             case 0:
                 return TabFragment_Clothes_inCloset.newInstance("private","share");
             case 1:
-                return TabFragment_Clothes_inCloset.newInstance("private","카페&디저트");
+                return TabFragment_Clothes_inCloset.newInstance("private","음식점");
             case 2:
-                return TabFragment_Clothes_inCloset.newInstance("private","음식");
+                return TabFragment_Clothes_inCloset.newInstance("private","역사관광지");
             case 3:
-                return TabFragment_Clothes_inCloset.newInstance("private","스포츠");
+                return TabFragment_Clothes_inCloset.newInstance("private","자연관광지");
             case 4:
-                return TabFragment_Clothes_inCloset.newInstance("private","독서&연극");
+                return TabFragment_Clothes_inCloset.newInstance("private","체험관광지");
             case 5:
-                return TabFragment_Clothes_inCloset.newInstance("private","포차");
+                return TabFragment_Clothes_inCloset.newInstance("private","테마관광지");
             case 6:
-                return TabFragment_Clothes_inCloset.newInstance("private","놀거리");
-            case 7:
-                return TabFragment_Clothes_inCloset.newInstance("private","포차");
+                return TabFragment_Clothes_inCloset.newInstance("private","기타관광지");
             default:
                 return null;
         }

@@ -143,5 +143,22 @@
 		</foreach>
 	</select>
 
+	<select id="selectCategoryListSQL"
+		resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+
+		SELECT 
+			* 
+		FROM 
+			locate 
+		WHERE 
+			category = #{category}
+		ORDER BY 
+			locate_id LIMIT 0,10;
+
+	]]>
+	</select>
+
 
 </mapper>

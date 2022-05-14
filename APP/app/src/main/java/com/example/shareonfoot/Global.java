@@ -2,7 +2,7 @@ package com.example.shareonfoot;
 
 
 public class Global {
-    public static final String BASE_URL = "http://101.101.208.123/"; //api 주소
+    public static final String BASE_URL = "http://101.101.208.123:8080/"; //api 주소
     public static final String TAG = "LOG_RETROFIT";
     public static double bitmapWidth = 500;
 

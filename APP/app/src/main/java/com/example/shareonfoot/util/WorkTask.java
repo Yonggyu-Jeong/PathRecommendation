@@ -3,8 +3,10 @@ package com.example.shareonfoot.util;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.example.shareonfoot.HTTP.Service.CategoryService;
 import com.example.shareonfoot.HTTP.Service.MapService;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -98,10 +100,12 @@ public class WorkTask {
             map.put("user", mapUser);
             map.put("start", mapStart);
             map.put("goal", mapGoal);
+            Log.e("에러============1", map.toString());
 
             Call<JsonObject> objectCall = MapService.getRetrofit(context).getLocate(map);
             try {
                 Object result = objectCall.execute().body();
+                Log.e("에러============2", result.toString());
                 Gson gson = new Gson();
                 JsonObject json = gson.toJsonTree(result).getAsJsonObject();
                 return json.toString();
@@ -174,4 +178,44 @@ public class WorkTask {
         }
     }
 
+
+    public static class GetCategoryListTask extends AsyncTask<String, Void, String> {
+
+        public Context context;
+
+        public GetCategoryListTask(Context getContext) {
+            context = getContext;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... obj) {
+            HashMap map = new HashMap();
+            map.put("category", obj);
+
+            Call<JsonObject> objectCall = CategoryService.getRetrofit(context).getCategory(map);
+            try {
+                Object result = objectCall.execute().body();
+                Gson gson = new Gson();
+                JsonObject json = gson.toJsonTree(result).getAsJsonObject();
+                return json.toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "fail";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s.equals("fail")) {
+                Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }

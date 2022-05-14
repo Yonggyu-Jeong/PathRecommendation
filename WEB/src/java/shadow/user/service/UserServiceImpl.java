@@ -35,17 +35,6 @@ public class UserServiceImpl extends SuperService implements UserService {
 		return result;
 	}
 
-	public String test2() {
-		String result = "";
-		try {
-			// KMeans kmeans = new KMeans(dataset[datasetIndex], clusterNumber, 100, 4);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return result;
-	}
-
 	@Override
 	public ABox searchUserList(ABox aBox) throws DataAccessException {
 		ABox result = new ABox();
@@ -84,8 +73,7 @@ public class UserServiceImpl extends SuperService implements UserService {
 	public ABox insertLocation(ABoxList<ABox> aBoxList) throws DataAccessException {
 		ABox resultABox = new ABox();
 		int size = aBoxList.size();
-		int cnt = commonDao.select("mybatis.shadow.user.user_mapper.selectLocationLabelCountSQL", resultABox)
-				.getInt("cnt") + 1;
+		int cnt = commonDao.select("mybatis.shadow.user.user_mapper.selectLocationLabelCountSQL", resultABox).getInt("cnt") + 1;
 		String temp = "";
 		Random random = new Random();
 		ABox aBox = new ABox();
@@ -218,6 +206,8 @@ public class UserServiceImpl extends SuperService implements UserService {
 			userABox = commonDao.select("mybatis.shadow.user.user_mapper.selectUserListSQL", userBox);
 
 			for (int i = 0; i < directList.size(); i++) {
+				resultABox.set("count", i);
+
 				locateList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList",
 						directList.get(i));
 				locationABox.set("locateList", locateList);
@@ -234,13 +224,12 @@ public class UserServiceImpl extends SuperService implements UserService {
 				for (int j = 0; j < locateList.size(); j++) {
 					locateIdList.add(new ABox().set("location", locateList.get(j).getInt("locate_id")));
 				}
-				locateDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateDataSQL",
-						new ABox().set("locateIdList", locateIdList));
 
-				Double[][] dataFrame = mDataFrame.getDoubleFrame(locateDataList, userABox);
+				locateDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateDataSQL", new ABox().set("locateIdList", locateIdList));
 
-				returnDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList2",
-						new ABox().set("locateIdList", locateIdList));
+				//Double[][] dataFrame = mDataFrame.getDoubleFrame(locateDataList, userABox);
+
+				returnDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList2", new ABox().set("locateIdList", locateIdList));
 				for (int j = 0; j < returnDataList.size(); j++) {
 					returnDataList.get(j).set("rate", random.nextInt(5) + 1);
 				}
@@ -273,6 +262,21 @@ public class UserServiceImpl extends SuperService implements UserService {
 				resultABox.set("locationList"+i, locationList);
 			}
 			resultABox.set("check", "ok");
+			
+		} catch (Exception ex) {
+			resultABox.set("check", "fail");
+			ex.printStackTrace();
+		} 
+		return resultABox;
+	}
+
+	@Override
+	public ABox getCategoryList(ABox jsonBox) {
+		ABox resultABox = new ABox();
+		try {
+			ABoxList<ABox> categoryList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectCategoryListSQL", jsonBox);
+			resultABox.set("check", "ok");
+			resultABox.set("list", categoryList);
 			
 		} catch (Exception ex) {
 			resultABox.set("check", "fail");

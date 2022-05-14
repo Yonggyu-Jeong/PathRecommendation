@@ -403,8 +403,11 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         InfoWindow infoWindow = new InfoWindow();
 
         fabAdd.setOnClickListener(view -> {
-            getTestLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
-            Toast.makeText(getContext(), "fabMake", Toast.LENGTH_SHORT).show();
+            try {
+                getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "거리가 너무 짧습니다", Toast.LENGTH_SHORT);
+            }
             fam.close(true);
         });
 
@@ -412,12 +415,15 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         fabMake.setOnClickListener(view -> {
             if(editText.getText() != null) {
                 getLocateNameforStart(editText.getText().toString(), naverMap, infoWindow);
-                Toast.makeText(getContext(), "fabAdd", Toast.LENGTH_SHORT).show();
                 checkStart = true;
                 if(checkStart && checkGoal) {
                     setCircle(naverMap, start_lng, goal_lng, start_lat, goal_lat);
-                    //getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
-                }
+                    try {
+                        getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "거리가 너무 짧습니다", Toast.LENGTH_SHORT);
+                    }                }
+                editText.setText("");
                 fam.close(true);
             }
         });
@@ -426,14 +432,18 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         fabRecommend.setOnClickListener(view -> {
             if(editText.getText() != null) {
                 getLocateNameforGoal(editText.getText().toString(), naverMap, infoWindow);
-                Toast.makeText(getContext(), "fabAdd", Toast.LENGTH_SHORT).show();
                 checkGoal = true;
                 if(checkStart && checkGoal) {
                     if(checkStart && checkGoal) {
                         setCircle(naverMap, start_lng, goal_lng, start_lat, goal_lat);
-                        //getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
+                        try {
+                            getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
+                        } catch (Exception e) {
+                            Toast.makeText(getContext(), "거리가 너무 짧습니다", Toast.LENGTH_SHORT);
+                        }
                     }
                 }
+                editText.setText("");
                 fam.close(true);
             }
         });
@@ -565,7 +575,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         HashMap hashMap = new HashMap();
         try {
             hashMap = mapTask.execute(name).get();
-
+            Toast.makeText(getContext(), hashMap.toString(), Toast.LENGTH_LONG).show();
             Marker markerStart = new Marker();
             Tm128 tm128 = new Tm128((Double)hashMap.get("mapx"), (Double)hashMap.get("mapy"));
             markerStart.setPosition(tm128.toLatLng());

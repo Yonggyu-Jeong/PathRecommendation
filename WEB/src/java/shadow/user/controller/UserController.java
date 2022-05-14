@@ -77,14 +77,32 @@ public class UserController {
 		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/testData", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
-	public ResponseEntity<String> testLocation(@RequestBody String json) throws Exception{
+	@RequestMapping(value = "/testData", method = RequestMethod.GET)
+	public ResponseEntity<String> testLocation() throws Exception{
+		String result = "";
+		String trash = "{\"goal\":{\"lng\":\"126.73882379220626\",\"lat\":\"37.3627151749158\"},\"start\":{\"lng\":\"126.9784147336912\",\"lat\":\"37.56667197782809\"},\"user\":{\"password\":\"1\",\"id\":\"hello\"}}";
+		ABox jsonBox = new ABox();
+		jsonBox.setJson(trash);
+
+		try {
+			result = userService.findLocation(jsonBox).aBoxToJsonObject().toString();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(result, HttpStatus.SERVICE_UNAVAILABLE);
+
+		}
+		return new ResponseEntity<String>(result, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/category/list", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
+	public ResponseEntity<String> getCategoryList(@RequestBody String json) throws Exception{
 		String result = "";
 		ABox jsonBox = new ABox();
 		jsonBox.setJson(json);
 
 		try {
-			result = userService.testLocation(jsonBox).aBoxToJsonObject().toString();
+			result = userService.getCategoryList(jsonBox).aBoxToJsonObject().toString();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
