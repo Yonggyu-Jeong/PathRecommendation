@@ -57,6 +57,7 @@ import com.example.shareonfoot.util.WorkTask;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.Tm128;
 import com.naver.maps.geometry.Utmk;
@@ -666,12 +667,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
     public void getTestLocate(NaverMap naverMap, InfoWindow infoWindow, String... obj) {
         WorkTask.GetLocateForReadyTask mapTask = new WorkTask.GetLocateForReadyTask(requireContext());
-        HashMap<String, Object> resultMap = null;
+        HashMap<String, Object> resultMap = new HashMap<String, Object>();
         try {
-            resultMap = mapTask.execute(obj).get();
-            Toast.makeText(getContext(), resultMap.toString(), Toast.LENGTH_LONG).show();
-            Log.i("resultMap===================================!", resultMap.toString());
-            //setCaptionToMap(naverMap, infoWindow, resultMap);
+            HashMap<String, Object> executetMap = mapTask.execute(obj).get();
+            if(executetMap.get("check").toString().equals("ok")) {
+                setCaptionToMap(naverMap, infoWindow, executetMap);
+            }
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -763,13 +764,14 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         return hashMap;
     }
 
-
     public void setCaptionToMap(NaverMap naverMap, InfoWindow infoWindow, HashMap<String, Object> map) {
 
-        for(int i=0; i<map.size(); i++) {
-            Marker marker = new Marker();
+        for(int i = 0; i<Integer.parseInt(String.valueOf(Math.round((Double) map.get("result-size")))); i++) {
+            LinkedTreeMap<String,Object> paramMap = (LinkedTreeMap<String, Object>) map.get("result_" + (i + 1));
 
-            Tm128 tm128 = new Tm128((Double)map.get("lat"), (Double)map.get("lng"));
+            Marker marker = new Marker();
+            Tm128 tm128 = new Tm128((Double) paramMap.get("lat"), (Double) paramMap.get("lng"));
+
             marker.setPosition(tm128.toLatLng());
 
             marker.setOnClickListener(overlay -> {
@@ -785,11 +787,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             marker.setSubCaptionColor(Color.GRAY);
             marker.setSubCaptionText(getString(R.string.marker_sub_caption_goal));
             marker.setSubCaptionMinZoom(13);
-            Markermap.put("marker"+i, marker);
-
+            Markermap.put("marker-"+i, marker);
             marker.setMap(naverMap);
         }
     }
+}
+
 
     /*
         class NearestTask extends AsyncTask<String, String, String> {
@@ -935,4 +938,3 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                         }
                         }
      */
-}
