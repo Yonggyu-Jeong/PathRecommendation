@@ -284,4 +284,36 @@ public class UserServiceImpl extends SuperService implements UserService {
 		} 
 		return resultABox;
 	}
+	
+
+	@Override
+	public ABox getLocation(ABox aBox) {
+		ABox resultABox = new ABox();
+		try {			
+			ABoxList<ABox> locationList = new ABoxList<ABox>();
+			for(int i=0; i<3; i++) {
+				ABox paramBox = new ABox();
+				paramBox.set("maxLng", aBox.getDouble("lng")+(0.01*2));
+				paramBox.set("minLng", aBox.getDouble("lng")-(0.01*2));
+				paramBox.set("maxLat", aBox.getDouble("lat")+(0.01*2));
+				paramBox.set("minLat", aBox.getDouble("lat")-(0.01*2));
+
+				locationList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList", paramBox);
+				if(!locationList.isEmpty()) {
+					if(locationList.size() >= 3) {
+						break;
+					}
+				}
+				
+			}
+			
+			resultABox.set("result", locationList);
+			resultABox.set("check", "ok");
+			
+		} catch (Exception ex) {
+			resultABox.set("check", "fail");
+			ex.printStackTrace();
+		} 
+		return resultABox;
+	}
 }

@@ -60,6 +60,7 @@ import com.google.gson.JsonObject;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.Tm128;
 import com.naver.maps.geometry.Utmk;
+import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
@@ -160,6 +161,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     private static final int UPDATE_INTERVAL_MS = 300000;  // 1초
     private static final int FASTEST_UPDATE_INTERVAL_MS = 300000; // 0.5초
     private Marker currentMarker = null;
+    private HashMap<String, Marker> Markermap = new HashMap<String, Marker>();
 
 
     private static class InfoWindowAdapter extends InfoWindow.ViewAdapter {
@@ -423,7 +425,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     } catch (Exception e) {
                         Toast.makeText(getContext(), "거리가 너무 짧습니다", Toast.LENGTH_SHORT);
                     }                }
-                editText.setText("");
                 fam.close(true);
             }
         });
@@ -437,13 +438,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     if(checkStart && checkGoal) {
                         setCircle(naverMap, start_lng, goal_lng, start_lat, goal_lat);
                         try {
-                            getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
+                            //getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
                         } catch (Exception e) {
                             Toast.makeText(getContext(), "거리가 너무 짧습니다", Toast.LENGTH_SHORT);
                         }
                     }
                 }
-                editText.setText("");
                 fam.close(true);
             }
         });
@@ -575,7 +575,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         HashMap hashMap = new HashMap();
         try {
             hashMap = mapTask.execute(name).get();
-            Toast.makeText(getContext(), hashMap.toString(), Toast.LENGTH_LONG).show();
+
             Marker markerStart = new Marker();
             Tm128 tm128 = new Tm128((Double)hashMap.get("mapx"), (Double)hashMap.get("mapy"));
             markerStart.setPosition(tm128.toLatLng());
@@ -586,6 +586,11 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             start_lat = tm128.toLatLng().latitude;
             start_lng = tm128.toLatLng().longitude;
 
+
+            if(checkStart == true) {
+                Marker tempMarker = (Marker) Markermap.get("markerStart");
+                tempMarker.setMap(null);
+            }
             markerStart.setTag("출발지");
             markerStart.setIcon(MarkerIcons.RED);
             markerStart.setCaptionTextSize(14);
@@ -595,9 +600,13 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             markerStart.setSubCaptionColor(Color.GRAY);
             markerStart.setSubCaptionText(getString(R.string.marker_sub_caption_start));
             markerStart.setSubCaptionMinZoom(13);
+            Markermap.put("markerStart", markerStart);
             markerStart.setMap(naverMap);
 
-            Toast.makeText(getContext(), tm128.toLatLng().toString(), Toast.LENGTH_LONG).show();
+            editText.setText("");
+            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(start_lat, start_lng));
+            naverMap.moveCamera(cameraUpdate);
+
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -612,29 +621,38 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         try {
             hashMap = mapTask.execute(name).get();
 
-            Marker markerStart = new Marker();
+            Marker markerGoal = new Marker();
             Tm128 tm128 = new Tm128((Double)hashMap.get("mapx"), (Double)hashMap.get("mapy"));
-            markerStart.setPosition(tm128.toLatLng());
+            markerGoal.setPosition(tm128.toLatLng());
 
-            markerStart.setOnClickListener(overlay -> {
-                infoWindow.open(markerStart);
+            markerGoal.setOnClickListener(overlay -> {
+                infoWindow.open(markerGoal);
                 return true;
             });
             goal_lat = tm128.toLatLng().latitude;
             goal_lng = tm128.toLatLng().longitude;
 
-            markerStart.setTag("도착지");
-            markerStart.setIcon(MarkerIcons.BLUE);
-            markerStart.setCaptionTextSize(14);
-            markerStart.setCaptionText(getString(R.string.marker_sub_caption_goal));
-            markerStart.setCaptionMinZoom(12);
-            markerStart.setSubCaptionTextSize(10);
-            markerStart.setSubCaptionColor(Color.GRAY);
-            markerStart.setSubCaptionText(getString(R.string.marker_sub_caption_goal));
-            markerStart.setSubCaptionMinZoom(13);
-            markerStart.setMap(naverMap);
+            if(checkGoal == true) {
+                Marker tempMarker = (Marker) Markermap.get("markerGoal");
+                tempMarker.setMap(null);
+            }
 
-            Toast.makeText(getContext(), tm128.toLatLng().toString(), Toast.LENGTH_LONG).show();
+            markerGoal.setTag("도착지");
+            markerGoal.setIcon(MarkerIcons.BLUE);
+            markerGoal.setCaptionTextSize(14);
+            markerGoal.setCaptionText(getString(R.string.marker_sub_caption_goal));
+            markerGoal.setCaptionMinZoom(12);
+            markerGoal.setSubCaptionTextSize(10);
+            markerGoal.setSubCaptionColor(Color.GRAY);
+            markerGoal.setSubCaptionText(getString(R.string.marker_sub_caption_goal));
+            markerGoal.setSubCaptionMinZoom(13);
+            Markermap.put("markerGoal", markerGoal);
+            markerGoal.setMap(naverMap);
+
+            editText.setText("");
+            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(goal_lat, goal_lng));
+            naverMap.moveCamera(cameraUpdate);
+
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -643,11 +661,13 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     }
 
     public void getTestLocate(NaverMap naverMap, InfoWindow infoWindow, String... obj) {
-        WorkTask.GetTestLocateTask mapTask = new WorkTask.GetTestLocateTask(requireContext());
-        String result = "";
+        WorkTask.GetLocateForReadyTask mapTask = new WorkTask.GetLocateForReadyTask(requireContext());
+        HashMap<String, Object> resultMap = null;
         try {
-            result = mapTask.execute(obj).get();
-            Toast.makeText(getContext(), result.toString(), Toast.LENGTH_LONG).show();
+            resultMap = mapTask.execute(obj).get();
+            Toast.makeText(getContext(), resultMap.toString(), Toast.LENGTH_LONG).show();
+            Log.i("resultMap===================================!", resultMap.toString());
+            //setCaptionToMap(naverMap, infoWindow, resultMap);
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -737,6 +757,34 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         hashMap.put("third", thirdMap);
 
         return hashMap;
+    }
+
+
+    public void setCaptionToMap(NaverMap naverMap, InfoWindow infoWindow, HashMap<String, Object> map) {
+
+        for(int i=0; i<map.size(); i++) {
+            Marker marker = new Marker();
+
+            Tm128 tm128 = new Tm128((Double)map.get("lat"), (Double)map.get("lng"));
+            marker.setPosition(tm128.toLatLng());
+
+            marker.setOnClickListener(overlay -> {
+                infoWindow.open(marker);
+                return true;
+            });
+            marker.setTag("추천 장소");
+            marker.setIcon(MarkerIcons.GREEN);
+            marker.setCaptionTextSize(14);
+            marker.setCaptionText(getString(R.string.marker_sub_caption_goal));
+            marker.setCaptionMinZoom(12);
+            marker.setSubCaptionTextSize(10);
+            marker.setSubCaptionColor(Color.GRAY);
+            marker.setSubCaptionText(getString(R.string.marker_sub_caption_goal));
+            marker.setSubCaptionMinZoom(13);
+            Markermap.put("marker"+i, marker);
+
+            marker.setMap(naverMap);
+        }
     }
 
     /*

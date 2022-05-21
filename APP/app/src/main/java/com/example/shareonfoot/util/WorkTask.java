@@ -218,4 +218,50 @@ public class WorkTask {
             }
         }
     }
+
+    public static class GetLocateForReadyTask extends AsyncTask<String, Void, HashMap<String, Object>> {
+
+        public Context context;
+
+        public GetLocateForReadyTask(Context getContext) {
+            context = getContext;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected HashMap<String, Object> doInBackground(String... obj) {
+            HashMap<String, Object> map = new HashMap<String, Object>();
+
+            map.put("lat", obj[0]);
+            map.put("lng", obj[1]);
+
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getLocateForReady(map);
+            try {
+                Object result = objectCall.execute().body();
+                Gson gson = new Gson();
+
+                map = new Gson().fromJson(result.toString(), new TypeToken<HashMap<String, Object>>() {}.getType());
+                map.put("check", "ok");
+                return map;
+
+            } catch (IOException e) {
+                map.put("check", "fail");
+                e.printStackTrace();
+                return map;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(HashMap<String, Object>  s) {
+            super.onPostExecute(s);
+            if (s.equals("fail")) {
+                Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 }

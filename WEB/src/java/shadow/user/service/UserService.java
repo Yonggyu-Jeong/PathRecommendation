@@ -26,4 +26,6 @@ public interface UserService {
 
 	public ABox getCategoryList(ABox jsonBox);
 
+	public ABox getLocation(ABox aBox);
+
 }
