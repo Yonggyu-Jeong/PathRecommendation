@@ -1,7 +1,6 @@
 package common.util;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,14 +55,13 @@ public class Direction {
 				double lat_new3 = lat_new - distance / 2;
 
 				directionBox.set("minLng",
-						
-						df.format(Collections.min(Arrays.asList(lng_new2, lng_new3, lng_standard, lng_standard2))));
+						df.format(Collections.min(List.of(lng_new2, lng_new3, lng_standard, lng_standard2))));
 				directionBox.set("maxLng",
-						df.format(Collections.max(Arrays.asList(lng_new2, lng_new3, lng_standard, lng_standard2))));
+						df.format(Collections.max(List.of(lng_new2, lng_new3, lng_standard, lng_standard2))));
 				directionBox.set("minLat",
-						df.format(Collections.min(Arrays.asList(lat_new2, lat_new3, lat_standard, lat_standard2))));
+						df.format(Collections.min(List.of(lat_new2, lat_new3, lat_standard, lat_standard2))));
 				directionBox.set("maxLat",
-						df.format(Collections.max(Arrays.asList(lat_new2, lat_new3, lat_standard, lat_standard2))));
+						df.format(Collections.max(List.of(lat_new2, lat_new3, lat_standard, lat_standard2))));
 				resultBoxList.set(directionBox);
 			}
 

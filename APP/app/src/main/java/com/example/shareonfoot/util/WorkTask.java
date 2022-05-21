@@ -246,6 +246,7 @@ public class WorkTask {
 
                 map = new Gson().fromJson(result.toString(), new TypeToken<HashMap<String, Object>>() {}.getType());
                 map.put("check", "ok");
+
                 return map;
 
             } catch (IOException e) {

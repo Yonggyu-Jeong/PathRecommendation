@@ -9,14 +9,12 @@ import smile.clustering.CentroidClustering;
 import smile.math.MathEx;
 
 public class KMeans extends CentroidClustering<double[], double[]> {
-    private static final long serialVersionUID = 2L;
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(KMeans.class);
 
     public KMeans(double distortion, double[][] centroids, int[] y) {
         super(distortion, centroids, y);
     }
 
-    @Override
     protected double distance(double[] x, double[] y) {
         return MathEx.squaredDistance(x, y);
     }
@@ -179,5 +177,7 @@ public class KMeans extends CentroidClustering<double[], double[]> {
             }
         });
     }
+    
+    
 }
 

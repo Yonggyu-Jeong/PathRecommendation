@@ -306,8 +306,10 @@ public class UserServiceImpl extends SuperService implements UserService {
 				}
 				
 			}
-			
-			resultABox.set("result", locationList);
+			for(int i=0; i<locationList.size(); i++) {
+				resultABox.set("result_"+(i+1), locationList.get(i));
+			}
+			resultABox.set("result-size", locationList.size());
 			resultABox.set("check", "ok");
 			
 		} catch (Exception ex) {

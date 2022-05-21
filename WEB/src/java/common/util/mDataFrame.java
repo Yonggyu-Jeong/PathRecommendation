@@ -12,10 +12,10 @@ import smile.data.DataFrame;
 import smile.data.IndexDataFrame;
 
 public class mDataFrame {
-	public static Double[][] getDoubleFrame(ABoxList<ABox> aBoxList, ABox userABox) {
+	public static double[][] getDoubleFrame(ABoxList<ABox> aBoxList, ABox userABox) {
 
 		ABox result = new ABox();
-		Double[][] dataFrame = null;
+		double[][] dataFrame = null;
 
 		ABoxList<ArrayList> tagList = new ABoxList<ArrayList>();
 		tagList.add(new ArrayList(Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07", "08", "09")));
@@ -34,7 +34,7 @@ public class mDataFrame {
 				
 		final int SIZE = 5;
 		try {
-			dataFrame = new Double[aBoxList.size()][SIZE+1];
+			dataFrame = new double[aBoxList.size()][SIZE+1];
 			for(int i=0; i<aBoxList.size(); i++) {
 				userTagList = new ArrayList<String>();
 				locateTagList = new ArrayList<String>();

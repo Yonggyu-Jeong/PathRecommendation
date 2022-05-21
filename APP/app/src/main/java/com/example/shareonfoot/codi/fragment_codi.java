@@ -404,6 +404,10 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         InfoWindow infoWindow = new InfoWindow();
 
+        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(lat, lng));
+        naverMap.moveCamera(cameraUpdate);
+        getTestLocate(naverMap, infoWindow, lat.toString(), lng.toString());
+
         fabAdd.setOnClickListener(view -> {
             try {
                 getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
