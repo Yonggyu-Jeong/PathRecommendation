@@ -11,7 +11,6 @@ import common.collection.ABoxList;
 public class Direction {
 	public static ABoxList<ABox> getDirection(ABox aBox) {
 		ABoxList<ABox> resultBoxList = new ABoxList<ABox>();
-		ABox directionBox = new ABox();
 		DecimalFormat df = new DecimalFormat("0.0000000");
 		try {
 			ABox startBox = new ABox();
@@ -37,6 +36,7 @@ public class Direction {
 			distance = distance / 3;
 
 			for (int i = 0; i < 3; i++) {
+				ABox directionBox = new ABox();
 				if (i != 0) {
 					lng_standard = lng_standard2;
 					lat_standard = lat_standard2;
@@ -63,6 +63,8 @@ public class Direction {
 						df.format(Collections.min(Arrays.asList(lat_new2, lat_new3, lat_standard, lat_standard2))));
 				directionBox.set("maxLat",
 						df.format(Collections.max(Arrays.asList(lat_new2, lat_new3, lat_standard, lat_standard2))));
+//				System.out.println(directionBox.getString("minLng")+"/"+directionBox.getString("maxLng")+"/"+directionBox.getString("minLat")+"/"+directionBox.getString("maxLat"));
+				
 				resultBoxList.set(directionBox);
 			}
 
