@@ -159,9 +159,24 @@ public class Utils {
     }
 
     public String getCategory(String s) {
-        Log.i("==========", s.substring(2, 3));
-        Log.i("==========", s.substring(3));
+        switch (s.substring(3)) {
+            case "1":
+                return "음식점";
+            case "2":
+                return "역사관광지";
+            case "3":
+                return "자연관광지";
+            case "4":
+                return "체험관광지";
+            case "5":
+                return "테마관광지";
+            case "6":
+                return "기타관광지";
+        }
+        return "추천지";
+    }
 
+    public String getTagCategory(String s) {
         if (s.substring(2, 3).equals("0")) {
             switch (s.substring(3)) {
                 case "0":

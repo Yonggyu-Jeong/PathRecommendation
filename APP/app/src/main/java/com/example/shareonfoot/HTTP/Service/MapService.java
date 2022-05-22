@@ -52,7 +52,7 @@ public class MapService extends APIAdapter {
         Call<JsonObject> getLocalName(@Query("query") String query);
 
         @Headers("Content-Type: application/json; charset=utf-8")
-        @POST("/locate/find")
+        @POST("/find")
         Call<JsonObject> getLocate(@Body HashMap hashMap);
 
         @Headers("Content-Type: application/json; charset=utf-8")

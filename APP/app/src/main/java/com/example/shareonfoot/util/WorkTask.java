@@ -70,7 +70,7 @@ public class WorkTask {
     }
 
 
-       public static class GetLocateTask extends AsyncTask<String, Void, String> {
+       public static class GetLocateTask extends AsyncTask<String, Void,  HashMap<String, Object>> {
 
         public Context context;
 
@@ -84,8 +84,9 @@ public class WorkTask {
         }
 
         @Override
-        protected String doInBackground(String... obj) {
+        protected  HashMap<String, Object> doInBackground(String... obj) {
             HashMap map = new HashMap();
+            HashMap<String, Object> resultMap = new HashMap<String, Object>();
             HashMap mapUser = new HashMap();
             HashMap mapStart = new HashMap();
             HashMap mapGoal = new HashMap();
@@ -100,24 +101,25 @@ public class WorkTask {
             map.put("user", mapUser);
             map.put("start", mapStart);
             map.put("goal", mapGoal);
-            Log.e("에러============1", map.toString());
 
             Call<JsonObject> objectCall = MapService.getRetrofit(context).getLocate(map);
             try {
                 Object result = objectCall.execute().body();
-                Log.e("에러============2", result.toString());
-                Gson gson = new Gson();
-                JsonObject json = gson.toJsonTree(result).getAsJsonObject();
-                return json.toString();
+                Log.e("SELECT 목록 = ", result.toString());
+                //JsonObject json = gson.toJsonTree(result).getAsJsonObject();
+                resultMap = new Gson().fromJson(result.toString(), new TypeToken<HashMap<String, Object>>() {}.getType());
+                resultMap.put("check", "ok");
+                return resultMap;
 
             } catch (IOException e) {
                 e.printStackTrace();
-                return "fail";
+                resultMap.put("check", "fail");
+                return resultMap;
             }
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute( HashMap<String, Object> s) {
             super.onPostExecute(s);
             if (s.equals("fail")) {
                 Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();

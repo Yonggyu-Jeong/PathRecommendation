@@ -683,10 +683,20 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
     public void getLocate(NaverMap naverMap, InfoWindow infoWindow, String... obj) {
         WorkTask.GetLocateTask mapTask = new WorkTask.GetLocateTask(requireContext());
-        String result = "";
+        HashMap<String, Object> resultMap = null;
         try {
-            result = mapTask.execute(obj).get();
-            Toast.makeText(getContext(), result.toString(), Toast.LENGTH_LONG).show();
+            resultMap = mapTask.execute(obj).get();
+            if(resultMap.get("check").toString().equals("ok")) {
+                for(int i=0; i<3; i++) {
+                    ArrayList<Object> dataList = null;
+                    dataList = (ArrayList<Object>)resultMap.get("resultDataList"+i);
+                    Log.e("결과"+i+"=========", dataList.toString());
+
+                }
+
+            } else {
+                Toast.makeText(getContext(), "추천 목적지의 수가 적습니다. 다른 장소를 입력해주세요.", Toast.LENGTH_SHORT).show();
+            }
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -775,8 +785,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             marker.setPosition(xy);
 
             String category = "";
+            category = utils.getCategory(paramMap.get("category").toString())+"\n";
             for(int j=1; j<5; j++) {
-                category = category+"#"+utils.getCategory(paramMap.get("tag"+j).toString()) + " ";
+                category = category+"#"+utils.getTagCategory(paramMap.get("tag"+j).toString());
+                if(j<4) {
+                    category += "\n";
+                }
             }
 
             infoWindow.setAnchor(new PointF(0, 1));
