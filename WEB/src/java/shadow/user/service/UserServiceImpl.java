@@ -245,7 +245,6 @@ public class UserServiceImpl extends SuperService implements UserService {
 				}
 				resultABox.set("find-error", "11");
 				resultABox.set("DataSize" + i, resultDataList.size());
-
 				resultABox.set("resultDataList" + i, resultDataList);
 			}
 			resultABox.set("check", "ok");

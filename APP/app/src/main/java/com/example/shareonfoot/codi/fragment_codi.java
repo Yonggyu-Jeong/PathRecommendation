@@ -643,7 +643,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             }
 
             markerGoal.setTag("도착지");
-            markerGoal.setIcon(MarkerIcons.BLUE);
+            markerGoal.setIcon(MarkerIcons.LIGHTBLUE);
             markerGoal.setCaptionTextSize(14);
             markerGoal.setCaptionText(getString(R.string.marker_sub_caption_goal));
             markerGoal.setCaptionMinZoom(12);
@@ -689,9 +689,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             if(resultMap.get("check").toString().equals("ok")) {
                 for(int i=0; i<3; i++) {
                     ArrayList<Object> dataList = null;
+                    int dataSize = 0;
                     dataList = (ArrayList<Object>)resultMap.get("resultDataList"+i);
-                    Log.e("결과"+i+"=========", dataList.toString());
-
+                    dataSize = Integer.parseInt(String.valueOf(Math.round((Double) resultMap.get("DataSize"+i))));
+                    Log.i("dataList"+i, dataList.toString());
+                    Log.i("dataSize"+i, String.valueOf(dataSize));
+                    setCaptionToMap(naverMap, infoWindow, dataList, dataSize);
                 }
 
             } else {
@@ -803,7 +806,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             });
 
             marker.setTag(category);
-            marker.setIcon(MarkerIcons.GREEN);
+            marker.setIcon(MarkerIcons.PINK);
             marker.setCaptionTextSize(14);
             marker.setCaptionText(paramMap.get("name").toString());
             marker.setCaptionMinZoom(12);
@@ -819,6 +822,63 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 infoWindow.setPosition(coord);
                 infoWindow.open(naverMap);
             });
+        }
+    }
+
+    public void setCaptionToMap(NaverMap naverMap, InfoWindow infoWindow, ArrayList<Object> dataList, int dataSize) {
+        Utils utils = new Utils();
+        for(int i=0; i<dataSize; i++) {
+            LinkedTreeMap<String,Object> paramMap = (LinkedTreeMap<String, Object>) dataList.get(i);
+            Log.i("paramMap"+i, paramMap.toString());
+
+            Marker marker = new Marker();
+            LatLng xy = new LatLng((Double) paramMap.get("lat"), (Double) paramMap.get("lng"));
+            marker.setPosition(xy);
+
+            String category = "";
+            category = utils.getCategory(paramMap.get("category").toString())+"\n";
+            for(int j=1; j<5; j++) {
+                category = category+"#"+utils.getTagCategory(paramMap.get("tag"+j).toString());
+                if(j<4) {
+                    category += "\n";
+                }
+            }
+
+            infoWindow.setAnchor(new PointF(0, 1));
+            infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
+            infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
+            infoWindow.setAdapter(new InfoWindowAdapter(this));
+            marker.setOnClickListener(overlay -> {
+                infoWindow.open(marker);
+                return true;
+            });
+
+            marker.setTag(category);
+
+            if(i==0) {
+                marker.setIcon(MarkerIcons.YELLOW);
+            } else if(i==1) {
+                marker.setIcon(MarkerIcons.GREEN);
+            } else {
+                marker.setIcon(MarkerIcons.BLUE);
+            }
+
+            marker.setCaptionTextSize(14);
+            marker.setCaptionText(paramMap.get("name").toString());
+            marker.setCaptionMinZoom(12);
+            marker.setSubCaptionTextSize(10);
+            marker.setSubCaptionColor(Color.GRAY);
+            marker.setSubCaptionText("추천 장소");
+            marker.setSubCaptionMinZoom(13);
+            Markermap.put("marker-"+i, marker);
+            marker.setMap(naverMap);
+            infoWindow.open(marker);
+
+            naverMap.setOnMapClickListener((point, coord) -> {
+                infoWindow.setPosition(coord);
+                infoWindow.open(naverMap);
+            });
+
         }
     }
 }

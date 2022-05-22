@@ -131,9 +131,9 @@
 		parameterType="common.collection.ABox">
 	<![CDATA[
 		SELECT 
-			a.name, a.category, a.road, a.lng, a.lat
+			a.locate_id, b.label_seq, a.name, a.category, a.road, a.lng, a.lat, b.tag1, b.tag2, b.tag3, b.tag4, b.door_tag	
 		FROM 
-			locate a
+			locate a, locate_label b
 		WHERE
 			a.locate_id IN
 	]]>
@@ -141,6 +141,7 @@
 			open='(' close=')' separator=','>
 			#{location.location}
 		</foreach>
+		AND a.locate_id = b.label_seq
 	</select>
 
 	<select id="selectCategoryListSQL"
