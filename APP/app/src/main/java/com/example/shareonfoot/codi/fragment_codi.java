@@ -48,7 +48,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
-
+import com.example.shareonfoot.util.Utils;
 
 import com.example.shareonfoot.R;
 import com.example.shareonfoot.home.activity_home;
@@ -765,30 +765,46 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     }
 
     public void setCaptionToMap(NaverMap naverMap, InfoWindow infoWindow, HashMap<String, Object> map) {
+        Utils utils = new Utils();
 
         for(int i = 0; i<Integer.parseInt(String.valueOf(Math.round((Double) map.get("result-size")))); i++) {
             LinkedTreeMap<String,Object> paramMap = (LinkedTreeMap<String, Object>) map.get("result_" + (i + 1));
 
             Marker marker = new Marker();
-            Tm128 tm128 = new Tm128((Double) paramMap.get("lat"), (Double) paramMap.get("lng"));
+            LatLng xy = new LatLng((Double) paramMap.get("lat"), (Double) paramMap.get("lng"));
+            marker.setPosition(xy);
 
-            marker.setPosition(tm128.toLatLng());
+            String category = "";
+            for(int j=1; j<5; j++) {
+                category = category+"#"+utils.getCategory(paramMap.get("tag"+j).toString()) + " ";
+            }
 
+            infoWindow.setAnchor(new PointF(0, 1));
+            infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
+            infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
+            infoWindow.setAdapter(new InfoWindowAdapter(this));
             marker.setOnClickListener(overlay -> {
                 infoWindow.open(marker);
                 return true;
             });
-            marker.setTag("추천 장소");
+
+            marker.setTag(category);
             marker.setIcon(MarkerIcons.GREEN);
             marker.setCaptionTextSize(14);
-            marker.setCaptionText(getString(R.string.marker_sub_caption_goal));
+            marker.setCaptionText(paramMap.get("name").toString());
             marker.setCaptionMinZoom(12);
             marker.setSubCaptionTextSize(10);
             marker.setSubCaptionColor(Color.GRAY);
-            marker.setSubCaptionText(getString(R.string.marker_sub_caption_goal));
+            marker.setSubCaptionText("추천 장소");
             marker.setSubCaptionMinZoom(13);
             Markermap.put("marker-"+i, marker);
             marker.setMap(naverMap);
+            infoWindow.open(marker);
+
+            naverMap.setOnMapClickListener((point, coord) -> {
+                infoWindow.setPosition(coord);
+                infoWindow.open(naverMap);
+            });
         }
     }
 }

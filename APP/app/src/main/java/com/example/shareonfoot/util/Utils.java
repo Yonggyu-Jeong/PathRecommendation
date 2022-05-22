@@ -1,6 +1,7 @@
 package com.example.shareonfoot.util;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.shareonfoot.R;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -157,7 +158,178 @@ public class Utils {
         colorIntMap.put("실버",      "#C0C0C0"  );
     }
 
+    public String getCategory(String s) {
+        Log.i("==========", s.substring(2, 3));
+        Log.i("==========", s.substring(3));
 
+        if (s.substring(2, 3).equals("0")) {
+            switch (s.substring(3)) {
+                case "0":
+                    return "귀여운";
+                case "1":
+                    return "사랑스러운";
+                case "2":
+                    return "달콤한";
+                case "3":
+                    return "아기자기한";
+                case "4":
+                    return "예쁜";
+                case "5":
+                    return "즐거운";
+                case "6":
+                    return "쾌활한";
+                case "7":
+                    return "신선한";
+            }
+        } else if (s.substring(2, 3).equals("1")) {
+            switch (s.substring(3)) {
+                case "0":
+                    return "내추럴한";
+                case "1":
+                    return "자연적인";
+                case "2":
+                    return "전원적인";
+                case "3":
+                    return "편안한";
+                case "4":
+                    return "감성적인";
+                case "5":
+                    return "풍성한";
+                case "6":
+                    return "정다운";
+                case "7":
+                    return "포근한";
+                case "8":
+                    return "소박한";
+            }
+        } else if (s.substring(2, 3).equals("2")) {
+            switch (s.substring(3)) {
+                case "0":
+                    return "온화한";
+                case "1":
+                    return "소박한";
+                case "2":
+                    return "따뜻한";
+                case "3":
+                    return "부드러운";
+                case "4":
+                    return "매끄러운";
+                case "5":
+                    return "동양적인";
+                case "6":
+                    return "유연한";
+                case "7":
+                    return "안정된";
+                case "8":
+                    return "순수한";
+            }
+        } else if (s.substring(2, 3).equals("3")) {
+            switch (s.substring(3)) {
+                case "0":
+                    return "경쾌한";
+                case "1":
+                    return "활동적인";
+                case "2":
+                    return "밝은";
+                case "3":
+                    return "재미있는";
+                case "4":
+                    return "개방적인";
+                case "5":
+                    return "선명한";
+                case "6":
+                    return "새로운";
+                case "7":
+                    return "돋보이는";
+                case "8":
+                    return "젊은";
+            }
+        } else if (s.substring(2, 3).equals("4")) {
+            switch (s.substring(3)) {
+                case "0":
+                    return "화려한";
+                case "1":
+                    return "매력적인";
+                case "2":
+                    return "장식적인";
+                case "3":
+                    return "색감이 다양한";
+                case "4":
+                    return "컬러풀한";
+                case "5":
+                    return "환상적인";
+                case "6":
+                    return "복잡한";
+                case "7":
+                    return "뛰어난";
+                case "8":
+                    return "다양한";
+            }
+        } else if (s.substring(2, 3).equals("5")) {
+            switch (s.substring(3)) {
+                case "0":
+                    return "우아한";
+                case "1":
+                    return "멋진";
+                case "2":
+                    return "세련된";
+                case "3":
+                    return "고급스러운";
+                case "4":
+                    return "기품있는";
+                case "5":
+                    return "아름다운";
+            }
+        } else if (s.substring(2, 3).equals("6")) {
+            switch (s.substring(3)) {
+                case "0":
+                    return "은은한";
+                case "1":
+                    return "단정한";
+                case "2":
+                    return "정돈된";
+                case "3":
+                    return "심플한";
+                case "4":
+                    return "가지런한";
+            }
+        } else if (s.substring(2, 3).equals("7")) {
+            switch (s.substring(3)) {
+                case "0":
+                    return "다이나믹한";
+                case "1":
+                    return "역동적인";
+                case "2":
+                    return "액티브한";
+                case "3":
+                    return "기운찬";
+                case "4":
+                    return "개성적인";
+            }
+        } else if (s.substring(2, 3).equals("8")) {
+            switch (s.substring(3)) {
+                case "0":
+                    return "모던한";
+                case "1":
+                    return "진보적인";
+                case "2":
+                    return "도시적인";
+                case "3":
+                    return "실용적인";
+                case "4":
+                    return "현대적인";
+                case "5":
+                    return "하이테크한";
+                case "6":
+                    return "인공적인";
+                case "7":
+                    return "딱딱한";
+                case "8":
+                    return "서양적인";
+            }
+        }
+        return "fail";
+    }
 
 
 
