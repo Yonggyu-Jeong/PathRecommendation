@@ -74,13 +74,8 @@ public class infoWindowAdapter extends InfoWindow.DefaultViewAdapter {
         String type = utils.getCategory(mParamMap.get("category").toString());
         String tags = "";
         for(int j=1; j<5; j++) {
-            tags = category+"#"+utils.getTagCategory(mParamMap.get("tag"+j).toString());
-            if(j<4) {
-                tags += "\n";
-            }
+            tags = "#"+utils.getTagCategory(mParamMap.get("tag"+j).toString()+"\n");
         }
-        Log.i("=====", tags);
-
         txtTitle.setText(mParamMap.get("name").toString());
         category.setText(type);
         store_adress.setText(mParamMap.get("road").toString());

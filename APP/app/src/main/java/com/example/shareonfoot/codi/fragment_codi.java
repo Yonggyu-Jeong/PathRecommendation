@@ -874,6 +874,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 Button buttonAdd = (Button) view.findViewById(R.id.btnAddForLocate);
                 Button buttonDelete = (Button) view.findViewById(R.id.btnDeleteForLocate);
 
+                adapter.setOnItemClickListener(new infoWindowAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(ViewGroup mParent, Context mContext, LinkedTreeMap<String, Object> mParamMap) {
+
+                    }
+                });
                 adapter.setOnItemClickListener((mParent, mContext, mParamMap) -> {
                     buttonAdd.setOnClickListener(new Button.OnClickListener() {
                         @Override
@@ -927,14 +933,22 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                         tempMarker.setMap(null);
                         stopMarkerMap.remove(j);
                         stopMarkerCheck = true;
+                        if(stopMarkerCount > 0) {
+                            stopMarkerCount--;
+                        }
+                        Log.i("=========true"+stopMarkerCount, marker.getPosition()+"/"+stopMarkerMap.toString());
                         Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                     }
                 }
 
-                if(stopMarkerCheck == false) {
+                if((stopMarkerCheck == false) && (stopMarkerCount < 3)) {
                     stopMarkerMap.put("marker"+stopMarkerCount, marker);
+
                     stopMarkerCount++;
-                    Toast.makeText(getContext(), stopMarkerMap.toString(), Toast.LENGTH_SHORT).show();
+                    Log.i("=========false"+stopMarkerCount, marker.getPosition()+"/"+stopMarkerMap.toString());
+                    Toast.makeText(getContext(), "해당 경유지가 등록되었습니다", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "경유지를 3개 이상 등록할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 }
             });
         }
