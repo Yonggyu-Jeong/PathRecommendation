@@ -54,6 +54,7 @@ import com.example.shareonfoot.R;
 import com.example.shareonfoot.home.activity_home;
 import com.example.shareonfoot.util.OnBackPressedListener;
 import com.example.shareonfoot.util.WorkTask;
+import com.example.shareonfoot.util.infoWindowAdapter;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.gson.JsonObject;
@@ -163,7 +164,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     private static final int FASTEST_UPDATE_INTERVAL_MS = 300000; // 0.5초
     private Marker currentMarker = null;
     private HashMap<String, Marker> Markermap = new HashMap<String, Marker>();
-
+    private HashMap<String, Marker> stopMarkerMap = new HashMap<String, Marker>();
+    private int stopMarkerCount = 0;
 
     private static class InfoWindowAdapter extends InfoWindow.ViewAdapter {
         @NonNull
@@ -822,6 +824,24 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 infoWindow.setPosition(coord);
                 infoWindow.open(naverMap);
             });
+            naverMap.setOnMapLongClickListener((point, coord) -> {
+                Boolean stopMarkerCheck = false;
+                for(int j=0; j<stopMarkerMap.size(); j++) {
+                    Marker tempMarker = stopMarkerMap.get(j);
+                    if(tempMarker.getPosition() == marker.getPosition()) {
+                        tempMarker.setMap(null);
+                        stopMarkerMap.remove(j);
+                        stopMarkerCheck = true;
+                        Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                if(stopMarkerCheck == false) {
+                    stopMarkerMap.put("marekr"+stopMarkerCount, marker);
+                    stopMarkerCount++;
+                    Toast.makeText(getContext(), stopMarkerMap.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -847,9 +867,30 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             infoWindow.setAnchor(new PointF(0, 1));
             infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
             infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
-            infoWindow.setAdapter(new InfoWindowAdapter(this));
+            ViewGroup rootView = viewGroup.findViewById(R.id.map);
             marker.setOnClickListener(overlay -> {
+                infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
+                View view = adapter.getContentView(infoWindow);
+                Button buttonAdd = (Button) view.findViewById(R.id.btnAddForLocate);
+                Button buttonDelete = (Button) view.findViewById(R.id.btnDeleteForLocate);
+
+                adapter.setOnItemClickListener((mParent, mContext, mParamMap) -> {
+                    buttonAdd.setOnClickListener(new Button.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(getContext(), "===============!!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    buttonAdd.setOnClickListener(new Button.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(getContext(), "===============!!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+                infoWindow.setAdapter(adapter);
                 infoWindow.open(marker);
+
                 return true;
             });
 
@@ -878,7 +919,24 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 infoWindow.setPosition(coord);
                 infoWindow.open(naverMap);
             });
+            naverMap.setOnMapLongClickListener((point, coord) -> {
+                Boolean stopMarkerCheck = false;
+                for(int j=0; j<stopMarkerMap.size(); j++) {
+                    Marker tempMarker = stopMarkerMap.get("marker"+(j));
+                    if(tempMarker.getPosition() == marker.getPosition()) {
+                        tempMarker.setMap(null);
+                        stopMarkerMap.remove(j);
+                        stopMarkerCheck = true;
+                        Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
 
+                if(stopMarkerCheck == false) {
+                    stopMarkerMap.put("marker"+stopMarkerCount, marker);
+                    stopMarkerCount++;
+                    Toast.makeText(getContext(), stopMarkerMap.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }
