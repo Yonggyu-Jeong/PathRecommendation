@@ -800,12 +800,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
             infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
             ViewGroup rootView = viewGroup.findViewById(R.id.map);
-            infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
-            adapter.getContentView(infoWindow);
-            infoWindow.setAdapter(adapter);
             marker.setOnClickListener(overlay -> {
+                infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
+                View view = adapter.getContentView(infoWindow);
                 CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
                 naverMap.moveCamera(cameraUpdate);
+                infoWindow.setAdapter(adapter);
                 infoWindow.open(marker);
                 return true;
             });
@@ -819,14 +819,49 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             marker.setSubCaptionMinZoom(13);
             markerMap.put("marker-"+i, marker);
             markerLatLngMap.put("marker-"+i, xy);
-
             marker.setMap(naverMap);
             infoWindow.open(marker);
 
             naverMap.setOnMapClickListener((point, coord) -> {
-                //infoWindow.setAdapter(new InfoWindowAdapter(this));
+                infoWindow.setAdapter(new InfoWindowAdapter(this));
+                Log.i("coord", coord.toString());
+                Log.i("marker", marker.getPosition().toString());
+                Log.i("markerLatLngMap", markerLatLngMap.toString());
                 infoWindow.setPosition(coord);
                 infoWindow.open(naverMap);
+            });
+            naverMap.setOnMapLongClickListener((point, coord) -> {
+                Log.i("markerMap", markerMap.toString());
+                Log.i("markerLatLngMap", markerLatLngMap.toString());
+                Boolean stopMarkerCheck = false;
+                for(int j=0; j<markerLatLngMap.size(); j++) {
+                    LatLng tempLatLng = markerLatLngMap.get("marker-"+j);
+                    if(tempLatLng.toString().equals(marker.getPosition().toString()) && (stopMarkerCount > 0)) {
+                        Marker tempMarker = markerMap.get("marker-"+j);
+                        Log.i("tempMarker", tempMarker.toString());
+
+                        marker.setMap(null);
+                        stopMarkerMap.remove(j);
+                        markerLatLngMap.remove(j);
+
+                        stopMarkerCheck = true;
+                        if(stopMarkerCount > 0) {
+                            stopMarkerCount--;
+                        }
+                        Log.i("=========true"+stopMarkerCount, marker.getPosition()+"/"+stopMarkerMap.toString());
+                        Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                if((stopMarkerCheck == false) && (stopMarkerCount < 3)) {
+                    stopMarkerMap.put("marker"+stopMarkerCount, marker);
+                    stopMarkerLatLngMap.put("marker"+stopMarkerCount, xy);
+                    stopMarkerCount++;
+                    Log.i("=========false"+stopMarkerCount, marker.getPosition()+"/"+stopMarkerMap.toString());
+                    Toast.makeText(getContext(), "해당 경유지가 등록되었습니다", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "경유지를 3개 이상 등록할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                }
             });
 
         }
@@ -848,13 +883,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
             infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
             ViewGroup rootView = viewGroup.findViewById(R.id.map);
-            infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
-            adapter.getContentView(infoWindow);
-            infoWindow.setAdapter(adapter);
-
             marker.setOnClickListener(overlay -> {
+                infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
+                View view = adapter.getContentView(infoWindow);
                 CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
                 naverMap.moveCamera(cameraUpdate);
+                infoWindow.setAdapter(adapter);
                 infoWindow.open(marker);
                 return true;
             });
@@ -876,16 +910,16 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             marker.setSubCaptionMinZoom(13);
             markerMap.put("marker-"+i, marker);
             markerLatLngMap.put("marker-"+i, xy);
-
             marker.setMap(naverMap);
             infoWindow.open(marker);
 
             naverMap.setOnMapClickListener((point, coord) -> {
-                //infoWindow.setAdapter(new InfoWindowAdapter(this));
+                Log.i("coord", coord.toString());
+                infoWindow.setAdapter(new InfoWindowAdapter(this));
                 infoWindow.setPosition(coord);
                 infoWindow.open(naverMap);
             });
-            /*
+
             naverMap.setOnMapLongClickListener((point, coord) -> {
                 Boolean stopMarkerCheck = false;
                 for(int j=0; j<stopMarkerMap.size(); j++) {
@@ -912,7 +946,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     Toast.makeText(getContext(), "경유지를 3개 이상 등록할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 }
             });
-            */
         }
     }
 }
