@@ -4,8 +4,8 @@
 4
 5    <uses-sdk
 6        android:minSdkVersion="26"
-6-->/Users/yonggyu/Documents/GitHub/PathRecommendation/APP/opencv/java/AndroidManifest.xml
+6-->C:\PL\PathRecommendation\APP\opencv\java\AndroidManifest.xml
 7        android:targetSdkVersion="28" />
-7-->/Users/yonggyu/Documents/GitHub/PathRecommendation/APP/opencv/java/AndroidManifest.xml
+7-->C:\PL\PathRecommendation\APP\opencv\java\AndroidManifest.xml
 8
 9</manifest>

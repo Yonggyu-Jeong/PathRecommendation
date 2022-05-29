@@ -163,8 +163,11 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     private static final int UPDATE_INTERVAL_MS = 300000;  // 1초
     private static final int FASTEST_UPDATE_INTERVAL_MS = 300000; // 0.5초
     private Marker currentMarker = null;
-    private HashMap<String, Marker> Markermap = new HashMap<String, Marker>();
+    private HashMap<String, Marker> markerMap = new HashMap<String, Marker>();
+    private HashMap<String, LatLng> markerLatLngMap = new HashMap<String, LatLng>();
     private HashMap<String, Marker> stopMarkerMap = new HashMap<String, Marker>();
+    private HashMap<String, LatLng> stopMarkerLatLngMap = new HashMap<String, LatLng>();
+
     private int stopMarkerCount = 0;
 
     private static class InfoWindowAdapter extends InfoWindow.ViewAdapter {
@@ -595,7 +598,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
 
             if(checkStart == true) {
-                Marker tempMarker = (Marker) Markermap.get("markerStart");
+                Marker tempMarker = (Marker) markerMap.get("`markerStart`");
                 tempMarker.setMap(null);
             }
             markerStart.setTag("출발지");
@@ -607,7 +610,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             markerStart.setSubCaptionColor(Color.GRAY);
             markerStart.setSubCaptionText(getString(R.string.marker_sub_caption_start));
             markerStart.setSubCaptionMinZoom(13);
-            Markermap.put("markerStart", markerStart);
+            markerMap.put("markerStart", markerStart);
+            markerLatLngMap.put("markerStart", tm128.toLatLng());
             markerStart.setMap(naverMap);
 
             editText.setText("");
@@ -640,7 +644,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             goal_lng = tm128.toLatLng().longitude;
 
             if(checkGoal == true) {
-                Marker tempMarker = (Marker) Markermap.get("markerGoal");
+                Marker tempMarker = (Marker) markerMap.get("markerGoal");
                 tempMarker.setMap(null);
             }
 
@@ -653,7 +657,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             markerGoal.setSubCaptionColor(Color.GRAY);
             markerGoal.setSubCaptionText(getString(R.string.marker_sub_caption_goal));
             markerGoal.setSubCaptionMinZoom(13);
-            Markermap.put("markerGoal", markerGoal);
+            markerMap.put("markerGoal", markerGoal);
+            markerLatLngMap.put("markerGoal", tm128.toLatLng());
             markerGoal.setMap(naverMap);
 
             editText.setText("");
@@ -789,25 +794,21 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             LatLng xy = new LatLng((Double) paramMap.get("lat"), (Double) paramMap.get("lng"));
             marker.setPosition(xy);
 
-            String category = "";
-            category = utils.getCategory(paramMap.get("category").toString())+"\n";
-            for(int j=1; j<5; j++) {
-                category = category+"#"+utils.getTagCategory(paramMap.get("tag"+j).toString());
-                if(j<4) {
-                    category += "\n";
-                }
-            }
+            String category = utils.getCategory(paramMap.get("category").toString());
 
             infoWindow.setAnchor(new PointF(0, 1));
             infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
             infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
-            infoWindow.setAdapter(new InfoWindowAdapter(this));
+            ViewGroup rootView = viewGroup.findViewById(R.id.map);
+            infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
+            adapter.getContentView(infoWindow);
+            infoWindow.setAdapter(adapter);
             marker.setOnClickListener(overlay -> {
+                CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
+                naverMap.moveCamera(cameraUpdate);
                 infoWindow.open(marker);
                 return true;
             });
-
-            marker.setTag(category);
             marker.setIcon(MarkerIcons.PINK);
             marker.setCaptionTextSize(14);
             marker.setCaptionText(paramMap.get("name").toString());
@@ -816,32 +817,18 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             marker.setSubCaptionColor(Color.GRAY);
             marker.setSubCaptionText("추천 장소");
             marker.setSubCaptionMinZoom(13);
-            Markermap.put("marker-"+i, marker);
+            markerMap.put("marker-"+i, marker);
+            markerLatLngMap.put("marker-"+i, xy);
+
             marker.setMap(naverMap);
             infoWindow.open(marker);
 
             naverMap.setOnMapClickListener((point, coord) -> {
+                //infoWindow.setAdapter(new InfoWindowAdapter(this));
                 infoWindow.setPosition(coord);
                 infoWindow.open(naverMap);
             });
-            naverMap.setOnMapLongClickListener((point, coord) -> {
-                Boolean stopMarkerCheck = false;
-                for(int j=0; j<stopMarkerMap.size(); j++) {
-                    Marker tempMarker = stopMarkerMap.get(j);
-                    if(tempMarker.getPosition() == marker.getPosition()) {
-                        tempMarker.setMap(null);
-                        stopMarkerMap.remove(j);
-                        stopMarkerCheck = true;
-                        Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                }
 
-                if(stopMarkerCheck == false) {
-                    stopMarkerMap.put("marekr"+stopMarkerCount, marker);
-                    stopMarkerCount++;
-                    Toast.makeText(getContext(), stopMarkerMap.toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
         }
     }
 
@@ -855,52 +842,22 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             LatLng xy = new LatLng((Double) paramMap.get("lat"), (Double) paramMap.get("lng"));
             marker.setPosition(xy);
 
-            String category = "";
-            category = utils.getCategory(paramMap.get("category").toString())+"\n";
-            for(int j=1; j<5; j++) {
-                category = category+"#"+utils.getTagCategory(paramMap.get("tag"+j).toString());
-                if(j<4) {
-                    category += "\n";
-                }
-            }
+            String category = utils.getCategory(paramMap.get("category").toString());
 
             infoWindow.setAnchor(new PointF(0, 1));
             infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
             infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
             ViewGroup rootView = viewGroup.findViewById(R.id.map);
+            infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
+            adapter.getContentView(infoWindow);
+            infoWindow.setAdapter(adapter);
+
             marker.setOnClickListener(overlay -> {
-                infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
-                View view = adapter.getContentView(infoWindow);
-                Button buttonAdd = (Button) view.findViewById(R.id.btnAddForLocate);
-                Button buttonDelete = (Button) view.findViewById(R.id.btnDeleteForLocate);
-
-                adapter.setOnItemClickListener(new infoWindowAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(ViewGroup mParent, Context mContext, LinkedTreeMap<String, Object> mParamMap) {
-
-                    }
-                });
-                adapter.setOnItemClickListener((mParent, mContext, mParamMap) -> {
-                    buttonAdd.setOnClickListener(new Button.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Toast.makeText(getContext(), "===============!!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    buttonAdd.setOnClickListener(new Button.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Toast.makeText(getContext(), "===============!!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                });
-                infoWindow.setAdapter(adapter);
+                CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
+                naverMap.moveCamera(cameraUpdate);
                 infoWindow.open(marker);
-
                 return true;
             });
-
-            marker.setTag(category);
 
             if(i==0) {
                 marker.setIcon(MarkerIcons.YELLOW);
@@ -917,14 +874,18 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             marker.setSubCaptionColor(Color.GRAY);
             marker.setSubCaptionText("추천 장소");
             marker.setSubCaptionMinZoom(13);
-            Markermap.put("marker-"+i, marker);
+            markerMap.put("marker-"+i, marker);
+            markerLatLngMap.put("marker-"+i, xy);
+
             marker.setMap(naverMap);
             infoWindow.open(marker);
 
             naverMap.setOnMapClickListener((point, coord) -> {
+                //infoWindow.setAdapter(new InfoWindowAdapter(this));
                 infoWindow.setPosition(coord);
                 infoWindow.open(naverMap);
             });
+            /*
             naverMap.setOnMapLongClickListener((point, coord) -> {
                 Boolean stopMarkerCheck = false;
                 for(int j=0; j<stopMarkerMap.size(); j++) {
@@ -943,7 +904,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
                 if((stopMarkerCheck == false) && (stopMarkerCount < 3)) {
                     stopMarkerMap.put("marker"+stopMarkerCount, marker);
-
+                    stopMarkerLatLngMap.put("marker"+stopMarkerCount, xy);
                     stopMarkerCount++;
                     Log.i("=========false"+stopMarkerCount, marker.getPosition()+"/"+stopMarkerMap.toString());
                     Toast.makeText(getContext(), "해당 경유지가 등록되었습니다", Toast.LENGTH_SHORT).show();
@@ -951,152 +912,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     Toast.makeText(getContext(), "경유지를 3개 이상 등록할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 }
             });
+            */
         }
     }
 }
 
-
-    /*
-        class NearestTask extends AsyncTask<String, String, String> {
-        String sendMsg, receiveMsg;
-        StringBuffer Buffer = new StringBuffer();
-        URL url;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String[] strings) {
-            CookieHandler.setDefault( new CookieManager( null, CookiePolicy.ACCEPT_ALL ) );
-            String get_json = "",tmp;
-            URL url;
-
-            try {
-                url = new URL("http://49.50.172.215:8080/shareonfoot/data.jsp");
-                HttpURLConnection conn = null;
-                try {
-                    conn = (HttpURLConnection) url.openConnection();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                    err = ioException.toString();
-                    Log.i(ErrMag, "1");
-                }
-                conn.setRequestMethod("POST"); // URL 요청에 대한 메소드 설정 : POST.
-                conn.setRequestProperty("Accept-Charset", "UTF-8"); // Accept-Charset 설정.
-                conn.setRequestProperty("Context_Type", "application/x-www-form-urlencoded;cahrset=UTF-8");
-
-                // 서버에서 읽어오기 위한 스트림 객체
-                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                sendMsg = "lat=" + strings[0]+ "&lng=" + strings[1] + "&day=" + strings[2];
-                Log.i("day",strings[2]);
-                wr.write(sendMsg);
-                wr.flush();
-                wr.close();
-
-                if (conn.getResponseCode() == conn.HTTP_OK) {
-
-                    // 서버에서 읽어오기 위한 스트림 객체
-                    InputStreamReader isr = new InputStreamReader(
-                            conn.getInputStream());
-                    // 줄단위로 읽어오기 위해 BufferReader로 감싼다.
-                    BufferedReader br = new BufferedReader(isr);
-                    // 반복문 돌면서읽어오기
-                    while (true) {
-                        String line = br.readLine();
-                        if (line == null) {
-
-                            break;
-                        }
-                        Buffer.append(line);
-                    }
-                    br.close();
-                    conn.disconnect();
-                }
-                get_json = Buffer.toString();
-                Log.i("msg", "get_json: " + get_json);
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                err = e.toString();
-                Log.i(ErrMag, "5");
-            } catch (IOException e) {
-                e.printStackTrace();
-                err = e.toString();
-                Log.i(ErrMag, err);
-            }
-            return get_json;
-        }
-
-
-        public void onPostExecute(String result) {
-            super.onPostExecute(result);
-            List<Location> list = new ArrayList<>();
-            int i=0;
-            Log.d("onPostExecute:  ", " <<<<<onPostExecute>>>> ");
-            try {
-                JSONArray jarray = new JSONObject(result).getJSONArray("store_data");
-                if(jarray!=null){
-                    while (jarray != null) {
-                        JSONObject jsonObject = jarray.getJSONObject(i);
-                        String name = jsonObject.getString("store_name");
-                        double lng =  Double.parseDouble(jsonObject.getString("store_lng"));
-                        double lat = Double.parseDouble(jsonObject.getString("store_lat"));
-                        double dst = Double.parseDouble(jsonObject.getString("store_dst"));
-                        //Toast.makeText(getContext(), String.valueOf(dst), Toast.LENGTH_SHORT).show();
-                        LatLng position=new LatLng(lat,lng);
-                        /*
-                        MarkerOptions markerOptions = new MarkerOptions();
-                        markerOptions.position(position)
-                                .title(name)
-                                .snippet(String.format("나와의 거리 %.2fkm", dst));
-                        switch (i){
-                            case 0:
-                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.m1));
-                                break;
-                            case 1:
-                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.m2));
-                                break;
-                            case 2:
-                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.m3));
-                                break;
-                            case 3:
-                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.m4));
-                                break;
-                            case 4:
-                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.m5));
-                                break;
-                            default:
-                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker2));
-                                break;
-                        }
-                        mMap.addMarker(markerOptions);
-                        polylineOptions = new PolylineOptions();
-                        polylineOptions.color(Color.rgb(135,206,235))
-                                .width(10).
-                                jointType(JointType.ROUND);;
-                        // 맵셋팅
-                        arrayPoints.add(position);
-                        polylineOptions.addAll(arrayPoints);
-
-                        mMap.addPolyline(polylineOptions);
-                        // null을 가끔 못 읽어오는 때가 있다고 하기에 써봄
-                        //String Start = jsonObject.optString("START_TIME", "text on no value");
-                        //String Stop = jsonObject.optString("STOP_TIME", "text on no value");
-                        //String REG = jsonObject.optString("REG_TIME", "text on no value");
-                        Log.i("qw", name + "/" + lng+ "/" + lat);
-
-                        i++;
-
-
-}
-                } else {
-                        Toast.makeText(getContext(), "가까운 곳 없습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                        } catch (Exception e) {
-                        Log.e(ErrMag, "7");
-                        }
-                        }
-                        }
-     */
