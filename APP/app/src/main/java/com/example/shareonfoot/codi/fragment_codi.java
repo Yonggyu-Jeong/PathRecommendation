@@ -830,42 +830,39 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
             naverMap.setOnMapClickListener((point, coord) -> {
                 infoWindow.setAdapter(new InfoWindowAdapter(this));
-                //Log.i("coord", coord.toString());
-                //Log.i("marker", marker.getPosition().toString());
-                //Log.i("markerLatLngMap", markerLatLngMap.toString());
                 infoWindow.setPosition(coord);
                 infoWindow.open(naverMap);
             });
             naverMap.setOnMapLongClickListener((point, coord) -> {
-                //Log.i("markerMap", markerMap.toString());
-                //Log.i("markerLatLngMap", markerLatLngMap.toString());
                 Boolean stopMarkerCheck = false;
-                for(int j=0; j<markerLatLngMap.size(); j++) {
-                    Marker tempMarker = stopMarkerMap.get("marker"+(j));
-                    if(tempMarker.getPosition() == targetMarker.getPosition() && (stopMarkerCount > 0)) {
-                        //Log.i("tempMarker", tempMarker.toString());
-                        stopMarkerMap.remove(j);
-                        markerLatLngMap.remove(j);
+                for (int j = 0; j < stopMarkerMap.size(); j++) {
+                    LatLng tempLatLng = stopMarkerLatLngMap.get("marker" + (j));
+                    Log.i("tempMarker.getPosition()-", tempLatLng.toString()); // 템프키에서 문제 발생
+                    Log.i("targetMarker.getPosition()-", targetLatLng.toString());
+
+                    if ((tempLatLng.toLatLng() == targetLatLng) && (stopMarkerCount > 0)) {
+                        stopMarkerMap.remove("marker" + j);
+                        stopMarkerLatLngMap.remove("marker" + j);
                         stopMarkerCheck = true;
-                        if(stopMarkerCount > 0) {
+                        if (stopMarkerCount > 0) {
                             stopMarkerCount--;
                         }
-                        Log.i("=========true"+stopMarkerCount, marker.getPosition()+"/"+stopMarkerMap.toString());
+                        Log.i("=========true" + stopMarkerCount, marker.getPosition() + "/" + stopMarkerMap.toString());
                         Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                     }
                 }
-
-                if((stopMarkerCheck == false) && (stopMarkerCount < 3)) {
-                    stopMarkerMap.put("marker"+stopMarkerCount, targetMarker);
-                    stopMarkerLatLngMap.put("marker"+stopMarkerCount, xy);
-                    stopMarkerCount++;
-                    Log.i("=========false"+stopMarkerCount, marker.getPosition()+"/"+stopMarkerMap.toString());
+                if ((stopMarkerCheck == false) && (stopMarkerCount < 3)) {
+                    stopMarkerMap.put("marker" + stopMarkerCount, targetMarker);
+                    stopMarkerLatLngMap.put("marker" + stopMarkerCount, targetLatLng);
+                    Log.i("=========false" + stopMarkerCount, stopMarkerMap.get("marker" + stopMarkerCount) + " / " + stopMarkerLatLngMap.get("marker" + stopMarkerCount));
+                    if (stopMarkerCount < 2) {
+                        stopMarkerCount++;
+                    }
                     Toast.makeText(getContext(), "해당 경유지가 등록되었습니다", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "경유지를 3개 이상 등록할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 }
             });
-
         }
     }
 
