@@ -37,16 +37,6 @@ public class MapService extends APIAdapter {
 
     public interface MapAPI {
 
-        /*
-        @Headers("X-Naver-Client-Id: LKHyJ0ByBr4HipAKgbvW")
-        @Headers("X-Naver-Client-Secret") String clientSecret = "0zrCPZlQDZ",
-        @Query("query") String query,
-        @Query("display") int display=1,
-        @Query("start") int start = 1
-        @GET("https://openapi.naver.com/v1/search/local.json/{}")
-        Call<JsonObject> sendSMS(@Path("phoneNum") String phoneNum);
-*/
-
         @Headers({"X-Naver-Client-Id: LKHyJ0ByBr4HipAKgbvW", "X-Naver-Client-Secret: 0zrCPZlQDZ"})
         @GET("https://openapi.naver.com/v1/search/local.json?")
         Call<JsonObject> getLocalName(@Query("query") String query);
@@ -63,9 +53,9 @@ public class MapService extends APIAdapter {
         @POST("/get-location")
         Call<JsonObject> getLocateForReady(@Body HashMap hashMap);
 
-        @Headers("Content-Type: application/json")
-        @POST("user/join/checkemail")
-        Call<JsonObject> checkEmail(@Body HashMap hashMap);
+        @Headers("Content-Type: application/json; charset=utf-8")
+        @POST("/path")
+        Call<JsonObject> getPath(@Body HashMap hashMap);
 
 
     }

@@ -37,7 +37,6 @@ public class NaverMap {
 			httpPost.addHeader("X-NCP-APIGW-API-KEY", clientSecretKey);
 			httpPost.addHeader("content-type", "application/json;");
 
-			
 			JSONObject msgObj = new JSONObject();
 			/*
 			Request Position Format
@@ -69,10 +68,9 @@ public class NaverMap {
 			//msgObj.put("goal", param.getString("goal"));	// Multiple Request Position Format
 			
 			
-			
-			msgObj.put("goal", param.getString("127.12345,37.12345"));	// Multiple Request Position Format
-			msgObj.put("waypoints", param.getString("127.12345,37.12345:128.12345,38.12345"));	// Multiple Request Position Format
-			msgObj.put("waypoints", param.getString("127.12345,37.12345:127.23456,37.23456|128.12345,38.12345:128.23456,38.23456"));	// Multiple Request Position Format
+			msgObj.put("start", param.getString(param.getString("start")));	
+			msgObj.put("goal", param.getString(param.getString("goal")));	
+			msgObj.put("waypoints", param.getString(param.getString("waypoints")));	
 			
 			httpPost.setEntity(new StringEntity(msgObj.toString(), "UTF-8"));
 			CloseableHttpResponse httpResponse = httpClient.execute(httpPost);

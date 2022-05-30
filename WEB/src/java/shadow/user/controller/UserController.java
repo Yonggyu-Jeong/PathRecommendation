@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 
 import common.collection.ABox;
 import common.collection.ABoxList;
+import common.util.NaverMap;
 import shadow.user.service.UserService;
 
 @RestController
@@ -28,6 +29,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private NaverMap naverMap;
 
 	@RequestMapping(value = "/user/login/{temp}", method = RequestMethod.GET)
 	public ResponseEntity<String> test(@PathVariable("temp") String temp) throws Exception{
@@ -99,6 +103,22 @@ public class UserController {
 
 		try {
 			result = userService.findLocation(jsonBox).aBoxToJsonObject().toString();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(result, HttpStatus.SERVICE_UNAVAILABLE);
+
+		}
+		return new ResponseEntity<String>(result, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/path", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
+	public ResponseEntity<String> getPathList(@RequestBody String json) throws Exception{
+		String result = "";
+		ABox jsonBox = new ABox();
+		jsonBox.setJson(json);
+		try {
+			result = naverMap.sendSensNcloudSMS(jsonBox);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -45,8 +45,9 @@ public class WorkTask {
                 Gson gson = new Gson();
                 JsonObject json = gson.toJsonTree(result).getAsJsonObject();
                 JsonArray items = json.getAsJsonArray("items");
-
-                hashMap.put("title", items.get(0).getAsJsonObject().get("title"));
+                String title = items.get(0).getAsJsonObject().get("title").toString();
+                title = title.replaceAll("<b>", "").replaceAll("</b>", "");
+                hashMap.put("title", title);
                 hashMap.put("category", items.get(0).getAsJsonObject().get("category"));
                 hashMap.put("mapx", items.get(0).getAsJsonObject().get("mapx").getAsDouble());
                 hashMap.put("mapy", items.get(0).getAsJsonObject().get("mapy").getAsDouble());
@@ -255,6 +256,52 @@ public class WorkTask {
                 map.put("check", "fail");
                 e.printStackTrace();
                 return map;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(HashMap<String, Object>  s) {
+            super.onPostExecute(s);
+            if (s.equals("fail")) {
+                Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    public static class GetPathLocateTask extends AsyncTask<HashMap<String, Object>, Void, HashMap<String, Object>> {
+        public Context context;
+        private HashMap resultMap;
+
+        public GetPathLocateTask(Context getContext) {
+            context = getContext;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected HashMap doInBackground(HashMap<String, Object>... obj) {
+            resultMap = new HashMap();
+
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getPath(obj[0]);
+            try {
+                Object result = objectCall.execute().body();
+                Gson gson = new Gson();
+                Log.i("GetPathLocateTask-doInBackground >>>>> ", result.toString());
+                JsonObject json = gson.toJsonTree(result).getAsJsonObject();
+                //JsonArray items = json.getAsJsonArray("items");
+
+                resultMap.put("check", "ok");
+                resultMap.put("result", json.toString());
+                return resultMap;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                resultMap.put("check", "fail");
+                return resultMap;
             }
         }
 

@@ -165,11 +165,13 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     private Marker currentMarker = null;
     private HashMap<String, Marker> markerMap = new HashMap<String, Marker>();
     private HashMap<String, LatLng> markerLatLngMap = new HashMap<String, LatLng>();
+    private HashMap<String, String> markerNameMap = new HashMap<String, String>();
     private HashMap<String, Marker> stopMarkerMap = new HashMap<String, Marker>();
     private HashMap<String, LatLng> stopMarkerLatLngMap = new HashMap<String, LatLng>();
+    private HashMap<String, String> stopMarkerNameMap = new HashMap<String, String>();
     private Marker targetMarker = null;
     private LatLng targetLatLng = null;
-
+    private String targetName = "";
     private int stopMarkerCount = 0;
 
     private static class InfoWindowAdapter extends InfoWindow.ViewAdapter {
@@ -418,7 +420,32 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
         fabAdd.setOnClickListener(view -> {
             try {
-                getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
+                HashMap<String, Object> responseMap = new HashMap();
+                String waypoint = "";
+                //127.12345,37.12345,name=출발지이름
+                //127.12345,37.12345,name=장소이름1:128.12345,38.12345,name=장소이름2
+                responseMap.put("start", markerLatLngMap.get("markerStart").latitude+","+markerLatLngMap.get("markerStart").longitude+",name="+markerNameMap.get("markerStart"));
+                responseMap.put("goal", markerLatLngMap.get("markerGoal").latitude+","+markerLatLngMap.get("markerGoal").longitude+",name="+markerNameMap.get("markerGoal"));
+                for(int i=0; i<stopMarkerCount+1; i++) {
+                    waypoint += stopMarkerLatLngMap.get("marker"+i).latitude+","+stopMarkerLatLngMap.get("marker"+i).longitude+",name="+stopMarkerNameMap.get("marker"+i)+":";
+                }
+                responseMap.put("waypoints", waypoint.substring(0, waypoint.length()-1));
+                Log.i("responseMap", responseMap.toString());
+
+                WorkTask.GetPathLocateTask pathLocateTask = new WorkTask.GetPathLocateTask(requireContext());
+                HashMap<String, Object> resultMap = new HashMap<String, Object>();
+                try {
+                    HashMap<String, Object> executetMap = pathLocateTask.execute(responseMap).get();
+                    if(executetMap.get("check").toString().equals("ok")) {
+                        Toast.makeText(getContext(), executetMap.toString(), Toast.LENGTH_SHORT).show();
+                        Log.i("executetMap", executetMap.toString());
+                    }
+
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             } catch (Exception e) {
                 Toast.makeText(getContext(), "거리가 너무 짧습니다", Toast.LENGTH_SHORT);
             }
@@ -436,7 +463,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                         getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
                     } catch (Exception e) {
                         Toast.makeText(getContext(), "거리가 너무 짧습니다", Toast.LENGTH_SHORT);
-                    }                }
+                    }
+                }
                 fam.close(true);
             }
         });
@@ -450,7 +478,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     if(checkStart && checkGoal) {
                         setCircle(naverMap, start_lng, goal_lng, start_lat, goal_lat);
                         try {
-                            //getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
+                            getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
                         } catch (Exception e) {
                             Toast.makeText(getContext(), "거리가 너무 짧습니다", Toast.LENGTH_SHORT);
                         }
@@ -587,8 +615,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         HashMap hashMap = new HashMap();
         try {
             hashMap = mapTask.execute(name).get();
-
             Marker markerStart = new Marker();
+
             Tm128 tm128 = new Tm128((Double)hashMap.get("mapx"), (Double)hashMap.get("mapy"));
             markerStart.setPosition(tm128.toLatLng());
             markerStart.setOnClickListener(overlay -> {
@@ -598,22 +626,22 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             start_lat = tm128.toLatLng().latitude;
             start_lng = tm128.toLatLng().longitude;
 
-
             if(checkStart == true) {
-                Marker tempMarker = (Marker) markerMap.get("`markerStart`");
+                Marker tempMarker = (Marker) markerMap.get("markerStart");
                 tempMarker.setMap(null);
             }
-            markerStart.setTag("출발지");
+            markerStart.setTag(hashMap.get("title").toString());
             markerStart.setIcon(MarkerIcons.RED);
             markerStart.setCaptionTextSize(14);
             markerStart.setCaptionText(getString(R.string.marker_sub_caption_start));
             markerStart.setCaptionMinZoom(12);
             markerStart.setSubCaptionTextSize(10);
             markerStart.setSubCaptionColor(Color.GRAY);
-            markerStart.setSubCaptionText(getString(R.string.marker_sub_caption_start));
+            //markerStart.setSubCaptionText(getString(R.string.marker_sub_caption_start));
             markerStart.setSubCaptionMinZoom(13);
             markerMap.put("markerStart", markerStart);
             markerLatLngMap.put("markerStart", tm128.toLatLng());
+            markerNameMap.put("markerStart", hashMap.get("title").toString());
             markerStart.setMap(naverMap);
 
             editText.setText("");
@@ -650,17 +678,18 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 tempMarker.setMap(null);
             }
 
-            markerGoal.setTag("도착지");
+            markerGoal.setTag(hashMap.get("title").toString());
             markerGoal.setIcon(MarkerIcons.LIGHTBLUE);
             markerGoal.setCaptionTextSize(14);
             markerGoal.setCaptionText(getString(R.string.marker_sub_caption_goal));
             markerGoal.setCaptionMinZoom(12);
             markerGoal.setSubCaptionTextSize(10);
             markerGoal.setSubCaptionColor(Color.GRAY);
-            markerGoal.setSubCaptionText(getString(R.string.marker_sub_caption_goal));
+            //markerGoal.setSubCaptionText(getString(R.string.marker_sub_caption_goal));
             markerGoal.setSubCaptionMinZoom(13);
             markerMap.put("markerGoal", markerGoal);
             markerLatLngMap.put("markerGoal", tm128.toLatLng());
+            markerNameMap.put("markerGoal", hashMap.get("title").toString());
             markerGoal.setMap(naverMap);
 
             editText.setText("");
@@ -805,6 +834,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             marker.setOnClickListener(overlay -> {
                 targetMarker = marker;
                 targetLatLng = xy;
+                targetName = paramMap.get("name").toString();
                 //Log.i("marker.setOnClickListener-targetMarker", targetMarker.toString());
                 //Log.i("marker.setOnClickListener-targetLatLng", xy.toString());
                 infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
@@ -843,18 +873,20 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     if ((tempLatLng.toLatLng() == targetLatLng) && (stopMarkerCount > 0)) {
                         stopMarkerMap.remove("marker" + j);
                         stopMarkerLatLngMap.remove("marker" + j);
+                        stopMarkerNameMap.remove("marker" + j);
                         stopMarkerCheck = true;
                         if (stopMarkerCount > 0) {
                             stopMarkerCount--;
                         }
-                        Log.i("=========true" + stopMarkerCount, marker.getPosition() + "/" + stopMarkerMap.toString());
+                        //Log.i("=========true" + stopMarkerCount, marker.getPosition() + "/" + stopMarkerMap.toString());
                         Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if ((stopMarkerCheck == false) && (stopMarkerCount < 3)) {
                     stopMarkerMap.put("marker" + stopMarkerCount, targetMarker);
                     stopMarkerLatLngMap.put("marker" + stopMarkerCount, targetLatLng);
-                    Log.i("=========false" + stopMarkerCount, stopMarkerMap.get("marker" + stopMarkerCount) + " / " + stopMarkerLatLngMap.get("marker" + stopMarkerCount));
+                    stopMarkerNameMap.put("marker"+stopMarkerCount, targetName);
+                    //Log.i("=========false" + stopMarkerCount, stopMarkerMap.get("marker" + stopMarkerCount) + " / " + stopMarkerLatLngMap.get("marker" + stopMarkerCount));
                     if (stopMarkerCount < 2) {
                         stopMarkerCount++;
                     }
@@ -885,6 +917,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             marker.setOnClickListener(overlay -> {
                 targetMarker = marker;
                 targetLatLng = xy;
+                targetName = paramMap.get("name").toString();
                 //Log.i("marker.setOnClickListener-targetMarker", targetMarker.toString());
                 //Log.i("marker.setOnClickListener-targetLatLng", xy.toString());
                 infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
@@ -924,12 +957,13 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 Boolean stopMarkerCheck = false;
                 for(int j=0; j<stopMarkerMap.size(); j++) {
                     LatLng tempLatLng = stopMarkerLatLngMap.get("marker"+(j));
-                    Log.i("tempMarker.getPosition()-", tempLatLng.toString()); // 템프키에서 문제 발생
-                    Log.i("targetMarker.getPosition()-", targetLatLng.toString());
-
+                    //Log.i("tempMarker.getPosition()-", tempLatLng.toString()); // 템프키에서 문제 발생
+                    //Log.i("targetMarker.getPosition()-", targetLatLng.toString());
                     if((tempLatLng.toLatLng() == targetLatLng) && (stopMarkerCount > 0)) {
                         stopMarkerMap.remove("marker"+j);
                         stopMarkerLatLngMap.remove("marker"+j);
+                        stopMarkerNameMap.remove("marker"+j);
+
                         stopMarkerCheck = true;
                         if(stopMarkerCount > 0) {
                             stopMarkerCount--;
@@ -941,7 +975,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 if((stopMarkerCheck == false) && (stopMarkerCount < 3)) {
                     stopMarkerMap.put("marker"+stopMarkerCount, targetMarker);
                     stopMarkerLatLngMap.put("marker"+stopMarkerCount, targetLatLng);
-                    Log.i("=========false"+stopMarkerCount, stopMarkerMap.get("marker"+stopMarkerCount) +" / "+ stopMarkerLatLngMap.get("marker"+stopMarkerCount));
+                    stopMarkerNameMap.put("marker"+stopMarkerCount, targetName);
+                    //Log.i("=========false"+stopMarkerCount, stopMarkerMap.get("marker"+stopMarkerCount) +" / "+ stopMarkerLatLngMap.get("marker"+stopMarkerCount));
                     if(stopMarkerCount < 2) {
                         stopMarkerCount++;
                     }
