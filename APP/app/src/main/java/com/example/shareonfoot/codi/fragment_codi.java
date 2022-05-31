@@ -1,23 +1,15 @@
 package com.example.shareonfoot.codi;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,23 +23,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import retrofit2.Call;
-import retrofit2.Retrofit;
-
-import com.example.shareonfoot.HTTP.APIAdapter;
-import com.example.shareonfoot.HTTP.Service.MapService;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
+
 import com.example.shareonfoot.util.Utils;
 
 import com.example.shareonfoot.R;
@@ -57,17 +39,14 @@ import com.example.shareonfoot.util.WorkTask;
 import com.example.shareonfoot.util.infoWindowAdapter;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
-import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.Tm128;
-import com.naver.maps.geometry.Utmk;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
-import com.naver.maps.map.overlay.Align;
 import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
@@ -75,19 +54,7 @@ import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,11 +63,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 import static android.app.Activity.RESULT_OK;
@@ -414,8 +378,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         InfoWindow infoWindow = new InfoWindow();
 
-        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(lat, lng));
-        naverMap.moveCamera(cameraUpdate);
+        AtomicReference<CameraUpdate> cameraUpdate = new AtomicReference<>(CameraUpdate.scrollTo(new LatLng(lat, lng)));
+        naverMap.moveCamera(cameraUpdate.get());
         getTestLocate(naverMap, infoWindow, lat.toString(), lng.toString());
 
         fabAdd.setOnClickListener(view -> {
@@ -426,10 +390,10 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 String waypoint = "";
                 //responseMap.put("start", markerLatLngMap.get("markerStart").latitude+","+markerLatLngMap.get("markerStart").longitude+",name="+markerNameMap.get("markerStart"));
                 //responseMap.put("goal", markerLatLngMap.get("markerGoal").latitude+","+markerLatLngMap.get("markerGoal").longitude+",name="+markerNameMap.get("markerGoal"));
-                start = markerLatLngMap.get("markerStart").latitude+","+markerLatLngMap.get("markerStart").longitude+",name="+markerNameMap.get("markerStart");
-                goal = markerLatLngMap.get("markerGoal").latitude+","+markerLatLngMap.get("markerGoal").longitude+",name="+markerNameMap.get("markerGoal");
+                start = markerLatLngMap.get("markerStart").longitude+","+markerLatLngMap.get("markerStart").latitude+",name="+markerNameMap.get("markerStart");
+                goal = markerLatLngMap.get("markerGoal").longitude+","+markerLatLngMap.get("markerGoal").latitude+",name="+markerNameMap.get("markerGoal");
                 for(int i=0; i<stopMarkerCount+1; i++) {
-                    waypoint += stopMarkerLatLngMap.get("marker"+i).latitude+","+stopMarkerLatLngMap.get("marker"+i).longitude+",name="+stopMarkerNameMap.get("marker"+i)+":";
+                    waypoint += stopMarkerLatLngMap.get("marker"+i).longitude+","+stopMarkerLatLngMap.get("marker"+i).latitude+",name="+stopMarkerNameMap.get("marker"+i)+":";
                 }
                 //responseMap.put("waypoints", waypoint.substring(0, waypoint.length()-1));
 
@@ -443,6 +407,9 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     //HashMap<String, Object> executetMap = pathLocateTask.execute(responseMap).get();
                     HashMap<String, Object> executetMap = pathLocateNaverTask.execute(start, goal, waypoint).get();
                     if(executetMap.get("message").toString().equals("길찾기를 성공하였습니다.")) {
+                        cameraUpdate.set(CameraUpdate.scrollTo(new LatLng(start_lat, start_lng)));
+                        naverMap.moveCamera(cameraUpdate.get());
+
                         Toast.makeText(getContext(), executetMap.toString(), Toast.LENGTH_SHORT).show();
                         Log.i("executetMap", executetMap.toString());
                     }
@@ -699,7 +666,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             markerGoal.setMap(naverMap);
 
             editText.setText("");
-            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(goal_lat, goal_lng));
+            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(start_lat, start_lng));
             naverMap.moveCamera(cameraUpdate);
 
         } catch (ExecutionException e) {
@@ -872,20 +839,21 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             naverMap.setOnMapLongClickListener((point, coord) -> {
                 Boolean stopMarkerCheck = false;
                 for (int j = 0; j < stopMarkerMap.size(); j++) {
-                    LatLng tempLatLng = stopMarkerLatLngMap.get("marker" + (j));
-                    Log.i("tempMarker.getPosition()-", tempLatLng.toString()); // 템프키에서 문제 발생
-                    Log.i("targetMarker.getPosition()-", targetLatLng.toString());
-
-                    if ((tempLatLng.toLatLng() == targetLatLng) && (stopMarkerCount > 0)) {
-                        stopMarkerMap.remove("marker" + j);
-                        stopMarkerLatLngMap.remove("marker" + j);
-                        stopMarkerNameMap.remove("marker" + j);
-                        stopMarkerCheck = true;
-                        if (stopMarkerCount > 0) {
-                            stopMarkerCount--;
+                    try {
+                        LatLng tempLatLng = stopMarkerLatLngMap.get("marker" + (j));
+                        if ((tempLatLng.toLatLng() == targetLatLng) && (stopMarkerCount > 0)) {
+                            stopMarkerMap.remove("marker" + j);
+                            stopMarkerLatLngMap.remove("marker" + j);
+                            stopMarkerNameMap.remove("marker" + j);
+                            stopMarkerCheck = true;
+                            if (stopMarkerCount > 0) {
+                                stopMarkerCount--;
+                            }
+                            //Log.i("=========true" + stopMarkerCount, marker.getPosition() + "/" + stopMarkerMap.toString());
+                            Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                         }
-                        //Log.i("=========true" + stopMarkerCount, marker.getPosition() + "/" + stopMarkerMap.toString());
-                        Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "경유지를 클릭 후 눌러주세요", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if ((stopMarkerCheck == false) && (stopMarkerCount < 3)) {
@@ -897,8 +865,10 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                         stopMarkerCount++;
                     }
                     Toast.makeText(getContext(), "해당 경유지가 등록되었습니다", Toast.LENGTH_SHORT).show();
-                } else {
+                } else if(stopMarkerCount > 3){
                     Toast.makeText(getContext(), "경유지를 3개 이상 등록할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "경유지를 클릭 후 눌러주세요", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -963,19 +933,21 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 Boolean stopMarkerCheck = false;
                 for(int j=0; j<stopMarkerMap.size(); j++) {
                     LatLng tempLatLng = stopMarkerLatLngMap.get("marker"+(j));
-                    //Log.i("tempMarker.getPosition()-", tempLatLng.toString()); // 템프키에서 문제 발생
-                    //Log.i("targetMarker.getPosition()-", targetLatLng.toString());
-                    if((tempLatLng.toLatLng() == targetLatLng) && (stopMarkerCount > 0)) {
-                        stopMarkerMap.remove("marker"+j);
-                        stopMarkerLatLngMap.remove("marker"+j);
-                        stopMarkerNameMap.remove("marker"+j);
+                    try {
+                        if ((tempLatLng.toLatLng() == targetLatLng) && (stopMarkerCount > 0)) {
+                            stopMarkerMap.remove("marker" + j);
+                            stopMarkerLatLngMap.remove("marker" + j);
+                            stopMarkerNameMap.remove("marker" + j);
 
-                        stopMarkerCheck = true;
-                        if(stopMarkerCount > 0) {
-                            stopMarkerCount--;
+                            stopMarkerCheck = true;
+                            if (stopMarkerCount > 0) {
+                                stopMarkerCount--;
+                            }
+                            Log.i("=========true" + stopMarkerCount, marker.getPosition() + "/" + stopMarkerMap.toString());
+                            Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                         }
-                        Log.i("=========true"+stopMarkerCount, marker.getPosition()+"/"+stopMarkerMap.toString());
-                        Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "경유지를 클릭 후 눌러주세요", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if((stopMarkerCheck == false) && (stopMarkerCount < 3)) {
@@ -987,8 +959,10 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                         stopMarkerCount++;
                     }
                     Toast.makeText(getContext(), "해당 경유지가 등록되었습니다", Toast.LENGTH_SHORT).show();
-                } else {
+                } else if(stopMarkerCount > 3){
                     Toast.makeText(getContext(), "경유지를 3개 이상 등록할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "경유지를 클릭 후 눌러주세요", Toast.LENGTH_SHORT).show();
                 }
             });
         }
