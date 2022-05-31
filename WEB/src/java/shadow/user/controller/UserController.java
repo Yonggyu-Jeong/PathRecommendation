@@ -33,12 +33,16 @@ public class UserController {
 	@Autowired
 	private NaverMap naverMap;
 
-	@RequestMapping(value = "/user/login/{temp}", method = RequestMethod.GET)
-	public ResponseEntity<String> test(@PathVariable("temp") String temp) throws Exception{
+	@RequestMapping(value = "/user/test", method = RequestMethod.GET, produces = "application/json; charset=utf8")
+	public ResponseEntity<String> test() throws Exception{
 		ABox resultBox = new ABox();
+
 		try{
-			resultBox = userService.test();
-			
+			ABox jsonBox = new ABox();
+			String json="{\"goal\":\"37.31689239364219,126.84627011464801,name=\\\"안산종합여객자동차터미널\\\"\",\"start\":\"37.3627151749158,126.73882379220626,name=\\\"오이도역 수인분당선\\\"\",\"waypoints\":\"37.350593833,126.7582752593,name=생금집:37.319893151,126.8229310131,name=안산패션일번가:37.3204546056,126.8541872996,name=노적봉 공원\"}";
+			jsonBox.setJson(json);
+			resultBox.setJson(naverMap.sendNaverMap(jsonBox));
+
 		}catch(Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<String>(resultBox.aBoxToJsonObject().toString(), HttpStatus.SERVICE_UNAVAILABLE);
@@ -118,7 +122,7 @@ public class UserController {
 		ABox jsonBox = new ABox();
 		jsonBox.setJson(json);
 		try {
-			result = naverMap.sendSensNcloudSMS(jsonBox);
+			result = naverMap.sendNaverMap(jsonBox);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
