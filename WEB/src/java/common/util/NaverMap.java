@@ -12,7 +12,8 @@ import common.collection.ABox;
 public class NaverMap {
 	// private String ncloudUrl =
 	// "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?";
-	private String ncloudUrl = "https://naveropenapi.apigw-pub.fin-ntruss.com/map-direction/v1/driving";
+	//private String ncloudUrl = "https://naveropenapi.apigw-pub.fin-ntruss.com/map-direction/v1/driving";
+	private String ncloudUrl = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving";
 	private String clientID = "z61zcmt5wp";
 	private String clientSecretKey = "O89vy2cYe04XasNZssFfJspMZqfUzW7qaZ9MwYch";
 

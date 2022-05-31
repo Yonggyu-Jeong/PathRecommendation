@@ -306,7 +306,7 @@ public class WorkTask {
         }
 
         @Override
-        protected void onPostExecute(HashMap<String, Object>  s) {
+        protected void onPostExecute(HashMap<String, Object> s) {
             super.onPostExecute(s);
             if (s.equals("fail")) {
                 Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();
@@ -314,4 +314,48 @@ public class WorkTask {
         }
     }
 
+    public static class GetPathNaverTask extends AsyncTask<String, Void, HashMap<String, Object>> {
+        public Context context;
+        private HashMap resultMap;
+
+        public GetPathNaverTask(Context getContext) {
+            context = getContext;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected HashMap doInBackground(String... obj) {
+            resultMap = new HashMap();
+            Log.i("responseTask", "start="+obj[0]+"///goal="+obj[1]+"///waypoint+"+obj[2]);
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getPathNaver(obj[0], obj[1], obj[2]);
+            try {
+                Object result = objectCall.execute().body();
+                Gson gson = new Gson();
+                Log.i("GetPathLocateTask-doInBackground >>>>> ", result.toString());
+                JsonObject json = gson.toJsonTree(result).getAsJsonObject();
+                //JsonArray items = json.getAsJsonArray("items");
+
+                resultMap.put("check", "ok");
+                resultMap.put("result", json.toString());
+                return resultMap;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                resultMap.put("check", "fail");
+                return resultMap;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(HashMap<String, Object> s) {
+            super.onPostExecute(s);
+            if (s.equals("fail")) {
+                Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }

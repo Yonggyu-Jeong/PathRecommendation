@@ -421,22 +421,28 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         fabAdd.setOnClickListener(view -> {
             try {
                 HashMap<String, Object> responseMap = new HashMap();
+                String start = "";
+                String goal = "";
                 String waypoint = "";
-                //127.12345,37.12345,name=출발지이름
-                //127.12345,37.12345,name=장소이름1:128.12345,38.12345,name=장소이름2
-                responseMap.put("start", markerLatLngMap.get("markerStart").latitude+","+markerLatLngMap.get("markerStart").longitude+",name="+markerNameMap.get("markerStart"));
-                responseMap.put("goal", markerLatLngMap.get("markerGoal").latitude+","+markerLatLngMap.get("markerGoal").longitude+",name="+markerNameMap.get("markerGoal"));
+                //responseMap.put("start", markerLatLngMap.get("markerStart").latitude+","+markerLatLngMap.get("markerStart").longitude+",name="+markerNameMap.get("markerStart"));
+                //responseMap.put("goal", markerLatLngMap.get("markerGoal").latitude+","+markerLatLngMap.get("markerGoal").longitude+",name="+markerNameMap.get("markerGoal"));
+                start = markerLatLngMap.get("markerStart").latitude+","+markerLatLngMap.get("markerStart").longitude+",name="+markerNameMap.get("markerStart");
+                goal = markerLatLngMap.get("markerGoal").latitude+","+markerLatLngMap.get("markerGoal").longitude+",name="+markerNameMap.get("markerGoal");
                 for(int i=0; i<stopMarkerCount+1; i++) {
                     waypoint += stopMarkerLatLngMap.get("marker"+i).latitude+","+stopMarkerLatLngMap.get("marker"+i).longitude+",name="+stopMarkerNameMap.get("marker"+i)+":";
                 }
-                responseMap.put("waypoints", waypoint.substring(0, waypoint.length()-1));
-                Log.i("responseMap", responseMap.toString());
+                //responseMap.put("waypoints", waypoint.substring(0, waypoint.length()-1));
 
-                WorkTask.GetPathLocateTask pathLocateTask = new WorkTask.GetPathLocateTask(requireContext());
+                //Log.i("responseMap", responseMap.toString());
+                Log.i("response", "start="+start+"///goal="+goal+"///waypoint+"+waypoint);
+
+                //WorkTask.GetPathLocateTask pathLocateTask = new WorkTask.GetPathLocateTask(requireContext());
+                WorkTask.GetPathNaverTask pathLocateNaverTask = new WorkTask.GetPathNaverTask(requireContext());
                 HashMap<String, Object> resultMap = new HashMap<String, Object>();
                 try {
-                    HashMap<String, Object> executetMap = pathLocateTask.execute(responseMap).get();
-                    if(executetMap.get("check").toString().equals("ok")) {
+                    //HashMap<String, Object> executetMap = pathLocateTask.execute(responseMap).get();
+                    HashMap<String, Object> executetMap = pathLocateNaverTask.execute(start, goal, waypoint).get();
+                    if(executetMap.get("message").toString().equals("길찾기를 성공하였습니다.")) {
                         Toast.makeText(getContext(), executetMap.toString(), Toast.LENGTH_SHORT).show();
                         Log.i("executetMap", executetMap.toString());
                     }
