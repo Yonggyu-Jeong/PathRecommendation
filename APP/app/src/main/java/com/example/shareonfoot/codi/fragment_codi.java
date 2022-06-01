@@ -848,7 +848,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     if (stopMarkerCount < 2) {
                         stopMarkerCount++;
                     }
-                    Toast.makeText(getContext(), "해당 경유지가 등록되었습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), targetName+"을(를) 경유지로 등록했습니다", Toast.LENGTH_SHORT).show();
                 } else if(stopMarkerCount > 3){
                     Toast.makeText(getContext(), "경유지를 3개 이상 등록할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -942,7 +942,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     if(stopMarkerCount < 2) {
                         stopMarkerCount++;
                     }
-                    Toast.makeText(getContext(), "해당 경유지가 등록되었습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), targetName+"을(를) 경유지로 등록했습니다", Toast.LENGTH_SHORT).show();
                 } else if(stopMarkerCount > 3){
                     Toast.makeText(getContext(), "경유지를 3개 이상 등록할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 } else {

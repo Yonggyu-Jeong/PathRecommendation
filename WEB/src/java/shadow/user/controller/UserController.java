@@ -20,9 +20,6 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private NaverMap naverMap;
-
 	@RequestMapping(value = "/user/test", method = RequestMethod.GET, produces = "application/json; charset=utf8")
 	public ResponseEntity<String> test() throws Exception {
 		String json = "{\"goal\":\"126.73697,37.36263,name=\\\"안산종합여객자동차터미널\\\"\",\"start\":\"126.73882379220626,37.3627151749158,name=\\\"오이도역 수인분당선\\\"\",\"waypoints\":\"126.7582752593,37.350593833,name=생금집:126.8229310131,37.319893151,name=안산패션일번가:126.8541872996,37.3204546056,name=노적봉 공원\"}";
@@ -32,7 +29,8 @@ public class UserController {
 		ABox jsonBox3 = new ABox();
 		ABox resultBox = new ABox();
 		ABoxList<ABox> jsonBoxList = new ABoxList<ABox>();
-
+		NaverMap naverMap = new NaverMap();
+		
 		jsonBox.setJson(json);
 		try {
 			jsonBox2.setJson(naverMap.sendNaverMap(jsonBox));
@@ -165,11 +163,13 @@ public class UserController {
 	@RequestMapping(value = "/path", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
 	public ResponseEntity<String> getPathList(@RequestBody String json) throws Exception {
 		String result = "";
+		String parsingJson = "";
 		ABox jsonBox = new ABox();
 		ABox jsonBox2 = new ABox();
 		ABox jsonBox3 = new ABox();
 		ABox resultBox = new ABox();
 		ABoxList<ABox> jsonBoxList = new ABoxList<ABox>();
+		NaverMap naverMap = new NaverMap();
 
 		jsonBox.setJson(json);
 		try {
@@ -180,7 +180,7 @@ public class UserController {
 						jsonBox2.setJson(jsonBox2.get("route").toString());
 						jsonBoxList.setJson(jsonBox2.get("traoptimal").toString()); // 추가 기능
 						jsonBox3 = jsonBoxList.get(0);
-						String parsingJson = jsonBox3.get("path").toString();
+						parsingJson = jsonBox3.get("path").toString();
 
 						result = parsingJson.substring(1, parsingJson.length() - 1).replaceAll("\\],\\[", "\\]&\\[");
 						resultBox.set("result", result);
@@ -192,7 +192,7 @@ public class UserController {
 							resultBox.set("check_message", "error1");
 							resultBox.set("message", jsonBox2.getString("message"));
 						}
-						
+
 					} else {
 						resultBox.set("check", "fail");
 						resultBox.set("input", jsonBox.toString());
@@ -215,6 +215,14 @@ public class UserController {
 			e.printStackTrace();
 			return new ResponseEntity<String>(resultBox.aBoxToJsonObject().toString(), HttpStatus.SERVICE_UNAVAILABLE);
 
+		} finally {
+			result = null;
+			parsingJson = null;
+			jsonBox = null;
+			jsonBox2 = null;
+			jsonBox3 = null;
+			naverMap = null;
+			jsonBoxList = null;
 		}
 		return new ResponseEntity<String>(resultBox.aBoxToJsonObject().toString(), HttpStatus.OK);
 	}
