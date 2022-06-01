@@ -50,6 +50,7 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
@@ -77,13 +78,10 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     ViewGroup viewGroup;
     Toast toast;
     long backKeyPressedTime;
-
     int MAKE_CODI = 120;
     int WEATHER_CODI = 191;
     int RECO_CODI = 255;
-
     Activity activity;
-
     DrawerLayout drawer;
     public RelativeLayout Cloth_Info;
     public RelativeLayout Cloth_Info_edit;
@@ -110,9 +108,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     public TextView tv_edit_brand;
     public TextView weekday;
     public EditText editText;
-    public static String ErrMag = "ErrMag";
-    public String err;
-    //tring[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private FloatingActionMenu fam;
     private FloatingActionButton fabMake, fabRecommend, fabAdd;
     private Boolean checkStart = false;
@@ -124,8 +119,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     private String user_id = "hello";
     private String user_password = "1";
     private static List<LatLng> COORDS = null;
-    private static final int UPDATE_INTERVAL_MS = 300000;  // 1초
-    private static final int FASTEST_UPDATE_INTERVAL_MS = 300000; // 0.5초
     private Marker currentMarker = null;
     private HashMap<String, Marker> markerMap = new HashMap<String, Marker>();
     private HashMap<String, LatLng> markerLatLngMap = new HashMap<String, LatLng>();
@@ -385,34 +378,25 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         fabAdd.setOnClickListener(view -> {
             try {
                 HashMap<String, Object> responseMap = new HashMap();
-                String start = "";
-                String goal = "";
                 String waypoint = "";
-                //responseMap.put("start", markerLatLngMap.get("markerStart").latitude+","+markerLatLngMap.get("markerStart").longitude+",name="+markerNameMap.get("markerStart"));
-                //responseMap.put("goal", markerLatLngMap.get("markerGoal").latitude+","+markerLatLngMap.get("markerGoal").longitude+",name="+markerNameMap.get("markerGoal"));
-                start = markerLatLngMap.get("markerStart").longitude+","+markerLatLngMap.get("markerStart").latitude+",name="+markerNameMap.get("markerStart");
-                goal = markerLatLngMap.get("markerGoal").longitude+","+markerLatLngMap.get("markerGoal").latitude+",name="+markerNameMap.get("markerGoal");
-                for(int i=0; i<stopMarkerCount+1; i++) {
-                    waypoint += stopMarkerLatLngMap.get("marker"+i).longitude+","+stopMarkerLatLngMap.get("marker"+i).latitude+",name="+stopMarkerNameMap.get("marker"+i)+":";
-                }
-                //responseMap.put("waypoints", waypoint.substring(0, waypoint.length()-1));
-
-                //Log.i("responseMap", responseMap.toString());
-                Log.i("response", "start="+start+"///goal="+goal+"///waypoint+"+waypoint);
-
-                //WorkTask.GetPathLocateTask pathLocateTask = new WorkTask.GetPathLocateTask(requireContext());
-                WorkTask.GetPathNaverTask pathLocateNaverTask = new WorkTask.GetPathNaverTask(requireContext());
-                HashMap<String, Object> resultMap = new HashMap<String, Object>();
-                try {
-                    //HashMap<String, Object> executetMap = pathLocateTask.execute(responseMap).get();
-                    HashMap<String, Object> executetMap = pathLocateNaverTask.execute(start, goal, waypoint).get();
-                    if(executetMap.get("message").toString().equals("길찾기를 성공하였습니다.")) {
-                        cameraUpdate.set(CameraUpdate.scrollTo(new LatLng(start_lat, start_lng)));
-                        naverMap.moveCamera(cameraUpdate.get());
-
-                        Toast.makeText(getContext(), executetMap.toString(), Toast.LENGTH_SHORT).show();
-                        Log.i("executetMap", executetMap.toString());
+                String option = "";
+                responseMap.put("start", markerLatLngMap.get("markerStart").longitude+","+markerLatLngMap.get("markerStart").latitude+",name="+markerNameMap.get("markerStart"));
+                responseMap.put("goal", markerLatLngMap.get("markerGoal").longitude+","+markerLatLngMap.get("markerGoal").latitude+",name="+markerNameMap.get("markerGoal"));
+                if(stopMarkerCount > 0) {
+                    for(int i=0; i<stopMarkerCount+1; i++) {
+                        waypoint += stopMarkerLatLngMap.get("marker"+i).longitude+","+stopMarkerLatLngMap.get("marker"+i).latitude+",name="+stopMarkerNameMap.get("marker"+i)+":";
                     }
+                    responseMap.put("waypoints", waypoint.substring(0, waypoint.length()-1));
+                }
+                //responseMap.put("option", option); // 차후 지원할 기능
+                WorkTask.GetPathLocateTask pathLocateTask = new WorkTask.GetPathLocateTask(requireContext());
+                try {
+                    ArrayList<LatLng> latLngArrayList = pathLocateTask.execute(responseMap).get();
+                    PathOverlay path = new PathOverlay();
+                    path.setCoords(latLngArrayList);
+                    path.setMap(naverMap);
+                    cameraUpdate.set(CameraUpdate.scrollTo(new LatLng(start_lat, start_lng)));
+                    naverMap.moveCamera(cameraUpdate.get());
 
                 } catch (ExecutionException e) {
                     e.printStackTrace();

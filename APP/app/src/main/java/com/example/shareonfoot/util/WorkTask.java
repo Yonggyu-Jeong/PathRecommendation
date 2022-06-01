@@ -12,9 +12,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.naver.maps.geometry.LatLng;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -269,7 +271,7 @@ public class WorkTask {
     }
 
 
-    public static class GetPathLocateTask extends AsyncTask<HashMap<String, Object>, Void, HashMap<String, Object>> {
+    public static class GetPathLocateTask extends AsyncTask<HashMap<String, Object>, Void, ArrayList<LatLng>> {
         public Context context;
         private HashMap resultMap;
 
@@ -283,30 +285,33 @@ public class WorkTask {
         }
 
         @Override
-        protected HashMap doInBackground(HashMap<String, Object>... obj) {
-            resultMap = new HashMap();
-
+        protected ArrayList<LatLng> doInBackground(HashMap<String, Object>... obj) {
+            ArrayList<LatLng> list = new ArrayList<LatLng>();
             Call<JsonObject> objectCall = MapService.getRetrofit(context).getPath(obj[0]);
             try {
-                Object result = objectCall.execute().body();
+                Object jsonObject = objectCall.execute().body();
                 Gson gson = new Gson();
-                Log.i("GetPathLocateTask-doInBackground >>>>> ", result.toString());
-                JsonObject json = gson.toJsonTree(result).getAsJsonObject();
-                //JsonArray items = json.getAsJsonArray("items");
-
-                resultMap.put("check", "ok");
-                resultMap.put("result", json.toString());
-                return resultMap;
+                JsonObject json = gson.toJsonTree(jsonObject).getAsJsonObject();
+                String result = json.get("result").toString();
+                result = result.substring(1, result.length()-1);
+                String[] paths = result.split("&");
+                Log.i("length", paths.length+"");
+                for(int i=0; i< paths.length; i++) {
+                    String tempPath = paths[i];
+                    tempPath = tempPath.substring(1, tempPath.length()-1);
+                    String[] tempPathArray = tempPath.split(",");
+                    list.add(new LatLng(Double.parseDouble(tempPathArray[1]), Double.parseDouble(tempPathArray[0])));
+                }
+                return list;
 
             } catch (IOException e) {
                 e.printStackTrace();
-                resultMap.put("check", "fail");
-                return resultMap;
+                return null;
             }
         }
 
         @Override
-        protected void onPostExecute(HashMap<String, Object> s) {
+        protected void onPostExecute(ArrayList<LatLng> s) {
             super.onPostExecute(s);
             if (s.equals("fail")) {
                 Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();
@@ -337,7 +342,8 @@ public class WorkTask {
                 Gson gson = new Gson();
                 Log.i("GetPathLocateTask-doInBackground >>>>> ", result.toString());
                 JsonObject json = gson.toJsonTree(result).getAsJsonObject();
-                //JsonArray items = json.getAsJsonArray("items");
+                JsonArray paths = json.getAsJsonArray("path");
+                Log.i("paths", paths.toString());
 
                 resultMap.put("check", "ok");
                 resultMap.put("result", json.toString());
@@ -352,6 +358,53 @@ public class WorkTask {
 
         @Override
         protected void onPostExecute(HashMap<String, Object> s) {
+            super.onPostExecute(s);
+            if (s.equals("fail")) {
+                Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public static class GetProcessedPathTask extends AsyncTask<String, Void, ArrayList<LatLng>> {
+        public Context context;
+        private HashMap resultMap;
+
+        public GetProcessedPathTask(Context getContext) {
+            context = getContext;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected ArrayList<LatLng> doInBackground(String... obj) {
+            ArrayList<LatLng> list = new ArrayList<LatLng>();
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getProcessedPath();
+            try {
+                Object jsonObject = objectCall.execute().body();
+                Gson gson = new Gson();
+                JsonObject json = gson.toJsonTree(jsonObject).getAsJsonObject();
+                String result = json.get("result").toString();
+                result = result.substring(1, result.length()-1);
+                String[] paths = result.split("&");
+                for(int i=0; i< paths.length; i++) {
+                    String tempPath = paths[i];
+                    tempPath = tempPath.substring(1, tempPath.length()-1);
+                    String[] tempPathArray = tempPath.split(",");
+                    list.add(new LatLng(Double.parseDouble(tempPathArray[1]), Double.parseDouble(tempPathArray[0])));
+                }
+                return list;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<LatLng> s) {
             super.onPostExecute(s);
             if (s.equals("fail")) {
                 Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();

@@ -61,6 +61,9 @@ public class MapService extends APIAdapter {
         @POST("/path")
         Call<JsonObject> getPath(@Body HashMap hashMap);
 
+        @GET("/user/test2")
+        Call<JsonObject> getProcessedPath();
+
     }
 
 }
