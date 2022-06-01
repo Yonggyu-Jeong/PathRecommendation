@@ -335,15 +335,12 @@ public class WorkTask {
         @Override
         protected HashMap doInBackground(String... obj) {
             resultMap = new HashMap();
-            Log.i("responseTask", "start="+obj[0]+"///goal="+obj[1]+"///waypoint+"+obj[2]);
             Call<JsonObject> objectCall = MapService.getRetrofit(context).getPathNaver(obj[0], obj[1], obj[2]);
             try {
                 Object result = objectCall.execute().body();
                 Gson gson = new Gson();
-                Log.i("GetPathLocateTask-doInBackground >>>>> ", result.toString());
                 JsonObject json = gson.toJsonTree(result).getAsJsonObject();
                 JsonArray paths = json.getAsJsonArray("path");
-                Log.i("paths", paths.toString());
 
                 resultMap.put("check", "ok");
                 resultMap.put("result", json.toString());
