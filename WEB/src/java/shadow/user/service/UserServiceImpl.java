@@ -200,11 +200,12 @@ public class UserServiceImpl extends SuperService implements UserService {
 
 			resultABox.set("find-error", "4");
 			ABoxList<ABox> directList = Direction.getDirection(aBox);
+			resultABox.set("directList", directList);
 
 			resultABox.set("find-error", "5");
 			ABoxList<ABox> resultDataList = new ABoxList<ABox>();
+			
 			resultABox.set("find-error", "6");
-
 			//ABox weatherBox = weather.getWeather();
 			userBox = commonDao.select("mybatis.shadow.user.user_mapper.selectUserListSQL", userBox);
 			resultABox.set("find-error", "7");
@@ -248,6 +249,11 @@ public class UserServiceImpl extends SuperService implements UserService {
 				int recommendDataCnt = 0;
 				double rate = 4.5;
 				do {
+					if(rate < 2) {
+						rate = 4.5;
+						break;
+					}
+				
 					for (int j=0; j<resultDataList.size(); j++) {
 						if(recommendDataCnt == 3) {
 							break;
@@ -310,7 +316,7 @@ public class UserServiceImpl extends SuperService implements UserService {
 		try {
 			ABoxList<ABox> categoryList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectCategoryListSQL", jsonBox);
 			resultABox.set("check", "ok");
-			resultABox.set("list", categoryList);
+			resultABox.set("result", categoryList);
 			
 		} catch (Exception ex) {
 			resultABox.set("check", "fail");
@@ -319,7 +325,6 @@ public class UserServiceImpl extends SuperService implements UserService {
 		return resultABox;
 	}
 	
-
 	@Override
 	public ABox getLocation(ABox aBox) {
 		ABox resultABox = new ABox();

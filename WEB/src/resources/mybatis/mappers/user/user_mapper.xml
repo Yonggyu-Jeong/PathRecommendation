@@ -156,8 +156,27 @@
 		WHERE 
 			category = #{category}
 		ORDER BY 
-			locate_id LIMIT 0,10;
-
+			locate_id 
+		LIMIT 
+			0,10;
+	]]>
+	</select>
+	
+	<select id="selectCategoryUserListSQL"
+		resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		SELECT 
+			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, b.star, b.choose
+		FROM 
+			locate a, member_path b
+		WHERE 
+			b.member_id = #{memberId} AND
+			a.locate_id = b.locate_id
+		ORDER BY 
+			locate_id 
+		LIMIT 
+			0,10;
 	]]>
 	</select>
 	

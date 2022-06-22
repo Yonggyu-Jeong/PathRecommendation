@@ -30,33 +30,34 @@ public class Direction {
 			double lat = lat_goal - lat_start;	
 			
 			if (lat > 0) {
-				startDirectionBox.set("minLat", df.format(lat_start - lat/6));
+				startDirectionBox.set("minLat", df.format(lat_start - lat/4));
 				startDirectionBox.set("maxLat", df.format(lat_start + lat/4));
 				goalDirectionBox.set("minLat",  df.format(lat_goal - lat/4));
-				goalDirectionBox.set("maxLat",  df.format(lat_goal + lat/6));
+				goalDirectionBox.set("maxLat",  df.format(lat_goal + lat/4));
 				centerDirectionBox.set("minLat",  df.format((lat_start + lat/4)+0.0000001));
-				centerDirectionBox.set("maxLat",  df.format((lat_goal - lat/4)-0.0000001));				
+				centerDirectionBox.set("maxLat",  df.format((lat_goal - lat/4)-0.0000001));
+				
 			} else {
 				startDirectionBox.set("minLat", df.format(lat_start + lat/4));
-				startDirectionBox.set("maxLat", df.format(lat_start - lat/6));
-				goalDirectionBox.set("minLat",  df.format(lat_goal + lat/6));
+				startDirectionBox.set("maxLat", df.format(lat_start - lat/4));
+				goalDirectionBox.set("minLat",  df.format(lat_goal + lat/4));
 				goalDirectionBox.set("maxLat",  df.format(lat_goal - lat/4));
 				centerDirectionBox.set("minLat",  df.format((lat_goal - lat/4)+0.0000001));
 				centerDirectionBox.set("maxLat",  df.format((lat_start + lat/4)-0.0000001));
 			} 
 			
 			if (lng > 0) {
-				startDirectionBox.set("minLng", df.format(lng_start - lng/6));
+				startDirectionBox.set("minLng", df.format(lng_start - lng/4));
 				startDirectionBox.set("maxLng", df.format(lng_start + lng/4));
 				goalDirectionBox.set("minLng",  df.format(lng_goal - lng/4));
-				goalDirectionBox.set("maxLng",  df.format(lng_goal + lng/6));
+				goalDirectionBox.set("maxLng",  df.format(lng_goal + lng/4));
 				centerDirectionBox.set("minLng",  df.format((lng_start + lng/4)+0.0000001));
 				centerDirectionBox.set("maxLng",  df.format((lng_goal - lng/4)-0.0000001));
 
 			} else {
 				startDirectionBox.set("minLng", df.format(lng_start + lng/4));
-				startDirectionBox.set("maxLng", df.format(lng_start - lng/6));
-				goalDirectionBox.set("minLng",  df.format(lng_goal + lng/6));
+				startDirectionBox.set("maxLng", df.format(lng_start - lng/4));
+				goalDirectionBox.set("minLng",  df.format(lng_goal + lng/4));
 				goalDirectionBox.set("maxLng",  df.format(lng_goal - lng/4));
 				centerDirectionBox.set("minLng",  df.format((lng_goal - lng/4)+0.0000001));
 				centerDirectionBox.set("maxLng",  df.format((lng_start + lng/4)-0.0000001));

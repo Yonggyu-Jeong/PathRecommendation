@@ -319,9 +319,8 @@ public class WorkTask {
         }
     }
 
-    public static class GetPathNaverTask extends AsyncTask<String, Void, HashMap<String, Object>> {
+    public static class GetPathNaverTask extends AsyncTask<String, Void, ArrayList<LatLng>> {
         public Context context;
-        private HashMap resultMap;
 
         public GetPathNaverTask(Context getContext) {
             context = getContext;
@@ -333,32 +332,34 @@ public class WorkTask {
         }
 
         @Override
-        protected HashMap doInBackground(String... obj) {
-            resultMap = new HashMap();
+        protected ArrayList<LatLng> doInBackground(String... obj) {
+            ArrayList<LatLng> list = new ArrayList<LatLng>();
             Call<JsonObject> objectCall = MapService.getRetrofit(context).getPathNaver(obj[0], obj[1], obj[2]);
             try {
                 Object result = objectCall.execute().body();
                 Gson gson = new Gson();
                 JsonObject json = gson.toJsonTree(result).getAsJsonObject();
-                JsonArray paths = json.getAsJsonArray("path");
-
-                resultMap.put("check", "ok");
-                resultMap.put("result", json.toString());
-                return resultMap;
+                String pathJson = json.toString();
+                int strCount = pathJson.indexOf("\"path\":[")+8;
+                String resultPath = pathJson.substring(strCount, pathJson.indexOf("]]", strCount)+2).replaceAll("\\],\\[", "\\]&\\[");
+                String[] paths = resultPath.split("&");
+                for(int i=0; i< paths.length; i++) {
+                    String tempPath = paths[i];
+                    tempPath = tempPath.substring(1, tempPath.length()-2);
+                    String[] tempPathArray = tempPath.split(",");
+                    list.add(new LatLng(Double.parseDouble(tempPathArray[1]), Double.parseDouble(tempPathArray[0])));
+                }
+                return list;
 
             } catch (IOException e) {
                 e.printStackTrace();
-                resultMap.put("check", "fail");
-                return resultMap;
+                return list;
             }
         }
 
         @Override
-        protected void onPostExecute(HashMap<String, Object> s) {
+        protected void onPostExecute(ArrayList<LatLng> s) {
             super.onPostExecute(s);
-            if (s.equals("fail")) {
-                Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 
@@ -408,4 +409,7 @@ public class WorkTask {
             }
         }
     }
+
+
+
 }

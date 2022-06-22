@@ -79,7 +79,7 @@
                             android:layout_marginTop="1dp"
                             android:background="@color/화이트"
                             android:padding="10dp"
-                            android:text="오늘의 추천 나눔길"
+                            android:text="오늘의 날씨"
                             android:textAlignment="center"
                             android:textColor="#039BE5"
                             android:textSize="24sp" />
@@ -128,6 +128,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="24dp"
                             android:background="@color/lite_blue" />
+
                         <View
                             android:layout_width="2dp"
                             android:layout_height="418dp"
@@ -156,9 +157,7 @@
                             android:layout_marginEnd="15dp"
                             app:uiRotateGestures="true"
                             app:uiTiltGestures="true"
-                            app:uiZoomGestures="true">
-
-                        </com.naver.maps.map.MapView>
+                            app:uiZoomGestures="true"/>
 
                     </RelativeLayout>
 

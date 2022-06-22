@@ -18,11 +18,21 @@ import com.naver.maps.map.overlay.InfoWindow;
 public class infoWindowAdapter extends InfoWindow.DefaultViewAdapter {
     private final Context mContext;
     private final ViewGroup mParent;
+    private String option = "";
     public LinkedTreeMap<String, Object> mParamMap;
 
     public infoWindowAdapter(@NonNull Context context, ViewGroup parent, LinkedTreeMap<String, Object> paramMap)
     {
         super(context);
+        mContext = context;
+        mParent = parent;
+        mParamMap = paramMap;
+    }
+
+    public infoWindowAdapter(@NonNull Context context, ViewGroup parent, LinkedTreeMap<String, Object> paramMap, String option)
+    {
+        super(context);
+        option = option;
         mContext = context;
         mParent = parent;
         mParamMap = paramMap;

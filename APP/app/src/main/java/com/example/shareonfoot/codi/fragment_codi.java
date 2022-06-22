@@ -50,6 +50,7 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
@@ -126,9 +127,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     private HashMap<String, Marker> stopMarkerMap = new HashMap<String, Marker>();
     private HashMap<String, LatLng> stopMarkerLatLngMap = new HashMap<String, LatLng>();
     private HashMap<String, String> stopMarkerNameMap = new HashMap<String, String>();
+    private HashMap<String, PathOverlay> pathOverlayMap = new HashMap<String, PathOverlay>();
+
     private Marker targetMarker = null;
     private LatLng targetLatLng = null;
     private String targetName = "";
+    private int pathOverlayMapCount = 0;
     private int stopMarkerCount = 0;
 
     private static class InfoWindowAdapter extends InfoWindow.ViewAdapter {
@@ -363,9 +367,9 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     public void onMapReady(@NonNull NaverMap naverMap) {
         naverMap.setLocationSource(locationSource);
 
-        Double lat = 37.361927530;
+        Double lat = 37.339496586083;
         //locationSource.getLastLocation().getLatitude();
-        Double lng = 126.738518735;
+        Double lng = 126.73287520461;
                 //locationSource.getLastLocation().getLongitude();
 
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
@@ -392,8 +396,15 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 WorkTask.GetPathLocateTask pathLocateTask = new WorkTask.GetPathLocateTask(requireContext());
                 try {
                     ArrayList<LatLng> latLngArrayList = pathLocateTask.execute(responseMap).get();
+                    for(int i=0; i<pathOverlayMapCount; i++) {
+                        PathOverlay path = pathOverlayMap.get(i);
+                        path.setMap(null);
+                    }
+                    pathOverlayMapCount = 0;
+
                     PathOverlay path = new PathOverlay();
                     path.setCoords(latLngArrayList);
+                    pathOverlayMap.put("path"+pathOverlayMapCount++, path);
                     path.setMap(naverMap);
                     cameraUpdate.set(CameraUpdate.scrollTo(new LatLng(start_lat, start_lng)));
                     naverMap.moveCamera(cameraUpdate.get());
@@ -589,7 +600,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 tempMarker.setMap(null);
             }
             markerStart.setTag(hashMap.get("title").toString());
-            markerStart.setIcon(MarkerIcons.RED);
+            markerStart.setIcon(MarkerIcons.LIGHTBLUE);
             markerStart.setCaptionTextSize(14);
             markerStart.setCaptionText(getString(R.string.marker_sub_caption_start));
             markerStart.setCaptionMinZoom(12);
@@ -680,32 +691,68 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     public void getLocate(NaverMap naverMap, InfoWindow infoWindow, String... obj) {
         WorkTask.GetLocateTask mapTask = new WorkTask.GetLocateTask(requireContext());
         HashMap<String, Object> resultMap = null;
+        Utils utils = new Utils();
         try {
             resultMap = mapTask.execute(obj).get();
             if(resultMap.get("check").toString().equals("ok")) {
-                for(int i=0; i<3; i++) {
+                HashMap map = new HashMap();
+                map.put("start_lng", obj[2]);
+                map.put("start_lat", obj[3]);
+                map.put("goal_lng", obj[4]);
+                map.put("goal_lat", obj[5]);
+
+                for (int i = 0; i < 3; i++) {
                     ArrayList<Object> dataList = null;
                     ArrayList<Object> recommendDataList = null;
                     int dataSize = 0;
-                    dataList = (ArrayList<Object>)resultMap.get("resultDataList"+i);
-                    recommendDataList = (ArrayList<Object>)resultMap.get("resultDataList"+i);
-                    dataSize = Integer.parseInt(String.valueOf(Math.round((Double) resultMap.get("DataSize"+i))));
-
-                    Log.e("recommendDataList"+i, recommendDataList.toString());
+                    dataSize = Integer.parseInt(String.valueOf(Math.round((Double) resultMap.get("DataSize" + i))));
+                    if (dataSize < 1) {
+                        continue;
+                    }
+                    dataList = (ArrayList<Object>) resultMap.get("resultDataList" + i);
                     setCaptionToMap(naverMap, infoWindow, dataList, dataSize);
-                    setCaptionToMap(naverMap, infoWindow, recommendDataList, recommendDataList.size());
+                }
 
+                ArrayList<Object> recommendList = utils.setRecommendPath(map, (ArrayList<Object>) resultMap.get("recommendDataList0"), (ArrayList<Object>) resultMap.get("recommendDataList1"), (ArrayList<Object>) resultMap.get("recommendDataList2"));
+                try {
+                    for (int j = 0; j < recommendList.size(); j++) {
+                        WorkTask.GetPathNaverTask pathNaverTask = new WorkTask.GetPathNaverTask(requireContext());
+                        HashMap<String, Object> recommendPathMap = (HashMap<String, Object>)recommendList.get(j);
+                        Log.e("recommendPathMap", recommendPathMap.toString());
+                        ArrayList<LatLng> latLngArrayList = pathNaverTask.execute(recommendPathMap.get("start").toString(), recommendPathMap.get("goal").toString(), recommendPathMap.get("waypoints").toString()).get();
+                        PathOverlay path = new PathOverlay();
+                        path.setCoords(latLngArrayList);
+                        path.setWidth(20);
+                        if(j == 0) {
+                            path.setColor(Color.YELLOW);
+                        } else if(j == 1) {
+                            path.setColor(Color.GREEN);
+                        } else if(j == 2) {
+                            path.setColor(Color.RED);
+                        } else {
+                            path.setColor(Color.BLUE);
+                        }
+                        pathOverlayMap.put("path"+pathOverlayMapCount++, path);
+                        path.setMap(naverMap);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                for(int i=0; i<3; i++) {
+                    ArrayList<Object> dataList = (ArrayList<Object>) resultMap.get("recommendDataList"+i);
+                    Log.e("Data", dataList.toString());
+                    setCaptionToMap(naverMap, infoWindow, dataList, dataList.size(), i);
                 }
 
             } else {
                 Toast.makeText(getContext(), "추천 목적지의 수가 적습니다. 다른 장소를 입력해주세요.", Toast.LENGTH_SHORT).show();
             }
-
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
     public void setCircle(NaverMap naverMap, Double lng_start, Double lng_goal, Double lat_start, Double lat_goal) {
@@ -811,6 +858,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             marker.setCaptionText(paramMap.get("name").toString());
             marker.setCaptionMinZoom(12);
             marker.setSubCaptionTextSize(10);
+            marker.setWidth(60);
+            marker.setHeight(100);
             marker.setSubCaptionColor(Color.GRAY);
             marker.setSubCaptionText("추천 장소");
             marker.setSubCaptionMinZoom(13);
@@ -882,8 +931,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 targetMarker = marker;
                 targetLatLng = xy;
                 targetName = paramMap.get("name").toString();
-                //Log.i("marker.setOnClickListener-targetMarker", targetMarker.toString());
-                //Log.i("marker.setOnClickListener-targetLatLng", xy.toString());
                 infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
                 View view = adapter.getContentView(infoWindow);
                 CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
@@ -892,17 +939,13 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 infoWindow.open(marker);
                 return true;
             });
-            if(i==0) {
-                marker.setIcon(MarkerIcons.YELLOW);
-            } else if(i==1) {
-                marker.setIcon(MarkerIcons.GREEN);
-            } else {
-                marker.setIcon(MarkerIcons.BLUE);
-            }
+            marker.setIcon(MarkerIcons.GRAY);
             marker.setCaptionTextSize(14);
             marker.setCaptionText(paramMap.get("name").toString());
             marker.setCaptionMinZoom(12);
             marker.setSubCaptionTextSize(10);
+            marker.setWidth(60);
+            marker.setHeight(100);
             marker.setSubCaptionColor(Color.GRAY);
             marker.setSubCaptionText("추천 장소");
             marker.setSubCaptionMinZoom(13);
@@ -955,5 +998,101 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             });
         }
     }
+
+    public void setCaptionToMap(NaverMap naverMap, InfoWindow infoWindow, ArrayList<Object> dataList, int dataSize, int color) {
+        Utils utils = new Utils();
+        for(int i=0; i<dataSize; i++) {
+            LinkedTreeMap<String,Object> paramMap = (LinkedTreeMap<String, Object>) dataList.get(i);
+            //Log.i("paramMap"+i, paramMap.toString());
+
+            Marker marker = new Marker();
+            LatLng xy = new LatLng((Double) paramMap.get("lat"), (Double) paramMap.get("lng"));
+            marker.setPosition(xy);
+
+            String category = utils.getCategory(paramMap.get("category").toString());
+
+            infoWindow.setAnchor(new PointF(0, 1));
+            infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
+            infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
+            ViewGroup rootView = viewGroup.findViewById(R.id.map);
+            marker.setOnClickListener(overlay -> {
+                targetMarker = marker;
+                targetLatLng = xy;
+                targetName = paramMap.get("name").toString();
+                infoWindowAdapter adapter = new infoWindowAdapter(getContext(), rootView, paramMap);
+                View view = adapter.getContentView(infoWindow);
+                CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
+                naverMap.moveCamera(cameraUpdate);
+                infoWindow.setAdapter(adapter);
+                infoWindow.open(marker);
+                return true;
+            });
+            if(color == 0) {
+                marker.setIcon(MarkerIcons.YELLOW);
+            } else if(color == 1) {
+                marker.setIcon(MarkerIcons.GREEN);
+            } else if(color == 2) {
+                marker.setIcon(MarkerIcons.RED);
+            } else {
+                marker.setIcon(MarkerIcons.BLUE);
+            }
+            marker.setCaptionTextSize(14);
+            marker.setCaptionText(paramMap.get("name").toString());
+            marker.setCaptionMinZoom(12);
+            marker.setSubCaptionTextSize(10);
+            marker.setWidth(60);
+            marker.setHeight(100);
+            marker.setSubCaptionColor(Color.GRAY);
+            marker.setSubCaptionText("추천 장소");
+            marker.setSubCaptionMinZoom(13);
+            markerMap.put("marker"+i, marker);
+            markerLatLngMap.put("marker"+i, xy);
+            marker.setMap(naverMap);
+            infoWindow.open(marker);
+
+            naverMap.setOnMapClickListener((point, coord) -> {
+                infoWindow.setAdapter(new InfoWindowAdapter(this));
+                infoWindow.setPosition(coord);
+                infoWindow.open(naverMap);
+            });
+
+            naverMap.setOnMapLongClickListener((point, coord) -> {
+                Boolean stopMarkerCheck = false;
+                for(int j=0; j<stopMarkerMap.size(); j++) {
+                    LatLng tempLatLng = stopMarkerLatLngMap.get("marker"+(j));
+                    try {
+                        if ((tempLatLng.toLatLng() == targetLatLng) && (stopMarkerCount > 0)) {
+                            stopMarkerMap.remove("marker" + j);
+                            stopMarkerLatLngMap.remove("marker" + j);
+                            stopMarkerNameMap.remove("marker" + j);
+
+                            stopMarkerCheck = true;
+                            if (stopMarkerCount > 0) {
+                                stopMarkerCount--;
+                            }
+                            Log.i("=========true" + stopMarkerCount, marker.getPosition() + "/" + stopMarkerMap.toString());
+                            Toast.makeText(getContext(), "해당 경유지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "경유지를 클릭 후 눌러주세요", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if((stopMarkerCheck == false) && (stopMarkerCount < 3)) {
+                    stopMarkerMap.put("marker"+stopMarkerCount, targetMarker);
+                    stopMarkerLatLngMap.put("marker"+stopMarkerCount, targetLatLng);
+                    stopMarkerNameMap.put("marker"+stopMarkerCount, targetName);
+                    if(stopMarkerCount < 2) {
+                        stopMarkerCount++;
+                    }
+                    Toast.makeText(getContext(), targetName+"을(를) 경유지로 등록했습니다", Toast.LENGTH_SHORT).show();
+                } else if(stopMarkerCount > 3){
+                    Toast.makeText(getContext(), "경유지를 3개 이상 등록할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "경유지를 클릭 후 눌러주세요", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
 }
 

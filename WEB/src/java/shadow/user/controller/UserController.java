@@ -189,9 +189,8 @@ public class UserController {
 		String result = "";
 		ABox jsonBox = new ABox();
 		jsonBox.setJson(json);
-
 		try {
-			result = userService.getCategoryList(jsonBox).aBoxToJsonObject().toString();
+			result = userService.getCategoryList(jsonBox).get("result").toString();
 
 		} catch (Exception e) {
 			e.printStackTrace();
