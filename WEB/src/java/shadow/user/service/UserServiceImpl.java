@@ -192,6 +192,7 @@ public class UserServiceImpl extends SuperService implements UserService {
 		// KMeans kmeans = null;
 		//Weather weather = new Weather();
 		try {
+			boolean check = false;
 			ABox userBox = new ABox();
 			userBox.set("id", "hello");
 			userBox.set("password", "1");
@@ -199,7 +200,6 @@ public class UserServiceImpl extends SuperService implements UserService {
 
 			resultABox.set("find-error", "4");
 			ABoxList<ABox> directList = Direction.getDirection(aBox);
-			resultABox.set("directList", directList);
 
 			resultABox.set("find-error", "5");
 			ABoxList<ABox> resultDataList = new ABoxList<ABox>();
@@ -215,7 +215,14 @@ public class UserServiceImpl extends SuperService implements UserService {
 				ABoxList<ABox> locateList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList", directList.get(i));
 				locationABox.set("locateList", locateList);
 				resultABox.set("find-error", "8");
-
+				if(locateList.size() < 1) {
+					check = true;
+					resultABox.set("DataSize" + i, resultDataList.size());
+					resultABox.set("resultDataList" + i, resultDataList);
+					resultABox.set("recommendDataList" + i, recommendDataList);	
+					continue;
+				}
+				
 			/*
 				for (int j = 0; j < locateList.size(); j++) {
 					if ((weatherBox.getString("wf").equals("흐리고 비") || weatherBox.getString("wf").equals("구름많고 비")
