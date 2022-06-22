@@ -26,13 +26,14 @@ public class UserServiceImpl extends SuperService implements UserService {
 
 	@Override
 	public ABox test() throws DataAccessException {
-		ABox result = new ABox();
 		try {
-
+			for(int i=1; i<4138; i++) {
+				commonDao.update("mybatis.shadow.user.user_mapper.updateRate", new ABox().set("idx", i));
+			}	
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		return result;
+		return null;
 	}
 
 	@Override
@@ -116,7 +117,6 @@ public class UserServiceImpl extends SuperService implements UserService {
 		ABox resultABox = new ABox();
 		Random random = new Random();
 		ABox aBox = new ABox();
-
 		try {
 
 			for (int i = 0; i < 1000; i++) {
@@ -192,30 +192,27 @@ public class UserServiceImpl extends SuperService implements UserService {
 		// KMeans kmeans = null;
 		//Weather weather = new Weather();
 		try {
-			ABox userABox = new ABox();
 			ABox userBox = new ABox();
-
 			userBox.set("id", "hello");
 			userBox.set("password", "1");
-			Random random = new Random();
 			ABox locationABox = new ABox();
-			resultABox.set("find-error", "3");
 
-			ABoxList<ABox> locateList = new ABoxList<ABox>();
-			ABoxList<ABox> locateDataList = new ABoxList<ABox>();
 			resultABox.set("find-error", "4");
 			ABoxList<ABox> directList = Direction.getDirection(aBox);
+			resultABox.set("directList", directList);
+
 			resultABox.set("find-error", "5");
 			ABoxList<ABox> resultDataList = new ABoxList<ABox>();
 			resultABox.set("find-error", "6");
 
 			//ABox weatherBox = weather.getWeather();
-			userABox = commonDao.select("mybatis.shadow.user.user_mapper.selectUserListSQL", userBox);
+			userBox = commonDao.select("mybatis.shadow.user.user_mapper.selectUserListSQL", userBox);
 			resultABox.set("find-error", "7");
 
 			for (int i = 0; i < directList.size(); i++) {
-				locateList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList",
-						directList.get(i));
+				//ABoxList<ABox> locateDataList = new ABoxList<ABox>();
+				ABoxList<ABox> recommendDataList = new ABoxList<ABox>();
+				ABoxList<ABox> locateList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList", directList.get(i));
 				locationABox.set("locateList", locateList);
 				resultABox.set("find-error", "8");
 
@@ -234,19 +231,36 @@ public class UserServiceImpl extends SuperService implements UserService {
 					locateIdList.add(new ABox().set("location", locateList.get(j).getInt("locate_id")));
 				}
 				resultABox.set("find-error", "9");
-				locateDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateDataSQL", new ABox().set("locateIdList", locateIdList));
+				//locateDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateDataSQL", new ABox().set("locateIdList", locateIdList));
 
 				//Double[][] dataFrame = mDataFrame.getDoubleFrame(locateDataList, userABox);
 				resultABox.set("find-error", "10");
-
 				resultDataList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectLocateList2", new ABox().set("locateIdList", locateIdList));
-				for (int j = 0; j < resultDataList.size(); j++) {
-					resultDataList.get(j).set("rate", random.nextInt(5) + 1);
-				}
+
 				resultABox.set("find-error", "11");
+				int recommendDataCnt = 0;
+				double rate = 4.5;
+				do {
+					for (int j=0; j<resultDataList.size(); j++) {
+						if(recommendDataCnt == 3) {
+							break;
+						} 
+						ABox resultRateBox = resultDataList.get(j);
+						if(resultRateBox.getDouble("rate") > rate) {
+							recommendDataList.add(resultRateBox);
+							resultDataList.remove(j);
+							recommendDataCnt++;
+						}
+					} 
+					rate--;
+				} while(recommendDataCnt < 2 );
+				resultABox.set("find-error", "12");
+
 				resultABox.set("DataSize" + i, resultDataList.size());
 				resultABox.set("resultDataList" + i, resultDataList);
+				resultABox.set("recommendDataList" + i, recommendDataList);				
 			}
+			
 			resultABox.set("check", "ok");
 			return resultABox;
 

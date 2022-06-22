@@ -73,8 +73,7 @@ public class WorkTask {
     }
 
 
-       public static class GetLocateTask extends AsyncTask<String, Void,  HashMap<String, Object>> {
-
+    public static class GetLocateTask extends AsyncTask<String, Void,  HashMap<String, Object>> {
         public Context context;
 
         public GetLocateTask(Context getContext) {
@@ -301,6 +300,7 @@ public class WorkTask {
                     tempPath = tempPath.substring(1, tempPath.length()-1);
                     String[] tempPathArray = tempPath.split(",");
                     list.add(new LatLng(Double.parseDouble(tempPathArray[1]), Double.parseDouble(tempPathArray[0])));
+
                 }
                 return list;
 

@@ -178,22 +178,31 @@ public class Utils {
 
     public String getTagCategory(String s) {
         if (s.substring(2, 3).equals("0")) {
+            Log.e("===1", s.substring(2, 3));
             switch (s.substring(3)) {
                 case "0":
+                    Log.e("=====1", s.substring(3));
                     return "귀여운";
                 case "1":
+                    Log.e("=====1", s.substring(3));
                     return "사랑스러운";
                 case "2":
+                    Log.e("=====1", s.substring(3));
                     return "달콤한";
                 case "3":
+                    Log.e("=====1", s.substring(3));
                     return "아기자기한";
                 case "4":
+                    Log.e("=====1", s.substring(3));
                     return "예쁜";
                 case "5":
+                    Log.e("=====1", s.substring(3));
                     return "즐거운";
                 case "6":
+                    Log.e("=====1", s.substring(3));
                     return "쾌활한";
                 case "7":
+                    Log.e("=====1", s.substring(3));
                     return "신선한";
             }
         } else if (s.substring(2, 3).equals("1")) {

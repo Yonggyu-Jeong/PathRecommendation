@@ -48,7 +48,7 @@ public class infoWindowAdapter extends InfoWindow.DefaultViewAdapter {
         String type = utils.getCategory(mParamMap.get("category").toString());
         String tags = "";
         for(int j=1; j<5; j++) {
-            tags = "#"+utils.getTagCategory(mParamMap.get("tag"+j).toString()+"\n");
+            tags += "#"+utils.getTagCategory(mParamMap.get("tag"+j).toString())+"\n";
         }
         title.setText(mParamMap.get("name").toString());
         category.setText(type);

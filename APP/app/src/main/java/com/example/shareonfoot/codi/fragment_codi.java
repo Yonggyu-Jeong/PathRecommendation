@@ -373,7 +373,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
         AtomicReference<CameraUpdate> cameraUpdate = new AtomicReference<>(CameraUpdate.scrollTo(new LatLng(lat, lng)));
         naverMap.moveCamera(cameraUpdate.get());
-        getTestLocate(naverMap, infoWindow, lat.toString(), lng.toString());
+        //getTestLocate(naverMap, infoWindow, lat.toString(), lng.toString());
 
         fabAdd.setOnClickListener(view -> {
             try {
@@ -415,9 +415,10 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 getLocateNameforStart(editText.getText().toString(), naverMap, infoWindow);
                 checkStart = true;
                 if(checkStart && checkGoal) {
-                    setCircle(naverMap, start_lng, goal_lng, start_lat, goal_lat);
+                    //setCircle(naverMap, start_lng, goal_lng, start_lat, goal_lat);
                     try {
                         getLocate(naverMap, infoWindow, user_id, user_password, start_lng.toString(), start_lat.toString(), goal_lng.toString(), goal_lat.toString());
+
                     } catch (Exception e) {
                         Toast.makeText(getContext(), "거리가 너무 짧습니다", Toast.LENGTH_SHORT);
                     }
@@ -684,12 +685,16 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             if(resultMap.get("check").toString().equals("ok")) {
                 for(int i=0; i<3; i++) {
                     ArrayList<Object> dataList = null;
+                    ArrayList<Object> recommendDataList = null;
                     int dataSize = 0;
                     dataList = (ArrayList<Object>)resultMap.get("resultDataList"+i);
+                    recommendDataList = (ArrayList<Object>)resultMap.get("resultDataList"+i);
                     dataSize = Integer.parseInt(String.valueOf(Math.round((Double) resultMap.get("DataSize"+i))));
-                    //Log.i("dataList"+i, dataList.toString());
-                    //Log.i("dataSize"+i, String.valueOf(dataSize));
+
+                    Log.e("recommendDataList"+i, recommendDataList.toString());
                     setCaptionToMap(naverMap, infoWindow, dataList, dataSize);
+                    setCaptionToMap(naverMap, infoWindow, recommendDataList, recommendDataList.size());
+
                 }
 
             } else {
@@ -774,7 +779,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
     public void setCaptionToMap(NaverMap naverMap, InfoWindow infoWindow, HashMap<String, Object> map) {
         Utils utils = new Utils();
-
         for(int i = 0; i<Integer.parseInt(String.valueOf(Math.round((Double) map.get("result-size")))); i++) {
             LinkedTreeMap<String,Object> paramMap = (LinkedTreeMap<String, Object>) map.get("result_" + (i + 1));
 
