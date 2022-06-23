@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.shareonfoot.HTTP.Service.CategoryService;
+import com.example.shareonfoot.HTTP.Service.MapService;
 import com.example.shareonfoot.R;
 import com.example.shareonfoot.VO.ClothesVO;
 import com.example.shareonfoot.util.ClothesListAdapter;
@@ -46,6 +47,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
@@ -135,7 +137,6 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
                 } else if (!rv_clothes.canScrollVertically(1)) {
                     String coordinates[] = {(++page).toString()};
                     String json = getLocateList("CS01");
-                    Toast.makeText(getContext(), json, Toast.LENGTH_SHORT).show();
                     clothesListAdapter.notifyDataSetChanged();
                     rv_clothes.setAdapter(clothesListAdapter);
 
@@ -154,9 +155,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
                 page = 0;
                 String coordinates[] = {page.toString()};
                 String json = getLocateList("CS01");
-                Toast.makeText(getContext(), json, Toast.LENGTH_SHORT).show();
                 clothesListAdapter.notifyDataSetChanged();
-                Log.e("test", "데이터 갱신");
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -176,12 +175,10 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
 
 
     public String getLocateList(String name) {
-        WorkTask.GetCategoryListTask mapTask = new WorkTask.GetCategoryListTask(requireContext());
-        HashMap hashMap = new HashMap();
+        GetCategoryListTask mapTask = new GetCategoryListTask(requireContext());
         String result = null;
         try {
             result = mapTask.execute(name).get();
-            Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_SHORT).show();
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -205,10 +202,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
 
         @Override
         protected String doInBackground(String... obj) {
-            HashMap map = new HashMap();
-            map.put("category", obj);
-
-            Call<JsonObject> objectCall = CategoryService.getRetrofit(context).getCategory(map);
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getCategoryList(obj[0]);
             try {
                 Object result = objectCall.execute().body();
                 Gson gson = new Gson();
@@ -235,14 +229,14 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
             ArrayList<Integer> jimage = new ArrayList();
 
             try {
-                JSONArray jarray = new JSONObject(result).getJSONArray("info");
+                JSONArray jarray = new JSONObject(result).getJSONArray("result");
                 if (jarray != null) {
                     final int numberOfItemsInResp = jarray.length();
 
                     for (i = 0; i < numberOfItemsInResp; i++) {
                         JSONObject jsonObject = jarray.getJSONObject(i);
                         String idx = jsonObject.getString("locate_id");
-                        String star = jsonObject.getString("star");
+                        String star = "2.5";
                         String review = jsonObject.getString("info");
                         String adress = jsonObject.getString("area");
                         String name = jsonObject.getString("name");
@@ -277,7 +271,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
                                 image = R.drawable.play;
                                 break;
                             default:
-                                image = 10;
+                                image = R.drawable.desert;
                                 break;
                         }
                         jimage.add(image);

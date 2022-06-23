@@ -396,14 +396,24 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 WorkTask.GetPathLocateTask pathLocateTask = new WorkTask.GetPathLocateTask(requireContext());
                 try {
                     ArrayList<LatLng> latLngArrayList = pathLocateTask.execute(responseMap).get();
+                    /*
                     for(int i=0; i<pathOverlayMapCount; i++) {
                         PathOverlay path = pathOverlayMap.get(i);
                         path.setMap(null);
                     }
                     pathOverlayMapCount = 0;
-
+                     */
+                    Log.e("latLngArrayList", latLngArrayList.toString());
                     PathOverlay path = new PathOverlay();
                     path.setCoords(latLngArrayList);
+                    path.setWidth(30);
+                    path.setColor(Color.BLUE);
+
+                    path.setOnClickListener(overlay -> {
+                        Toast.makeText(requireContext(), "출력됨", Toast.LENGTH_SHORT).show();
+                        return true;
+                    });
+
                     pathOverlayMap.put("path"+pathOverlayMapCount++, path);
                     path.setMap(naverMap);
                     cameraUpdate.set(CameraUpdate.scrollTo(new LatLng(start_lat, start_lng)));
@@ -718,10 +728,13 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     for (int j = 0; j < recommendList.size(); j++) {
                         WorkTask.GetPathNaverTask pathNaverTask = new WorkTask.GetPathNaverTask(requireContext());
                         HashMap<String, Object> recommendPathMap = (HashMap<String, Object>)recommendList.get(j);
-                        Log.e("recommendPathMap", recommendPathMap.toString());
                         ArrayList<LatLng> latLngArrayList = pathNaverTask.execute(recommendPathMap.get("start").toString(), recommendPathMap.get("goal").toString(), recommendPathMap.get("waypoints").toString()).get();
                         PathOverlay path = new PathOverlay();
                         path.setCoords(latLngArrayList);
+                        path.setOnClickListener(overlay -> {
+                            Toast.makeText(requireContext(), "해당 경로로 지정되었습니다.", Toast.LENGTH_SHORT).show();
+                            return true;
+                        });
                         path.setWidth(20);
                         if(j == 0) {
                             path.setColor(Color.YELLOW);
@@ -738,10 +751,22 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 for(int i=0; i<3; i++) {
-                    ArrayList<Object> dataList = (ArrayList<Object>) resultMap.get("recommendDataList"+i);
-                    Log.e("Data", dataList.toString());
-                    setCaptionToMap(naverMap, infoWindow, dataList, dataList.size(), i);
+                    /*
+                    HashMap<String, Object> dataMap = (HashMap<String, Object>)recommendList.get(i);
+                    HashMap<String, Object> latlngMap = new HashMap<String, Object>();
+
+                    String wayPoint = (String)dataMap.get("waypoints");
+                    String[] points = wayPoint.split(":");
+                    for(int j=0; j<points.length; j++) {
+                        String[] point = points[j].split(",");
+                        latlngMap.put("lat", points[1]);
+                        latlngMap.put("lng", points[1]);
+                    }
+                                    setCaptionToMap(naverMap, infoWindow, dataList, dataList.size(), i);
+                */
+                    setCaptionToMap(naverMap, infoWindow, (ArrayList<Object>) resultMap.get("recommendDataList"+i), ((ArrayList<?>) resultMap.get("recommendDataList"+i)).size(), i);
                 }
 
             } else {

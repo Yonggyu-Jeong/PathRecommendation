@@ -201,12 +201,10 @@ public class WorkTask {
             HashMap map = new HashMap();
             map.put("category", obj);
 
-            Call<JsonObject> objectCall = CategoryService.getRetrofit(context).getCategory(map);
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getCategoryList(obj[0]);
             try {
                 Object result = objectCall.execute().body();
-                Gson gson = new Gson();
-                JsonObject json = gson.toJsonTree(result).getAsJsonObject();
-                return json.toString();
+                return result.toString();
 
             } catch (IOException e) {
                 e.printStackTrace();

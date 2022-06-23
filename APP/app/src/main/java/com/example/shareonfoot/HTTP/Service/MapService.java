@@ -64,6 +64,8 @@ public class MapService extends APIAdapter {
         @GET("/user/test2")
         Call<JsonObject> getProcessedPath();
 
+        @GET("/category/list/{category}")
+        Call<JsonObject> getCategoryList(@Path("category") String category);
     }
 
 }

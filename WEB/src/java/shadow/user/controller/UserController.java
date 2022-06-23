@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -184,13 +185,13 @@ public class UserController {
 		return new ResponseEntity<String>(resultBox.aBoxToJsonObject().toString(), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/category/list", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
-	public ResponseEntity<String> getCategoryList(@RequestBody String json) throws Exception {
+	@RequestMapping(value = "/category/list/{category}", produces = "application/json; charset=utf8", method = RequestMethod.GET)
+	public ResponseEntity<String> getCategoryList(@PathVariable("category") String category) throws Exception {
 		String result = "";
 		ABox jsonBox = new ABox();
-		jsonBox.setJson(json);
+		jsonBox.set("category", category);
 		try {
-			result = userService.getCategoryList(jsonBox).get("result").toString();
+			result = userService.getCategoryList(jsonBox).aBoxToJsonObject().toString();
 
 		} catch (Exception e) {
 			e.printStackTrace();
