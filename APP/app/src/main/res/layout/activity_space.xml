@@ -192,56 +192,10 @@
                                     android:layout_height="wrap_content"
                                     android:layout_margin="10dp"
                                     android:maxLines="3"
-                                    android:text="소개글소개글\n소개글소개글\n소개글소개글\n소개글소개글\n소개글소개글\n소개글소개글\n" />
+                                    android:text="\2022 종합설계 S1-4조 테스트용 계정입니다.\n2019314033 정용규 \n2015156046 최병렬 \n2016154015 류종범\n" />
 
-                                <TextView
-                                    android:id="@+id/textView2"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:gravity="bottom|right"
-                                    android:text="잠금화면 활성화" />
                             </LinearLayout>
 
-                            <LinearLayout
-                                android:id="@+id/ll_following_friends"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-
-                                <de.hdodenhof.circleimageview.CircleImageView
-                                    android:id="@+id/iv_following_friendsImg"
-                                    android:layout_width="25dp"
-                                    android:layout_height="25dp"
-                                    android:layout_margin="10dp"
-                                    android:src="@drawable/sample"
-                                    app:civ_border_color="#FF000000"
-                                    app:civ_border_width="0dp" />
-
-                                <TextView
-                                    android:id="@+id/tv_following_friendsName"
-                                    android:layout_width="19dp"
-                                    android:layout_height="10dp"
-                                    android:layout_gravity="center_vertical"
-                                    android:text="에프" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:text="님이 팔로우함" />
-
-                                <View
-                                    android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1" />
-
-                                <Switch
-                                    android:id="@+id/lockscreenOnOff"
-                                    android:layout_width="262dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_gravity="right"
-                                    android:layout_weight="1"
-                                    android:gravity="center|right" />
-                            </LinearLayout>
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content">

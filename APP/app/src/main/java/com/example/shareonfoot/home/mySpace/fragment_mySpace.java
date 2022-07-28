@@ -83,6 +83,7 @@ public class fragment_mySpace extends Fragment implements OnBackPressedListener 
     LinearLayout drawer;
     String myID;
     public String targetID;
+    public String targetName;
 
     Button bt_follow;
     ImageButton imageButton;
@@ -137,6 +138,8 @@ public class fragment_mySpace extends Fragment implements OnBackPressedListener 
         ImageView iv_profileImage = v.findViewById(R.id.iv_profileImage);
         //아이디 설정
         TextView tv_id = v.findViewById(R.id.tv_id);
+
+        targetID = "yonggyu_0509";
         tv_id.setText("@"+targetID);
         //닉네임 설정
         TextView tv_nickname = v.findViewById(R.id.tv_nickname);
@@ -148,11 +151,12 @@ public class fragment_mySpace extends Fragment implements OnBackPressedListener 
         TextView tv_pfContents = v.findViewById(R.id.tv_pfContents);
         imageButton=v.findViewById(R.id.camera);
 
-        LinearLayout ll_following_friends = v.findViewById(R.id.ll_following_friends);
+        //LinearLayout ll_following_friends = v.findViewById(R.id.ll_following_friends);
 
         //팔로우 여부 설정
 
-        tv_nickname.setText(targetID);
+        targetName = "한국공학대학교_19";
+        tv_nickname.setText(targetName);
 
         imageView=v.findViewById(R.id.iv_image);
      //  잠금화면 기능 활성화
@@ -163,8 +167,9 @@ public class fragment_mySpace extends Fragment implements OnBackPressedListener 
 
         //BtnOnClickListener onClickListener = new BtnOnClickListener();
         mContext = getContext();
-        switchOnOff = (Switch) v.findViewById(R.id.lockscreenOnOff);
+        //switchOnOff = (Switch) v.findViewById(R.id.lockscreenOnOff);
 
+        /*
         switchOnOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -178,6 +183,7 @@ public class fragment_mySpace extends Fragment implements OnBackPressedListener 
 
             }
         });
+        */
 
         m_ocrTextView = v.findViewById(R.id.tv_view);
         imageButton = v.findViewById(R.id.camera);
