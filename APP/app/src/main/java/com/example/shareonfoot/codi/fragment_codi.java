@@ -182,7 +182,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        viewGroup = (ViewGroup) inflater.inflate(R.layout.frag_codi3, container, false);
+        viewGroup = (ViewGroup) inflater.inflate(R.layout.frag_codi, container, false);
         toast = Toast.makeText(getContext(), "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT);
         mapView = (MapView) viewGroup.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
