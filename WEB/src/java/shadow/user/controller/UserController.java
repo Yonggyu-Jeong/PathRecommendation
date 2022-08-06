@@ -39,7 +39,7 @@ public class UserController {
 		jsonBox.setJson(json);
 		try {
 			try {
-				// jsonBox2.setJson(naverMap.sendNaverMap(jsonBox));
+				// naverJsonBox.setJson(naverMap.sendNaverMap(jsonBox));
 				naverJsonBox = jsonBox;
 				if (naverJsonBox.getString("message").equals("길찾기를 성공하였습니다.")) {
 					naverJsonBox.setJson(naverJsonBox.get("route").toString());
@@ -160,48 +160,54 @@ public class UserController {
 
 	@RequestMapping(value = "/path", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
 	public ResponseEntity<String> getPathList(@RequestBody String json) throws Exception {
-		String result = "";
-		String parsingJson = "";
 		ABox jsonBox = new ABox();
-		ABox jsonBox2 = new ABox();
-		ABox jsonBox3 = new ABox();
+		ABox naverJsonBox = new ABox();
+		ABox routeBox = new ABox();
+		ABox traBox = new ABox();
 		ABox resultBox = new ABox();
+		ABox summaryBox = new ABox();
 		ABoxList<ABox> jsonBoxList = new ABoxList<ABox>();
+		ABoxList<ABox> routeList = new ABoxList<ABox>();
+		ABoxList<ABox> guideList = new ABoxList<ABox>();
 		NaverMap naverMap = new NaverMap();
 
 		jsonBox.setJson(json);
 		try {
 			if (jsonBox.containsKey("start") && jsonBox.containsKey("goal")) {
 				try {
-					jsonBox2.setJson(naverMap.sendNaverMap(jsonBox));
-					if (jsonBox2.getString("message").equals("길찾기를 성공하였습니다.")) {
-						jsonBox2.setJson(jsonBox2.get("route").toString());
-						jsonBoxList.setJson(jsonBox2.get("traoptimal").toString()); // 추가 기능
-						jsonBox3 = jsonBoxList.get(0);
-						parsingJson = jsonBox3.get("path").toString();
-
-						result = parsingJson.substring(1, parsingJson.length() - 1).replaceAll("\\],\\[", "\\]&\\[");
-						resultBox.set("result", result);
-						if (result.length() > 0) {
+					naverJsonBox.setJson(naverMap.sendNaverMap(jsonBox));
+					if (naverJsonBox.getString("message").equals("길찾기를 성공하였습니다.")) {
+						routeBox.setJson(naverJsonBox.get("route").toString());
+						routeList.setJson(naverJsonBox.get("traoptimal").toString()); //TODO 
+						traBox = routeList.get(0);
+						summaryBox.setJson(traBox.get("summary").toString());
+						guideList.setJson(traBox.get("guide").toString());
+						resultBox.set("guidList", guideList);
+						resultBox.set("cost", summaryBox.getInt("fuelPrice")+summaryBox.getInt("fuelPrice"));
+						resultBox.set("duration", summaryBox.getInt("duration"));
+						resultBox.set("distance", summaryBox.getInt("distance"));
+						resultBox.set("result", traBox.get("path").toString().substring(1, traBox.get("path").toString().length() - 1).replaceAll("\\],\\[", "\\]&\\["));
+		
+						if (traBox.get("path").toString().length() > 0) {
 							resultBox.set("check", "ok");
 						} else {
 							resultBox.set("check", "fail");
 							resultBox.set("input", jsonBox.toString());
 							resultBox.set("check_message", "error1");
-							resultBox.set("message", jsonBox2.getString("message"));
+							resultBox.set("message", naverJsonBox.getString("message"));
 						}
 
 					} else {
 						resultBox.set("check", "fail");
 						resultBox.set("input", jsonBox.toString());
 						resultBox.set("check_message", "error2");
-						resultBox.set("message", jsonBox2.getString("message"));
+						resultBox.set("message", naverJsonBox.getString("message"));
 					}
 				} catch (Exception e) {
 					resultBox.set("check", "fail");
 					resultBox.set("input", jsonBox.toString());
 					resultBox.set("check_message", "error3");
-					resultBox.set("message", jsonBox2.getString("message"));
+					resultBox.set("message", naverJsonBox.getString("message"));
 					e.printStackTrace();
 				}
 			} else {
@@ -213,14 +219,17 @@ public class UserController {
 			e.printStackTrace();
 			return new ResponseEntity<String>(resultBox.aBoxToJsonObject().toString(), HttpStatus.SERVICE_UNAVAILABLE);
 
-		} finally {
-			result = null;
-			parsingJson = null;
+		} finally {			
 			jsonBox = null;
-			jsonBox2 = null;
-			jsonBox3 = null;
+			naverJsonBox = null;
+			routeBox = null;
+			traBox = null;
+			summaryBox = null;
+			resultBox = null;
 			naverMap = null;
 			jsonBoxList = null;
+			routeList = null;
+			guideList = null;
 		}
 		return new ResponseEntity<String>(resultBox.aBoxToJsonObject().toString(), HttpStatus.OK);
 	}
