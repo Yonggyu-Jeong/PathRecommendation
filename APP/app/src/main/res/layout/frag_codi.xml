@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,23 +10,177 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
+    <RelativeLayout
+        android:id="@+id/view123"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.ssomai.android.scalablelayout.ScalableLayout
+            android:id="@+id/header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            app:scale_base_height="110"
+            app:scale_base_width="1080">
+
+            <include
+                layout="@layout/header_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.ssomai.android.scalablelayout.ScalableLayout>
+
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/home_coordinator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/header"
+            android:background="@android:color/white">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:contentScrim="@android:color/white"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+            </com.google.android.material.appbar.AppBarLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="651dp"
+                android:background="@color/화이트"
+
+                >
+
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="381dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="52dp"
+                    android:ems="10"
+                    android:hint="목적지를 입력하세요"
+                    android:inputType="textPersonName"
+                    android:minHeight="60dp" />
+
+                <TextView
+                    android:id="@+id/tabLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/reco_t"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="1dp"
+                    android:padding="10dp"
+                    android:text="월요일"
+                    android:textAlignment="center"
+                    android:textColor="@color/스카이블루"
+                    android:textSize="20sp"
+
+                    />
+
+                <TextView
+                    android:id="@+id/day_theme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/reco_t"
+                    android:layout_marginLeft="100dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/화이트"
+                    android:padding="10dp"
+                    android:text="오늘은 카페랑 디저트!!"
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
+
+                <View
+                    android:layout_width="324dp"
+                    android:layout_height="2dp"
+                    android:layout_below="@+id/map"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/lite_blue" />
+
+                <View
+                    android:id="@+id/view1231"
+                    android:layout_width="420dp"
+                    android:layout_height="2dp"
+                    android:layout_below="@+id/day_theme"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/lite_blue" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="418dp"
+                    android:layout_below="@+id/day_theme"
+                    android:layout_marginTop="22dp"
+                    android:layout_toLeftOf="@+id/map"
+                    android:background="@color/lite_blue" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="418dp"
+                    android:layout_below="@+id/day_theme"
+                    android:layout_marginTop="34dp"
+                    android:layout_toRightOf="@+id/map"
+                    android:background="@color/lite_blue" />
+
+                <com.naver.maps.map.MapView
+                    android:id="@+id/map"
+                    android:name="naverMap"
+                    android:layout_width="396dp"
+                    android:layout_height="517dp"
+                    android:layout_below="@+id/view1231"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="65dp"
+                    android:layout_marginEnd="4dp"
+                    app:uiRotateGestures="true"
+                    app:uiTiltGestures="true"
+                    app:uiZoomGestures="true">
+
+                </com.naver.maps.map.MapView>
+
+            </RelativeLayout>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <RelativeLayout
+            android:id="@+id/cloth_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+
+            <include layout="@layout/cardview_cloth_info" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/cloth_info_edit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+
+            <include layout="@layout/cardview_cloth_info_edit" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/dl_main_drawer_root"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:fitsSystemWindows="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:fitsSystemWindows="true"
-        tools:openDrawer="start"
-        >
-
-        <!-- main content -->
-        <include
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            layout="@layout/activity_main_content" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:openDrawer="start">
 
         <!-- navigation drawer-->
         <com.google.android.material.navigation.NavigationView
@@ -40,209 +194,35 @@
 
     </androidx.drawerlayout.widget.DrawerLayout>
 
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/view123">
-
-            <com.ssomai.android.scalablelayout.ScalableLayout
-                android:id="@+id/header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                app:scale_base_height="110"
-                app:scale_base_width="1080">
-                <include
-                    layout="@layout/header_main"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </com.ssomai.android.scalablelayout.ScalableLayout>
-
-
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
-                android:id="@+id/home_coordinator"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/header"
-                android:background="@android:color/white"
-                >
-
-                <com.google.android.material.appbar.AppBarLayout
-                    android:id="@+id/appbarLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/white">
-
-                    <com.google.android.material.appbar.CollapsingToolbarLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:contentScrim="@android:color/white"
-                        app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-
-                    </com.google.android.material.appbar.CollapsingToolbarLayout>
-                </com.google.android.material.appbar.AppBarLayout>
-
-
-                <RelativeLayout
-                    android:id="@+id/relativeLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="651dp"
-                    android:background="@color/화이트"
-
-                    >
-
-                    <EditText
-                        android:id="@+id/editText"
-                        android:layout_width="381dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginTop="52dp"
-                        android:ems="10"
-                        android:hint="목적지를 입력하세요"
-                        android:inputType="textPersonName"
-                        android:minHeight="60dp" />
-
-                    <TextView
-                        android:id="@+id/tabLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/reco_t"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="1dp"
-                        android:padding="10dp"
-                        android:text="월요일"
-                        android:textAlignment="center"
-                        android:textColor="@color/스카이블루"
-                        android:textSize="20sp"
-
-                        />
-
-                    <TextView
-                        android:id="@+id/day_theme"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/reco_t"
-                        android:layout_marginLeft="100dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@color/화이트"
-                        android:padding="10dp"
-                        android:text="오늘은 카페랑 디저트!!"
-                        android:textAlignment="center"
-                        android:textSize="20sp" />
-
-                    <View
-                        android:layout_width="324dp"
-                        android:layout_height="2dp"
-                        android:layout_below="@+id/map"
-                        android:layout_centerHorizontal="true"
-                        android:background="@color/lite_blue" />
-
-                    <View
-                        android:id="@+id/view1231"
-                        android:layout_width="420dp"
-                        android:layout_height="2dp"
-                        android:layout_below="@+id/day_theme"
-                        android:layout_marginTop="0dp"
-                        android:background="@color/lite_blue" />
-
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="418dp"
-                        android:layout_below="@+id/day_theme"
-                        android:layout_marginTop="22dp"
-                        android:layout_toLeftOf="@+id/map"
-                        android:background="@color/lite_blue" />
-
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="418dp"
-                        android:layout_below="@+id/day_theme"
-                        android:layout_marginTop="34dp"
-                        android:layout_toRightOf="@+id/map"
-                        android:background="@color/lite_blue" />
-
-                    <com.naver.maps.map.MapView
-                        android:id="@+id/map"
-                        android:name="naverMap"
-                        android:layout_width="396dp"
-                        android:layout_height="517dp"
-                        android:layout_below="@+id/view1231"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="65dp"
-                        android:layout_marginEnd="4dp"
-                        app:uiRotateGestures="true"
-                        app:uiTiltGestures="true"
-                        app:uiZoomGestures="true">
-
-                    </com.naver.maps.map.MapView>
-
-                </RelativeLayout>
-
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-            <RelativeLayout
-                android:id="@+id/cloth_info"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible">
-
-                <include layout="@layout/cardview_cloth_info" />
-            </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/cloth_info_edit"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible">
-
-                <include layout="@layout/cardview_cloth_info_edit" />
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-
-
-<!--    <com.google.android.material.navigation.NavigationView-->
-<!--        android:id="@+id/final_nav_view"-->
-<!--        android:layout_width="252dp"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_gravity="start"-->
-<!--        android:fitsSystemWindows="true"-->
-<!--        app:headerLayout="@layout/header"-->
-<!--        app:menu="@menu/drawerlayout"/>-->
-
     <com.github.clans.fab.FloatingActionMenu
 
-        xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:id="@+id/fab_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:layout_alignParentBottom="true"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        fab:menu_backgroundColor="#ffffff"
-        fab:menu_icon="@drawable/make_codi"
+        android:paddingBottom="@dimen/activity_horizontal_margin"
+        app:fab_shadowColor="#444"
+        app:fab_showShadow="true"
 
 
-        fab:menu_colorNormal="#FFB805"
-        fab:menu_colorPressed="#F2AB00"
-        fab:menu_colorRipple="#99FFFFFF"
-        fab:fab_shadowColor="#444"
-        fab:fab_showShadow="true"
+        app:menu_backgroundColor="#ffffff"
+        app:menu_colorNormal="#FFB805"
+        app:menu_colorPressed="#F2AB00"
+        app:menu_colorRipple="#99FFFFFF"
+        app:menu_icon="@drawable/make_codi"
 
-        fab:menu_labels_colorNormal="#333333"
-        fab:menu_labels_colorPressed="#444444"
-        fab:menu_labels_colorRipple="#66FFFFFF"
-        fab:menu_labels_showShadow="true"
-        fab:menu_labels_maxLines="-1"
-        fab:menu_labels_position="left"
-        fab:menu_openDirection="up"
+        app:menu_labels_colorNormal="#333333"
+        app:menu_labels_colorPressed="#444444"
+        app:menu_labels_colorRipple="#66FFFFFF"
+        app:menu_labels_ellipsize="end"
+        app:menu_labels_maxLines="-1"
+        app:menu_labels_position="left"
+        app:menu_labels_showShadow="true"
 
-        fab:menu_labels_ellipsize="end"
-        fab:menu_labels_singleLine="true"
-        >
+        app:menu_labels_singleLine="true"
+        app:menu_openDirection="up">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_add_photo"
@@ -252,8 +232,8 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="검색"
-            fab:fab_size="normal" />
+            app:fab_label="검색"
+            app:fab_size="normal" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_make_codi"
@@ -263,8 +243,9 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="출발지"
-            fab:fab_size="normal" />
+            app:fab_label="출발지"
+            app:fab_size="normal" />
+
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_recommend_codi"
             android:layout_width="wrap_content"
@@ -273,11 +254,9 @@
             app:fab_colorNormal="#000000"
             app:fab_colorPressed="#F2AB00"
             app:fab_colorRipple="#99FFFFFF"
-            fab:fab_label="목적지"
-            fab:fab_size="normal"
-            />
+            app:fab_label="목적지"
+            app:fab_size="normal" />
 
     </com.github.clans.fab.FloatingActionMenu>
 
-
-</androidx.drawerlayout.widget.DrawerLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -50,7 +50,6 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
-import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
@@ -183,7 +182,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        viewGroup = (ViewGroup) inflater.inflate(R.layout.frag_codi, container, false);
+        viewGroup = (ViewGroup) inflater.inflate(R.layout.frag_codi3, container, false);
         toast = Toast.makeText(getContext(), "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT);
         mapView = (MapView) viewGroup.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
