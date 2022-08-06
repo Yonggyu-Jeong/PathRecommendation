@@ -338,6 +338,7 @@ public class WorkTask {
                 Gson gson = new Gson();
                 JsonObject json = gson.toJsonTree(result).getAsJsonObject();
                 String pathJson = json.toString();
+                Log.e("pathJson", pathJson);
                 int strCount = pathJson.indexOf("\"path\":[")+8;
                 String resultPath = pathJson.substring(strCount, pathJson.indexOf("]]", strCount)+2).replaceAll("\\],\\[", "\\]&\\[");
                 String[] paths = resultPath.split("&");

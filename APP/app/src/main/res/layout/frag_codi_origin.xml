@@ -183,11 +183,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:openDrawer="start">
 
-        <!-- main content -->
-        <include
-            layout="@layout/activity_main_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
         <!-- navigation drawer-->
         <com.google.android.material.navigation.NavigationView
