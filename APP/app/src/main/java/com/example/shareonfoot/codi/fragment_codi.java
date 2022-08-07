@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.CycleInterpolator;
@@ -19,6 +20,9 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,6 +87,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     int RECO_CODI = 255;
     Activity activity;
     DrawerLayout drawer;
+    LinearLayout header;
+    Menu menu;
+
+    public RadioGroup radioGroup;
+    public TextView textView_time_var;
+    public TextView textView_cost_var;
     public RelativeLayout Cloth_Info;
     public RelativeLayout Cloth_Info_edit;
     public ImageView iv_image;
@@ -108,6 +118,10 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     public TextView tv_edit_brand;
     public TextView weekday;
     public EditText editText;
+    public RadioButton radioButtonSpeed;
+    public RadioButton radioButtonComfort;
+    public RadioButton radioButtonFree;
+
     private FloatingActionMenu fam;
     private FloatingActionButton fabMake, fabRecommend, fabAdd;
     private Boolean checkStart = false;
@@ -127,7 +141,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     private HashMap<String, LatLng> stopMarkerLatLngMap = new HashMap<String, LatLng>();
     private HashMap<String, String> stopMarkerNameMap = new HashMap<String, String>();
     private HashMap<String, PathOverlay> pathOverlayMap = new HashMap<String, PathOverlay>();
-
     private Marker targetMarker = null;
     private LatLng targetLatLng = null;
     private String targetName = "";
@@ -210,6 +223,11 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         super.onStart();
 
         drawer = getView().findViewById(R.id.final_drawer_layout);
+
+        menu = (Menu) getView().findViewById(R.id.menu_codi);
+        header = (LinearLayout) getView().findViewById(R.id.nav_header_linearLayout);
+
+        radioGroup = (RadioGroup) getView().findViewById(R.id.radioGroup_header);
 
         Cloth_Info = (RelativeLayout) getView().findViewById(R.id.cloth_info);
         Cloth_Info.setVisibility(View.GONE);
@@ -396,6 +414,22 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 try {
                     HashMap<String, Object> resultMap = pathLocateTask.execute(responseMap).get();
                     ArrayList<LatLng> latLngArrayList = (ArrayList<LatLng>) resultMap.get("list");
+
+                    int duration = (int)resultMap.get("duration")*1000;
+                    int hour = duration / 3600;
+                    int min = (duration % 3600) / 60;
+
+                    int kmt = (int)resultMap.get("distance")/1000;
+                    int mt = ((int)resultMap.get("distance")%1000);
+
+                    Log.i("text_time", hour+"시간 "+min+"분  ("+kmt+"."+mt+"km)");
+                    Log.i("text_cost", resultMap.get("cost")+"원");
+
+
+                    textView_time_var.setText(hour+"시간 "+min+"분  ("+kmt+"."+mt+"km)");
+                    textView_cost_var.setText(resultMap.get("cost")+"원");
+
+
                     /*
                     for(int i=0; i<pathOverlayMapCount; i++) {
                         PathOverlay path = pathOverlayMap.get(i);
@@ -403,7 +437,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     }
                     pathOverlayMapCount = 0;
                      */
-                    Log.e("latLngArrayList", latLngArrayList.toString());
                     PathOverlay path = new PathOverlay();
                     path.setCoords(latLngArrayList);
                     path.setWidth(30);

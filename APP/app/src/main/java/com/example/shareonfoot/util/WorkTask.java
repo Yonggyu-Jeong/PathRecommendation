@@ -302,16 +302,12 @@ public class WorkTask {
                     pathList.add(new LatLng(Double.parseDouble(tempPathArray[1]), Double.parseDouble(tempPathArray[0])));
                 }
                 JsonArray jsonArray = json.getAsJsonArray("guidList");
-                //TODO guideList로 변경 
-                Log.e("WorkTask-jsonArray", jsonArray.toString());
-
+                //TODO guideList로 변경
                 ArrayList<HashMap<String, Object>> guideList = new ArrayList<HashMap<String, Object>>();
                 if (jsonArray != null) {
                     for (int i=0; i < jsonArray.size(); i++) {
                         HashMap<String, Object> guideMap = new HashMap<String, Object>();
                         JsonObject guideJson = (JsonObject) jsonArray.get(i);
-                        Log.e("WorkTask-guideJson", guideJson.toString());
-
                         guideMap.put("duration", guideJson.get("duration"));
                         guideMap.put("instructions", guideJson.get("instructions"));
                         guideMap.put("distance", guideJson.get("distance"));
@@ -324,9 +320,6 @@ public class WorkTask {
                 resultMap.put("cost", json.get("cost").toString());
                 resultMap.put("duration", json.get("duration").toString());
                 resultMap.put("distance", json.get("distance").toString());
-
-                Log.e("WorkTask-resultMap", resultMap.toString());
-
                 return resultMap;
 
             } catch (IOException e) {

@@ -13,29 +13,31 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <LinearLayout
+        android:id="@+id/nav_header_linearLayout"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:orientation="horizontal">
 
         <RadioGroup
+            android:id="@+id/radioGroup_header"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/radioButton"
+                android:id="@+id/radioButtonSpeed"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:text="빠른길" />
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/radioButtonComfort"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:text="편한길" />
 
             <RadioButton
-                android:id="@+id/radioButton4"
+                android:id="@+id/radioButtonFree"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
