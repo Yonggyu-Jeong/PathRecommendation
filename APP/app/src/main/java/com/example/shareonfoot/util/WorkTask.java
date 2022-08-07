@@ -10,11 +10,13 @@ import com.example.shareonfoot.HTTP.Service.CategoryService;
 import com.example.shareonfoot.HTTP.Service.MapService;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.naver.maps.geometry.LatLng;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -268,7 +270,7 @@ public class WorkTask {
     }
 
 
-    public static class GetPathLocateTask extends AsyncTask<HashMap<String, Object>, Void, ArrayList<LatLng>> {
+    public static class GetPathLocateTask extends AsyncTask<HashMap<String, Object>, Void, HashMap<String, Object>> {
         public Context context;
         private HashMap resultMap;
 
@@ -282,8 +284,8 @@ public class WorkTask {
         }
 
         @Override
-        protected ArrayList<LatLng> doInBackground(HashMap<String, Object>... obj) {
-            ArrayList<LatLng> list = new ArrayList<LatLng>();
+        protected HashMap<String, Object> doInBackground(HashMap<String, Object>... obj) {
+            HashMap<String, Object> resultMap = new HashMap<String, Object>();
             Call<JsonObject> objectCall = MapService.getRetrofit(context).getPath(obj[0]);
             try {
                 Object jsonObject = objectCall.execute().body();
@@ -292,15 +294,40 @@ public class WorkTask {
                 String result = json.get("result").toString();
                 result = result.substring(1, result.length()-1);
                 String[] paths = result.split("&");
-                Log.i("length", paths.length+"");
+                ArrayList<LatLng> pathList = new ArrayList<LatLng>();
                 for(int i=0; i< paths.length; i++) {
                     String tempPath = paths[i];
                     tempPath = tempPath.substring(1, tempPath.length()-1);
                     String[] tempPathArray = tempPath.split(",");
-                    list.add(new LatLng(Double.parseDouble(tempPathArray[1]), Double.parseDouble(tempPathArray[0])));
-
+                    pathList.add(new LatLng(Double.parseDouble(tempPathArray[1]), Double.parseDouble(tempPathArray[0])));
                 }
-                return list;
+                JsonArray jsonArray = json.getAsJsonArray("guidList");
+                //TODO guideList로 변경 
+                Log.e("WorkTask-jsonArray", jsonArray.toString());
+
+                ArrayList<HashMap<String, Object>> guideList = new ArrayList<HashMap<String, Object>>();
+                if (jsonArray != null) {
+                    for (int i=0; i < jsonArray.size(); i++) {
+                        HashMap<String, Object> guideMap = new HashMap<String, Object>();
+                        JsonObject guideJson = (JsonObject) jsonArray.get(i);
+                        Log.e("WorkTask-guideJson", guideJson.toString());
+
+                        guideMap.put("duration", guideJson.get("duration"));
+                        guideMap.put("instructions", guideJson.get("instructions"));
+                        guideMap.put("distance", guideJson.get("distance"));
+                        guideMap.put("type", guideJson.get("type"));
+                        guideList.add(guideMap);
+                    }
+                }
+                resultMap.put("list", pathList);
+                resultMap.put("guideList", guideList);
+                resultMap.put("cost", json.get("cost").toString());
+                resultMap.put("duration", json.get("duration").toString());
+                resultMap.put("distance", json.get("distance").toString());
+
+                Log.e("WorkTask-resultMap", resultMap.toString());
+
+                return resultMap;
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -309,7 +336,7 @@ public class WorkTask {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<LatLng> s) {
+        protected void onPostExecute(HashMap<String, Object> s) {
             super.onPostExecute(s);
             if (s.equals("fail")) {
                 Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();

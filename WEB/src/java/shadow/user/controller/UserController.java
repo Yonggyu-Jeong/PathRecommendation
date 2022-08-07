@@ -47,11 +47,12 @@ public class UserController {
 					routeBox = routeList.get(0);
 					summaryBox.setJson(routeBox.get("summary").toString());
 					guideList.setJson(routeBox.get("guide").toString());
-					resultBox.set("guidList", guideList);
-					resultBox.set("cost", summaryBox.getInt("fuelPrice")+summaryBox.getInt("fuelPrice"));
-					resultBox.set("duration", summaryBox.getInt("duration"));
-					resultBox.set("distance", summaryBox.getInt("distance"));
-					resultBox.set("path", routeBox.get("path").toString().substring(1, routeBox.get("path").toString().length() - 1).replaceAll("\\],\\[", "\\]&\\["));
+					resultBox.set("naverJson", naverJsonBox);
+					//resultBox.set("guidList", guideList);
+					//resultBox.set("cost", summaryBox.getInt("fuelPrice")+summaryBox.getInt("fuelPrice"));
+					//resultBox.set("duration", summaryBox.getInt("duration"));
+					//resultBox.set("distance", summaryBox.getInt("distance"));
+					//resultBox.set("path", routeBox.get("path").toString().substring(1, routeBox.get("path").toString().length() - 1).replaceAll("\\],\\[", "\\]&\\["));
 	
 				} else {
 					resultBox.set("check", "fail");
@@ -175,8 +176,8 @@ public class UserController {
 				try {
 					naverJsonBox.setJson(naverMap.sendNaverMap(jsonBox));
 					if (naverJsonBox.getString("message").equals("길찾기를 성공하였습니다.")) {
-						routeBox.setJson(naverJsonBox.get("route").toString());
-						routeList.setJson(naverJsonBox.get("traoptimal").toString()); //TODO 
+						routeBox.setJson(naverJsonBox.get("route").toString());						
+						routeList.setJson(routeBox.get("traoptimal").toString());
 						traBox = routeList.get(0);
 						summaryBox.setJson(traBox.get("summary").toString());
 						guideList.setJson(traBox.get("guide").toString());
@@ -185,7 +186,7 @@ public class UserController {
 						resultBox.set("duration", summaryBox.getInt("duration"));
 						resultBox.set("distance", summaryBox.getInt("distance"));
 						resultBox.set("result", traBox.get("path").toString().substring(1, traBox.get("path").toString().length() - 1).replaceAll("\\],\\[", "\\]&\\["));
-		
+
 						if (traBox.get("path").toString().length() > 0) {
 							resultBox.set("check", "ok");
 						} else {
@@ -206,6 +207,7 @@ public class UserController {
 					resultBox.set("input", jsonBox.toString());
 					resultBox.set("check_message", "error3");
 					resultBox.set("message", naverJsonBox.getString("message"));
+					resultBox.set("check-", e.getStackTrace());
 					e.printStackTrace();
 				}
 			} else {
@@ -223,7 +225,6 @@ public class UserController {
 			routeBox = null;
 			traBox = null;
 			summaryBox = null;
-			resultBox = null;
 			naverMap = null;
 			routeList = null;
 			guideList = null;

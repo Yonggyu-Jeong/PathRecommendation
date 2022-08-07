@@ -394,7 +394,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 //responseMap.put("option", option); // 차후 지원할 기능
                 WorkTask.GetPathLocateTask pathLocateTask = new WorkTask.GetPathLocateTask(requireContext());
                 try {
-                    ArrayList<LatLng> latLngArrayList = pathLocateTask.execute(responseMap).get();
+                    HashMap<String, Object> resultMap = pathLocateTask.execute(responseMap).get();
+                    ArrayList<LatLng> latLngArrayList = (ArrayList<LatLng>) resultMap.get("list");
                     /*
                     for(int i=0; i<pathOverlayMapCount; i++) {
                         PathOverlay path = pathOverlayMap.get(i);
