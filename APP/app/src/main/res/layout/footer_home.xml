@@ -50,7 +50,7 @@
                     app:scale_width="216"
                     app:scale_height="43"
                     app:scale_textsize="23"
-                    android:text="나눔 상점"
+                    android:text="추천 장소"
                     android:gravity="center_horizontal"
                     android:includeFontPadding="false"
                     android:textColor="@android:color/black"

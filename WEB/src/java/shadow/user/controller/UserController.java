@@ -47,7 +47,6 @@ public class UserController {
 					routeBox = routeList.get(0);
 					summaryBox.setJson(routeBox.get("summary").toString());
 					guideList.setJson(routeBox.get("guide").toString());
-					
 					resultBox.set("guidList", guideList);
 					resultBox.set("cost", summaryBox.getInt("fuelPrice")+summaryBox.getInt("fuelPrice"));
 					resultBox.set("duration", summaryBox.getInt("duration"));
