@@ -166,7 +166,6 @@ public class UserController {
 		ABox traBox = new ABox();
 		ABox resultBox = new ABox();
 		ABox summaryBox = new ABox();
-		ABoxList<ABox> jsonBoxList = new ABoxList<ABox>();
 		ABoxList<ABox> routeList = new ABoxList<ABox>();
 		ABoxList<ABox> guideList = new ABoxList<ABox>();
 		NaverMap naverMap = new NaverMap();
@@ -227,7 +226,6 @@ public class UserController {
 			summaryBox = null;
 			resultBox = null;
 			naverMap = null;
-			jsonBoxList = null;
 			routeList = null;
 			guideList = null;
 		}
