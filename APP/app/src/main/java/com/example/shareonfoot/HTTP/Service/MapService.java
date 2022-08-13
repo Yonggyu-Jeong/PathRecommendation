@@ -43,7 +43,7 @@ public class MapService extends APIAdapter {
 
         @Headers({"X-NCP-APIGW-API-KEY-ID: z61zcmt5wp", "X-NCP-APIGW-API-KEY: O89vy2cYe04XasNZssFfJspMZqfUzW7qaZ9MwYch", "Content-Type: application/json"})
         @GET("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?")
-        Call<JsonObject> getPathNaver(@Query("start") String start, @Query("goal") String goal, @Query("waypoints") String waypoints);
+        Call<JsonObject> getPathNaver(@Query("start") String start, @Query("goal") String goal, @Query("waypoints") String waypoints, @Query("option") String option);
 
         @Headers("Content-Type: application/json; charset=utf-8")
         @POST("/find")

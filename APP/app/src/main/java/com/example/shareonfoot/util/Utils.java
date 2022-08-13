@@ -354,7 +354,7 @@ public class Utils {
                     return "서양적인";
             }
         }
-        return "fail";
+        return "괜찮은";
     }
 
 

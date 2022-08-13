@@ -38,12 +38,13 @@ public class UserController {
 
 		jsonBox.setJson(json);
 		try {
+			String option = jsonBox.getString("option");
 			try {
 				// naverJsonBox.setJson(naverMap.sendNaverMap(jsonBox));
 				naverJsonBox = jsonBox;
 				if (naverJsonBox.getString("message").equals("길찾기를 성공하였습니다.")) {
 					naverJsonBox.setJson(naverJsonBox.get("route").toString());
-					routeList.setJson(naverJsonBox.get("traoptimal").toString()); // 추가 기능
+					routeList.setJson(naverJsonBox.get(option).toString()); // 추가 기능
 					routeBox = routeList.get(0);
 					summaryBox.setJson(routeBox.get("summary").toString());
 					guideList.setJson(routeBox.get("guide").toString());
@@ -169,15 +170,15 @@ public class UserController {
 		ABoxList<ABox> routeList = new ABoxList<ABox>();
 		ABoxList<ABox> guideList = new ABoxList<ABox>();
 		NaverMap naverMap = new NaverMap();
-
 		jsonBox.setJson(json);
 		try {
+			String option = jsonBox.getString("option");
 			if (jsonBox.containsKey("start") && jsonBox.containsKey("goal")) {
 				try {
 					naverJsonBox.setJson(naverMap.sendNaverMap(jsonBox));
 					if (naverJsonBox.getString("message").equals("길찾기를 성공하였습니다.")) {
 						routeBox.setJson(naverJsonBox.get("route").toString());						
-						routeList.setJson(routeBox.get("traoptimal").toString());
+						routeList.setJson(routeBox.get(option).toString());
 						traBox = routeList.get(0);
 						summaryBox.setJson(traBox.get("summary").toString());
 						guideList.setJson(traBox.get("guide").toString());

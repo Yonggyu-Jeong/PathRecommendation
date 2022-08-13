@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="150dp"
     android:background="@android:color/holo_blue_dark"
@@ -28,20 +29,24 @@
                 android:id="@+id/radioButtonSpeed"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:text="빠른길" />
+                android:checked="true"
+                android:text="빠른길"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <RadioButton
                 android:id="@+id/radioButtonComfort"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:text="편한길" />
+                android:text="편한길"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <RadioButton
                 android:id="@+id/radioButtonFree"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="무료우선" />
+                android:text="무료우선"
+                tools:ignore="TouchTargetSizeCheck" />
         </RadioGroup>
     </LinearLayout>
 

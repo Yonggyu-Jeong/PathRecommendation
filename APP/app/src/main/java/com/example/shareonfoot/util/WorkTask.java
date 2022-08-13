@@ -352,7 +352,7 @@ public class WorkTask {
         @Override
         protected ArrayList<LatLng> doInBackground(String... obj) {
             ArrayList<LatLng> list = new ArrayList<LatLng>();
-            Call<JsonObject> objectCall = MapService.getRetrofit(context).getPathNaver(obj[0], obj[1], obj[2]);
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getPathNaver(obj[0], obj[1], obj[2], obj[3]);
             try {
                 Object result = objectCall.execute().body();
                 Gson gson = new Gson();
