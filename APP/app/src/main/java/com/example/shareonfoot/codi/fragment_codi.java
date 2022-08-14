@@ -46,6 +46,7 @@ import com.example.shareonfoot.util.WorkTask;
 import com.example.shareonfoot.util.infoWindowAdapter;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.internal.LinkedTreeMap;
 import com.naver.maps.geometry.LatLng;
@@ -343,26 +344,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         fam.getMenuIconView().setColorFilter(Color.parseColor("#000000"));
 
         radioGroup = (RadioGroup) viewNavigation.findViewById(R.id.radioGroup_header);
-        //TODO
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                Log.d("onNavigationItemSelected", "onNavigationItemSelected: id"+id);
-                if (id == R.id.item1) {
-                    item.setTitle("바보");
-                    Toast.makeText(getContext(), "item1", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.item2) {
-                    item.setTitle("바보");
-                    Toast.makeText(getContext(), "item2", Toast.LENGTH_SHORT).show();
 
-                } else if (id == R.id.item3) {
-                    item.setTitle("바보");
-                    Toast.makeText(getContext(), "item3", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-        });
         if (radioGroup != null ) {
             radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
@@ -470,6 +452,31 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 Log.e("onLocationChanged", "" + locationLat + locationLng);
             }
         };
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                if (id == R.id.item1) {
+                    if(stopMarkerLatLngMap.size() > 0) {
+                        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(stopMarkerLatLngMap.get("marker"+0).latitude, stopMarkerLatLngMap.get("marker"+0).longitude));
+                        naverMap.moveCamera(cameraUpdate);
+                        Toast.makeText(getContext(), "item1", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (id == R.id.item2) {
+                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(stopMarkerLatLngMap.get("marker"+1).latitude, stopMarkerLatLngMap.get("marker"+1).longitude));
+                    naverMap.moveCamera(cameraUpdate);
+                    Toast.makeText(getContext(), "item2", Toast.LENGTH_SHORT).show();
+
+                } else if (id == R.id.item3) {
+                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(stopMarkerLatLngMap.get("marker"+2).latitude, stopMarkerLatLngMap.get("marker"+2).longitude));
+                    naverMap.moveCamera(cameraUpdate);
+                    Toast.makeText(getContext(), "item3", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
+
         fabAdd.setOnClickListener(view -> {
             try {
                 HashMap<String, Object> responseMap = new HashMap();
@@ -501,6 +508,23 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     path.setColor(Color.BLUE);
 
                     path.setOnClickListener(overlay -> {
+                        /*
+                        switch (stopMarkerCount) {
+                            case 0:
+                                menuItem = viewMenu.getItem(0);
+                                menuItem.setTitle("");
+                                break;
+                            case 1:
+                                menuItem = viewMenu.getItem(1);
+                                menuItem.setTitle("");
+                                break;
+                            default:
+                                menuItem = viewMenu.getItem(2);
+                                menuItem.setTitle("");
+                                break;
+                        }
+                         */
+
                         //TODO 경로 지정
                         Toast.makeText(requireContext(), "출력됨", Toast.LENGTH_SHORT).show();
                         return true;
@@ -728,7 +752,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             markerLatLngMap.put("markerStart", tm128.toLatLng());
             markerNameMap.put("markerStart", hashMap.get("title").toString());
             markerStart.setMap(naverMap);
-
             editText.setText("");
             CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(start_lat, start_lng));
             naverMap.moveCamera(cameraUpdate);
@@ -995,8 +1018,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
             naverMap.setOnMapLongClickListener((point, coord) -> {
                 Boolean stopMarkerCheck = false;
-                Log.e("stopMarkerCount", ""+stopMarkerCount);
-
                 for(int j=0; j<stopMarkerCount; j++) {
                     String tempMarker = stopMarkerNameMap.get("marker"+(j));
 
@@ -1010,10 +1031,10 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                             stopMarkerCount--;
                             targetMarker.setIcon(MarkerIcons.GRAY);
                             targetMarker.setMap(naverMap);
-                            Log.e("stopMarkerCount2", "" + stopMarkerCount);
                             Toast.makeText(getContext(), (stopMarkerCount) + "번째 경유지가 삭제되었습니다. ", Toast.LENGTH_SHORT).show();
 
                             MenuItem menuItem = null;
+                            //TODO 도중 삭제시 에러, 선입선출 구현
                             switch (stopMarkerCount) {
                                 case 0:
                                     menuItem = viewMenu.getItem(0);
@@ -1046,11 +1067,11 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     MenuItem menuItem = null;
                     //TODO 도중 삭제시 에러, 선입선출 구현
                     switch (stopMarkerCount) {
-                        case 0:
+                        case 1:
                             menuItem = viewMenu.getItem(0);
                             menuItem.setTitle(targetName);
                             break;
-                        case 1:
+                        case 2:
                             menuItem = viewMenu.getItem(1);
                             menuItem.setTitle(targetName);
                             break;
