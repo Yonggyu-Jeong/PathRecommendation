@@ -360,6 +360,7 @@ public class WorkTask {
                 String pathJson = json.toString();
                 Log.e("pathJson", pathJson);
                 int strCount = pathJson.indexOf("\"path\":[")+8;
+                //int strCOunt2 = pathJson.indexOf("\"path\":[")+8;
                 String resultPath = pathJson.substring(strCount, pathJson.indexOf("]]", strCount)+2).replaceAll("\\],\\[", "\\]&\\[");
                 String[] paths = resultPath.split("&");
                 for(int i=0; i< paths.length; i++) {
