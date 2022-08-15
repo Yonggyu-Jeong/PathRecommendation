@@ -482,25 +482,18 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         });
 
         fabAdd.setOnClickListener(view -> {
-            Log.i("fabAdd", "작동 중");
             try {
                 HashMap<String, Object> responseMap = new HashMap();
-                Log.i("fabAdd2", "작동 중");
                 String waypoint = "";
                 responseMap.put("start", markerLatLngMap.get("markerStart").longitude+","+markerLatLngMap.get("markerStart").latitude+",name="+markerNameMap.get("markerStart"));
                 responseMap.put("goal", markerLatLngMap.get("markerGoal").longitude+","+markerLatLngMap.get("markerGoal").latitude+",name="+markerNameMap.get("markerGoal"));
-                Log.i("fabAdd3", "작동 중");
                 if(stopMarkerCount > 0) {
                     for(int i=0; i<stopMarkerCount; i++) {
                         waypoint += stopMarkerLatLngMap.get("marker"+(i+1)).longitude+","+stopMarkerLatLngMap.get("marker"+(i+1)).latitude+",name="+stopMarkerNameMap.get("marker"+(i+1))+":";
                     }
                     responseMap.put("waypoints", waypoint.substring(0, waypoint.length()-1));
                 }
-                Log.i("fabAdd4", "작동 중");
                 responseMap.put("option", option);
-                Log.i("fabAdd6", "작동 중");
-                Log.i("fabAdd5", responseMap.toString());
-
                 WorkTask.GetPathLocateTask2 pathLocateTask = new WorkTask.GetPathLocateTask2(requireContext());
                 try {
                     Log.i("fabAdd3", responseMap.toString());
@@ -556,21 +549,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
                     textView_time_var.setText(hour+"시간 "+min+"분  ("+kmt+"."+mt+"km)");
                     textView_cost_var.setText((String) resultMap.get("cost")+"원");
-                    /*
-                    int duration = (int)resultMap.get("duration")*1000;
-                    int hour = duration / 3600;
-                    int min = (duration % 3600) / 60;
 
-                    int kmt = (int)resultMap.get("distance")/1000;
-                    int mt = ((int)resultMap.get("distance")%1000);
-
-                    Log.i("text_time", hour+"시간 "+min+"분  ("+kmt+"."+mt+"km)");
-                    Log.i("text_cost", resultMap.get("cost")+"원");
-                    */
-
-                    //textView_time_var.setText(hour+"시간 "+min+"분  ("+kmt+"."+mt+"km)");
-                    //textView_cost_var.setText(resultMap.get("cost")+"원");
-
+                    setGuideList(resultMap);
 
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -619,6 +599,16 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             }
         });
     }
+
+    public void setGuideList(HashMap<String, Object> map) {
+        ArrayList<HashMap<String, Object>> guideList = (ArrayList<HashMap<String, Object>>) map.get("guideList");
+        for(int i=0; i<guideList.size(); i++) {
+            Double km = Double.parseDouble(guideList.get(i).get("distance").toString())/1000;
+            String guide = guideList.get(i).get("instructions").toString().replaceAll("\"", "");
+            viewMenu.add(0, i+3, 0, guide+" "+km+"km");
+        }
+    }
+
 
     //클릭 리스너
     class BtnOnClickListener implements Button.OnClickListener {
@@ -896,6 +886,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
                         textView_time_var.setText(hour+"시간 "+min+"분  ("+kmt+"."+mt+"km)");
                         textView_cost_var.setText((String) pathMap.get("cost")+"원");
+
+                        setGuideList(pathMap);
 
                     }
                 } catch (Exception e) {

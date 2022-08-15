@@ -357,7 +357,6 @@ public class Utils {
         return "괜찮은";
     }
 
-
     public ArrayList<Object> setRecommendPath (HashMap map, ArrayList<Object>... lists) {
         ArrayList<Object> resultList = new ArrayList<>();
         Random random = new Random();
