@@ -50,6 +50,18 @@ public class MapService extends APIAdapter {
         Call<JsonObject> getLocate(@Body HashMap hashMap);
 
         @Headers("Content-Type: application/json; charset=utf-8")
+        @POST("/find1")
+        Call<JsonObject> getLocate1(@Body HashMap hashMap);
+
+        @Headers("Content-Type: application/json; charset=utf-8")
+        @POST("/find2")
+        Call<JsonObject> getLocate2(@Body HashMap hashMap);
+
+        @Headers("Content-Type: application/json; charset=utf-8")
+        @POST("/find3")
+        Call<JsonObject> getLocate3(@Body HashMap hashMap);
+
+        @Headers("Content-Type: application/json; charset=utf-8")
         @POST("/testData")
         Call<JsonObject> getTestLocate(@Body HashMap hashMap);
 

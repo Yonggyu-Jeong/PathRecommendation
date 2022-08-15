@@ -286,6 +286,9 @@ public class WorkTask {
         @Override
         protected HashMap<String, Object> doInBackground(HashMap<String, Object>... obj) {
             HashMap<String, Object> resultMap = new HashMap<String, Object>();
+            //if(obj[0].get("count") == 0) {
+
+            //}
             Call<JsonObject> objectCall = MapService.getRetrofit(context).getPath(obj[0]);
             try {
                 Object jsonObject = objectCall.execute().body();
@@ -310,6 +313,78 @@ public class WorkTask {
                         JsonObject guideJson = (JsonObject) jsonArray.get(i);
                         guideMap.put("duration", guideJson.get("duration"));
                         guideMap.put("instructions", guideJson.get("instructions"));
+                        guideMap.put("cost", guideJson.get("cost"));
+                        guideMap.put("distance", guideJson.get("distance"));
+                        guideMap.put("type", guideJson.get("type"));
+                        guideList.add(guideMap);
+                    }
+                }
+                resultMap.put("list", pathList);
+                resultMap.put("guideList", guideList);
+                resultMap.put("cost", json.get("cost").toString());
+                resultMap.put("duration", json.get("duration").toString());
+                resultMap.put("distance", json.get("distance").toString());
+                return resultMap;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(HashMap<String, Object> s) {
+            super.onPostExecute(s);
+            if (s.equals("fail")) {
+                Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public static class GetPathLocateTask2 extends AsyncTask<HashMap<String, Object>, Void, HashMap<String, Object>> {
+        public Context context;
+        private HashMap resultMap;
+
+        public GetPathLocateTask2(Context getContext) {
+            context = getContext;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected HashMap<String, Object> doInBackground(HashMap<String, Object>... obj) {
+            HashMap<String, Object> resultMap = new HashMap<String, Object>();
+            //if(obj[0].get("count") == 0) {
+
+            //}
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getPath(obj[0]);
+            try {
+                Object jsonObject = objectCall.execute().body();
+                Gson gson = new Gson();
+                JsonObject json = gson.toJsonTree(jsonObject).getAsJsonObject();
+                String result = json.get("result").toString();
+                result = result.substring(1, result.length()-1);
+                String[] paths = result.split("&");
+                ArrayList<LatLng> pathList = new ArrayList<LatLng>();
+                for(int i=0; i< paths.length; i++) {
+                    String tempPath = paths[i];
+                    tempPath = tempPath.substring(1, tempPath.length()-1);
+                    String[] tempPathArray = tempPath.split(",");
+                    pathList.add(new LatLng(Double.parseDouble(tempPathArray[1]), Double.parseDouble(tempPathArray[0])));
+                }
+                JsonArray jsonArray = json.getAsJsonArray("guidList");
+                //TODO guideList로 변경
+                ArrayList<HashMap<String, Object>> guideList = new ArrayList<HashMap<String, Object>>();
+                if (jsonArray != null) {
+                    for (int i=0; i < jsonArray.size(); i++) {
+                        HashMap<String, Object> guideMap = new HashMap<String, Object>();
+                        JsonObject guideJson = (JsonObject) jsonArray.get(i);
+                        guideMap.put("duration", guideJson.get("duration"));
+                        guideMap.put("instructions", guideJson.get("instructions"));
+                        guideMap.put("cost", guideJson.get("cost"));
                         guideMap.put("distance", guideJson.get("distance"));
                         guideMap.put("type", guideJson.get("type"));
                         guideList.add(guideMap);
