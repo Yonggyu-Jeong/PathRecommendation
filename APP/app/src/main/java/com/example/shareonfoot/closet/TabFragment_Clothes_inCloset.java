@@ -59,6 +59,7 @@ import retrofit2.Call;
 
 public class   TabFragment_Clothes_inCloset extends Fragment {
 
+    private static String json;
     fragment_closet parentFragment;
     String identifier; //프래그먼트의 종류를 알려줌
     Integer pos = 10;
@@ -88,6 +89,23 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
         args.putString("location", location);
         args.putString("identifier", identifier);  // 키값, 데이터
 
+        if(identifier.equals("음식점")) {
+            json = "CS01";
+        } else if(identifier.equals("음식점")) {
+            json = "CS99";
+        } else if(identifier.equals("역사관광지")) {
+            json = "CS02";
+        } else if(identifier.equals("자연관광지")) {
+            json = "CS03";
+        } else if(identifier.equals("체험관광지")) {
+            json = "CS04";
+        } else if(identifier.equals("테마관광지")) {
+            json = "CS05";
+        } else if(identifier.equals("기타관광지")) {
+            json = "CS06";
+        }
+        Log.e("Tab===========", ""+json);
+
         TabFragment_Clothes_inCloset fragment = new TabFragment_Clothes_inCloset();
         fragment.setArguments(args);
         return fragment;
@@ -116,7 +134,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
         String coordinates[] = {page.toString(), ""};
         //Log.i("qe",String.valueOf(page));
         //현재 페이지수와 함께 웹서버에 옷 데이터 요청
-        String json = getLocateList("CS01");
+        String result = getLocateList(json);
         //리사이클러 뷰 설정하기
         View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
         rv_clothes = (RecyclerView) view.findViewById(R.id.tab_clothes_rv);
@@ -136,7 +154,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
                     //Log.e("test","데이터 갱신");*/
                 } else if (!rv_clothes.canScrollVertically(1)) {
                     String coordinates[] = {(++page).toString()};
-                    String json = getLocateList("CS01");
+                    String result = getLocateList(json);
                     clothesListAdapter.notifyDataSetChanged();
                     rv_clothes.setAdapter(clothesListAdapter);
 
@@ -154,7 +172,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
                 clothesList.clear();
                 page = 0;
                 String coordinates[] = {page.toString()};
-                String json = getLocateList("CS01");
+                String result = getLocateList(json);
                 clothesListAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
