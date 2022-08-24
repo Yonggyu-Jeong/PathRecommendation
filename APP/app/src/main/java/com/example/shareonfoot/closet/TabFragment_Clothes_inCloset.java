@@ -88,7 +88,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
         Bundle args = new Bundle();
         args.putString("location", location);
         args.putString("identifier", identifier);  // 키값, 데이터
-
+        Log.e("identifier", identifier);
         if(identifier.equals("음식점")) {
             json = "CS01";
         } else if(identifier.equals("음식점")) {
@@ -255,16 +255,19 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
                         JSONObject jsonObject = jarray.getJSONObject(i);
                         String idx = jsonObject.getString("locate_id");
                         String star = "2.5";
-                        String review = jsonObject.getString("info");
+                        String review = "";
+                        if(!jsonObject.isNull("info")) {
+                             review = jsonObject.getString("info");
+                        }
                         String adress = jsonObject.getString("area");
                         String name = jsonObject.getString("name");
                         String category = jsonObject.getString("category");
                         jidx.add(idx);
                         jname.add(name);
-                        jname.add(category);
-                        jname.add(star);
-                        jname.add(adress);
-                        jname.add(review);
+                        jcategory.add(category);
+                        jstar.add(star);
+                        jadress.add(adress);
+                        jreview.add(review);
 
                         switch (pos) {
                             case 0: //모든 옷 조회
