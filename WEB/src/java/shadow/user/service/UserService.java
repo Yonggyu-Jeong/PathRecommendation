@@ -30,6 +30,6 @@ public interface UserService {
 
 	public ABox getCategoryUserList(ABox jsonBox);
 
-	public ABox addMap(ABox jsonBox);
+	public ABox addMap(ABoxList<ABox> jsonBoxList);
 
 }

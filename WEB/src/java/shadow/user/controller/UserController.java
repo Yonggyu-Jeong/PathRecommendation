@@ -268,12 +268,12 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/user/addMap", produces = "application/json; charset=utf8", method = RequestMethod.POST, headers = "Content-Type=application/json;utf-8")
-	public ResponseEntity<String> addMapList(@RequestBody String json) throws Exception {
+	public ResponseEntity<String> addMap(@RequestBody String json) throws Exception {
 		String result = "";
-		ABox jsonBox = new ABox();
-		jsonBox.setJson(json);
+		ABoxList<ABox> jsonBoxList = new ABoxList<ABox>();
+		jsonBoxList.setJson(json);
 		try {
-			result = userService.addMap(jsonBox).aBoxToJsonObject().toString();
+			result = userService.addMap(jsonBoxList).aBoxToJsonObject().toString();
 
 		} catch (Exception e) {
 			e.printStackTrace();

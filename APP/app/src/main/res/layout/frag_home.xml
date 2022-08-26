@@ -178,7 +178,7 @@
                                     android:id="@+id/child1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="#맛있는_디저트"
+                                    android:text="#감성적인"
                                     android:textSize="16dp"
                                     android:textColor="@color/화이트"
                                     />
@@ -186,7 +186,7 @@
                                     android:id="@+id/child2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="#마카롱"
+                                    android:text="#편안한"
                                     android:textSize="16dp"
                                     android:textColor="@color/화이트"
                                     />
@@ -194,14 +194,14 @@
                                     android:id="@+id/child3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="#세상_맛집"
+                                    android:text="#밝은"
                                     android:textSize="16dp"
                                     android:textColor="@color/화이트"/>
                                 <TextView
                                     android:id="@+id/child4"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="#분위기_달달"
+                                    android:text="#매력적인"
                                     android:textSize="16dp"
                                     android:textColor="@color/화이트"/>
                             </LinearLayout>

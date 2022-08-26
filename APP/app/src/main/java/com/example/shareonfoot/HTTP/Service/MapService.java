@@ -78,6 +78,13 @@ public class MapService extends APIAdapter {
 
         @GET("/category/list/{category}")
         Call<JsonObject> getCategoryList(@Path("category") String category);
+
+        @GET("/user/list/{option}")
+        Call<JsonObject> getCategoryUserList(@Path("option") String option);
+
+        @Headers("Content-Type: application/json; charset=utf-8")
+        @POST("/user/addMap")
+        Call<JsonObject> addMap(@Body HashMap hashMap);
     }
 
 }
