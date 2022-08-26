@@ -326,6 +326,22 @@ public class UserServiceImpl extends SuperService implements UserService {
 	}
 	
 	@Override
+	public ABox getCategoryUserList(ABox jsonBox) {
+		ABox resultABox = new ABox();
+		try {
+			ABoxList<ABox> categoryList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectCategoryUserListSQL", jsonBox);
+			resultABox.set("check", "ok");
+			resultABox.set("result", categoryList);
+			
+		} catch (Exception ex) {
+			resultABox.set("check", "fail");
+			ex.printStackTrace();
+		} 
+		return resultABox;
+	}
+	
+	
+	@Override
 	public ABox getLocation(ABox aBox) {
 		ABox resultABox = new ABox();
 		try {			
@@ -350,6 +366,24 @@ public class UserServiceImpl extends SuperService implements UserService {
 			}
 			resultABox.set("result-size", locationList.size());
 			resultABox.set("check", "ok");
+			
+		} catch (Exception ex) {
+			resultABox.set("check", "fail");
+			ex.printStackTrace();
+		} 
+		return resultABox;
+	}
+	
+	@Override
+	public ABox addMap(ABox jsonBox) {
+		ABox resultABox = new ABox();
+		try {
+			if(commonDao.insert("mybatis.shadow.user.user_mapper.insertUserLocationSQL", jsonBox) != 0) {
+				resultABox.set("check", "ok");
+
+			} else {
+				resultABox.set("check", "fail");
+			}
 			
 		} catch (Exception ex) {
 			resultABox.set("check", "fail");

@@ -77,18 +77,18 @@
                         android:descendantFocusability="blocksDescendants"
                         android:background="#cccccc"
                         >
+
                         <TextView
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
-                            android:paddingLeft="15dp"
                             android:id="@+id/reco_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@color/화이트"
-                            android:text="상점을 부탁해"
+                            android:paddingLeft="15dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:text="나만의 장소"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                            android:textSize="17dp"
-                            >
+                            android:textSize="17dp">
 
                         </TextView>
 

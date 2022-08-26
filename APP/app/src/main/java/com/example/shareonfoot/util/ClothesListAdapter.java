@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -92,7 +93,6 @@ public class ClothesListAdapter extends RecyclerView.Adapter<ClothesListAdapter.
             textView4 = (TextView)itemView.findViewById(R.id.star);
             textView5 = (TextView)itemView.findViewById(R.id.adress);
             textView6 = (TextView)itemView.findViewById(R.id.review);
-
             imageView = (ImageView)itemView.findViewById(R.id.image);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -100,7 +100,7 @@ public class ClothesListAdapter extends RecyclerView.Adapter<ClothesListAdapter.
                     int pos = getAdapterPosition() ;
                     if (pos != RecyclerView.NO_POSITION) {
                         // 리스너 객체의 메서드 호출.
-                        System.out.println("클릭");
+                        Toast.makeText(mContext,"즐겨찾는 장소에 추가되었습니다!",Toast.LENGTH_SHORT);
                         if (nmListener != null) {
                             nmListener.onItemClick(v, pos, imageView, listData.get(pos)) ;
                         }

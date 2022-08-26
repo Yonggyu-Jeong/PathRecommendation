@@ -28,4 +28,8 @@ public interface UserService {
 
 	public ABox getLocation(ABox aBox);
 
+	public ABox getCategoryUserList(ABox jsonBox);
+
+	public ABox addMap(ABox jsonBox);
+
 }

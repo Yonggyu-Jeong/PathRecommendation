@@ -82,29 +82,12 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
     ClothesListAdapter clothesListAdapter;
     public static String ErrMag = "ErrMag";
     public String err;
+    private int choose = 0;
 
     public static TabFragment_Clothes_inCloset newInstance(String location, String identifier) {
-
         Bundle args = new Bundle();
         args.putString("location", location);
         args.putString("identifier", identifier);  // 키값, 데이터
-        Log.e("identifier", identifier);
-        if(identifier.equals("음식점")) {
-            json = "CS01";
-        } else if(identifier.equals("음식점")) {
-            json = "CS99";
-        } else if(identifier.equals("역사관광지")) {
-            json = "CS02";
-        } else if(identifier.equals("자연관광지")) {
-            json = "CS03";
-        } else if(identifier.equals("체험관광지")) {
-            json = "CS04";
-        } else if(identifier.equals("테마관광지")) {
-            json = "CS05";
-        } else if(identifier.equals("기타관광지")) {
-            json = "CS06";
-        }
-        Log.e("Tab===========", ""+json);
 
         TabFragment_Clothes_inCloset fragment = new TabFragment_Clothes_inCloset();
         fragment.setArguments(args);
@@ -123,6 +106,29 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
             location = args.getString("location");
             identifier = args.getString("identifier");
         }
+
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("tab",0);
+        choose = sharedPreferences.getInt("pos", choose);
+        Log.e("sharedPreferences", ""+choose);
+        if(choose == 0) {
+            json = "CS99";
+        } else if(choose == 1) {
+            json = "CS01";
+        } else if(choose == 2) {
+            json = "CS04";
+        } else if(choose == 3) {
+            json = "CS05";
+        } else if(choose == 4) {
+            json = "CS06";
+        } else if(choose == 5) {
+            json = "CS07";
+        } else if(choose == 6) {
+            json = "CS08";
+        } else {
+            json = "CS99";
+        }
+        Log.e("json", json);
+
         clothesListAdapter = new ClothesListAdapter(getContext(), clothesList, R.layout.fragment_recyclerview);
 
     }
@@ -135,6 +141,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
         //Log.i("qe",String.valueOf(page));
         //현재 페이지수와 함께 웹서버에 옷 데이터 요청
         String result = getLocateList(json);
+        Log.e("result 작동 테스트", result);
         //리사이클러 뷰 설정하기
         View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
         rv_clothes = (RecyclerView) view.findViewById(R.id.tab_clothes_rv);
@@ -152,11 +159,13 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
                     clothesListAdapter.notifyDataSetChanged();
                     rv_clothes.setAdapter(clothesListAdapter);
                     //Log.e("test","데이터 갱신");*/
+                    //String result = getLocateList(json);
+
                 } else if (!rv_clothes.canScrollVertically(1)) {
-                    String coordinates[] = {(++page).toString()};
-                    String result = getLocateList(json);
-                    clothesListAdapter.notifyDataSetChanged();
-                    rv_clothes.setAdapter(clothesListAdapter);
+                    //String coordinates[] = {(++page).toString()};
+                    //String result = getLocateList(json);
+                    //clothesListAdapter.notifyDataSetChanged();
+                    //rv_clothes.setAdapter(clothesListAdapter);
 
                     Log.e("test", "페이지 수 증가");
                 } else {

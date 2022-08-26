@@ -209,8 +209,8 @@ public class fragment_closet extends Fragment implements OnBackPressedListener {
 
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-                    SharedPreferences sharedPreferences=getContext().getSharedPreferences("tab",0);
-                    SharedPreferences.Editor editor=sharedPreferences.edit();
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("tab",0);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putInt("pos",tab.getPosition());
                     editor.commit();
                     finalPager.setCurrentItem(tab.getPosition());

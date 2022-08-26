@@ -192,7 +192,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_margin="10dp"
                                     android:maxLines="3"
-                                    android:text="\2022 종합설계 S1-4조 테스트용 계정입니다.\n2019314033 정용규 \n2015156046 최병렬 \n2016154015 류종범\n" />
+                                    android:text="\2022 종합설계 S1-4조 테스트용 계정입니다.\n2019314033 정용규    2015156046 최병렬 \n2016154015 류종범\n" />
 
                             </LinearLayout>
 

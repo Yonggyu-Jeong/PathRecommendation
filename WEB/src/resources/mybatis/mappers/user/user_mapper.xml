@@ -148,17 +148,17 @@
 		resultType="common.collection.ABox"
 		parameterType="common.collection.ABox">
 	<![CDATA[
-
 		SELECT 
-			* 
+			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, b.tag1, b.tag2, b.tag3, b.tag4
 		FROM 
-			locate 
+			locate a, locate_label b
 		WHERE 
-			category = #{category}
+			a.category = #{category} AND
+			b.locate_seq = a.locate_id
 		ORDER BY 
-			locate_id 
+			a.locate_id 
 		LIMIT 
-			0,10;
+			0, 7;
 	]]>
 	</select>
 	
@@ -167,16 +167,18 @@
 		parameterType="common.collection.ABox">
 	<![CDATA[
 		SELECT 
-			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, b.star, b.choose
+			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, d.tag1, d.tag2, d.tag3, d.tag4
 		FROM 
-			locate a, member_path b
+			locate a, member b, member_path c, locate_label d
 		WHERE 
-			b.member_id = #{memberId} AND
-			a.locate_id = b.locate_id
+			b.id = #{option} AND
+			c.member_id = b.member_seq AND
+			a.locate_id = c.locate_id AND
+			d.locate_seq = a.locate_id
 		ORDER BY 
 			locate_id 
 		LIMIT 
-			0,10;
+			0, 7;
 	]]>
 	</select>
 	
@@ -188,4 +190,23 @@
 	]]>
 	</update>
 
+	<insert id="insertUserLocationSQL"
+		parameterType="common.collection.ABox">
+		<![CDATA[
+			INSERT INTO member_path
+				( member_id,
+				locate_id,
+				star,
+				mapId,
+				choose
+				)
+			VALUES ( 
+				#{member_id},
+				#{locate_id},
+				#{star},
+				#{mapId},
+				#{choose}
+				)
+		]]>
+	</insert>
 </mapper>

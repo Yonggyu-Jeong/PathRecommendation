@@ -61,7 +61,6 @@ public class ClothesVO implements Parcelable {
 
     //생성자
     public ClothesVO() {
-        System.out.println("ClothesVO 생성자 호출");
     }
 
 
