@@ -46,7 +46,7 @@ import retrofit2.Call;
 public class TabFragment_Clothes_inHome extends Fragment {
 
     fragment_home parentFragment;
-    private static String json;
+    private static String option;
 
     String identifier; //프래그먼트의 종류를 알려줌
     String size;
@@ -60,7 +60,6 @@ public class TabFragment_Clothes_inHome extends Fragment {
     int page=0;
     RecyclerView rv_clothes;
     ArrayList<String> ImageUrlList = new ArrayList<String>();
-
     //리사이클러뷰 어댑터
 
 
@@ -108,14 +107,15 @@ public class TabFragment_Clothes_inHome extends Fragment {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("tab_home",0);
         choose = sharedPreferences.getInt("pos", choose);
         Log.e("sharedPreferences", ""+choose);
+        //TODO
         if(choose == 0) {
-            json = "CS02";
+            option = "CH02";
         } else if(choose == 1) {
-            json = "CS03";
+            option = "CH01";
         } else {
-            json = "CS02";
+            option = "CH02";
         }
-        Log.e("json", json);
+        Log.e("option", option);
 
         //리사이클러뷰 어댑터 초기화
         clothesListAdapter = new ClothesListAdapter(getContext(), clothesList, R.layout.fragment_recyclerview);
@@ -124,11 +124,8 @@ public class TabFragment_Clothes_inHome extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        int i = 0;
-        i++;
-        Log.e("count", ""+i);
         //        String result = getLocateUserList("hello", json);
-        String result = getLocateUserList("hello");
+        String result = getLocateUserList("hello", option);
         Log.e("result 작동 테스트", result);
         //리사이클러 뷰 설정하기
 
@@ -185,11 +182,11 @@ public class TabFragment_Clothes_inHome extends Fragment {
         transaction.detach(this).attach(this).commit();
     }
 
-    public String getLocateUserList(String name) {
+    public String getLocateUserList(String name, String option) {
         GetCategoryUserListTask mapTask = new GetCategoryUserListTask(requireContext());
         String result = null;
         try {
-            result = mapTask.execute(name).get();
+            result = mapTask.execute(name, option).get();
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -213,12 +210,20 @@ public class TabFragment_Clothes_inHome extends Fragment {
 
         @Override
         protected String doInBackground(String... obj) {
-            Call<JsonObject> objectCall = MapService.getRetrofit(context).getCategoryUserList(obj[0]);
+            Call<JsonObject> objectCall = null;
+            if(obj[1].equals("CH02")) {
+                objectCall = MapService.getRetrofit(context).getCategoryUserList(obj[0]);
+            } else {
+                objectCall = MapService.getRetrofit(context).getCategoryUserList2(obj[0]);
+            }
             try {
                 Object result = objectCall.execute().body();
                 Gson gson = new Gson();
-                JsonObject json = gson.toJsonTree(result).getAsJsonObject();
-                return json.toString();
+                if(result != null) {
+                    JsonObject json = gson.toJsonTree(result).getAsJsonObject();
+                    return json.toString();
+                }
+                return "";
 
             } catch (IOException e) {
                 e.printStackTrace();

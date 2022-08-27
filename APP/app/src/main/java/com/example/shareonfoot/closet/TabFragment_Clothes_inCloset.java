@@ -59,7 +59,7 @@ import retrofit2.Call;
 
 public class   TabFragment_Clothes_inCloset extends Fragment {
 
-    private static String json;
+    private static String option;
     fragment_closet parentFragment;
     String identifier; //프래그먼트의 종류를 알려줌
     Integer pos = 10;
@@ -111,23 +111,23 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
         choose = sharedPreferences.getInt("pos", choose);
         Log.e("sharedPreferences", ""+choose);
         if(choose == 0) {
-            json = "CS99";
+            option = "CS99";
         } else if(choose == 1) {
-            json = "CS01";
+            option = "CS01";
         } else if(choose == 2) {
-            json = "CS04";
+            option = "CS04";
         } else if(choose == 3) {
-            json = "CS05";
+            option = "CS05";
         } else if(choose == 4) {
-            json = "CS06";
+            option = "CS06";
         } else if(choose == 5) {
-            json = "CS07";
+            option = "CS07";
         } else if(choose == 6) {
-            json = "CS08";
+            option = "CS08";
         } else {
-            json = "CS99";
+            option = "CS99";
         }
-        Log.e("json", json);
+        Log.e("option", option);
 
         clothesListAdapter = new ClothesListAdapter(getContext(), clothesList, R.layout.fragment_recyclerview);
 
@@ -138,7 +138,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         String coordinates[] = {page.toString(), ""};
-        String result = getLocateList(json);
+        String result = getLocateList(option);
         Log.e("result 작동 테스트", result);
         //리사이클러 뷰 설정하기
         View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
@@ -179,7 +179,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
                 clothesList.clear();
                 page = 0;
                 String coordinates[] = {page.toString()};
-                String result = getLocateList(json);
+                String result = getLocateList(option);
                 clothesListAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
