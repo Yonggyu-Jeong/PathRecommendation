@@ -186,48 +186,6 @@ public class fragment_closet extends Fragment implements OnBackPressedListener {
 //            }
 //        });
 
-        if(tabLayout == null){
-            //탭 목록 설정
-            tabLayout = (TabLayout) viewGroup.findViewById(R.id.tabLayout);
-            tabLayout.addTab(tabLayout.newTab().setText("모두"));
-            tabLayout.addTab(tabLayout.newTab().setText("음식점"));
-            tabLayout.addTab(tabLayout.newTab().setText("역사관광지"));
-            tabLayout.addTab(tabLayout.newTab().setText("자연관광지"));
-            tabLayout.addTab(tabLayout.newTab().setText("체험관광지"));
-            tabLayout.addTab(tabLayout.newTab().setText("테마관광지"));
-            tabLayout.addTab(tabLayout.newTab().setText("기타관광지"));
-
-            tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
-
-
-            //탭 페이저 설정 (탭 클릭시 바뀌는 화면)
-            finalPager = (ViewPager) viewGroup.findViewById(R.id.tab_Pager);
-            pagerAdapter = new TabPagerAdapter_closet(getChildFragmentManager(), tabLayout.getTabCount());
-            finalPager.setAdapter(pagerAdapter);
-            finalPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-            tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("tab",0);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt("pos",tab.getPosition());
-                    editor.commit();
-                    finalPager.setCurrentItem(tab.getPosition());
-
-                }
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
-
-                }
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
-
-                }
-            });
-        }
-
-
         //플로팅 액션 버튼 설정
         fabAdd = (FloatingActionButton) viewGroup.findViewById(R.id.fab_add_photo);
         fabBring = (FloatingActionButton) viewGroup.findViewById(R.id.fab_bring_data);
@@ -329,6 +287,10 @@ public class fragment_closet extends Fragment implements OnBackPressedListener {
 
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("tab",0);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("pos",tab.getPosition());
+                    editor.commit();
                     finalPager.setCurrentItem(tab.getPosition());
                 }
                 @Override

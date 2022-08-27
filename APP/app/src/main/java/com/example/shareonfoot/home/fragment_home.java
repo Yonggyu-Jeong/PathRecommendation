@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -72,8 +73,7 @@ public class fragment_home extends Fragment implements OnBackPressedListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.frag_home, container, false);
         toast = Toast.makeText(getContext(), "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT);
         iv_codi_list = new ArrayList<ImageView>(Arrays.asList(iv_codi_image1, iv_codi_image2, iv_codi_image3, iv_codi_image4, iv_codi_image5));
@@ -115,7 +115,6 @@ public class fragment_home extends Fragment implements OnBackPressedListener {
     public void onStart() {
         super.onStart();
 
-
         iv_codi_image = getView().findViewById(R.id.iv_codi_image);
         iv_codi_image1 = getView().findViewById(R.id.bottom1);
         iv_codi_image2 = getView().findViewById(R.id.bottom2);
@@ -139,6 +138,17 @@ public class fragment_home extends Fragment implements OnBackPressedListener {
         iv_heart.setOnTouchListener(onClickListener);
         // reco = (ImageView) getView().findViewById(R.id.reco);
 
+        //탭 페이저 설정 (탭 클릭시 바뀌는 화면)
+        //finalPager_recommend = (ViewPager) getView().findViewById(R.id.recommend_tab_Pager);
+        //pagerAdapter_recommend = new MyPagerAdapter(getChildFragmentManager());
+        //finalPager_recommend.setAdapter(pagerAdapter_recommend);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         if (tabLayout_favorite == null) {
             //탭 목록 설정
             tabLayout_favorite = (TabLayout) getView().findViewById(R.id.favorite_tabLayout);
@@ -154,8 +164,12 @@ public class fragment_home extends Fragment implements OnBackPressedListener {
             tabLayout_favorite.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
+                    Log.e("onTabSelected", "성공 : "+tab.getPosition());
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("tab_home",0);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("pos",tab.getPosition());
+                    editor.commit();
                     finalPager_favorite.setCurrentItem(tab.getPosition());
-
                 }
 
                 @Override
@@ -169,16 +183,11 @@ public class fragment_home extends Fragment implements OnBackPressedListener {
                 }
             });
         }
-        //탭 페이저 설정 (탭 클릭시 바뀌는 화면)
-        finalPager_recommend = (ViewPager) getView().findViewById(R.id.recommend_tab_Pager);
-        pagerAdapter_recommend = new MyPagerAdapter(getChildFragmentManager());
 
-        finalPager_recommend.setAdapter(pagerAdapter_recommend);
 
     }
 
-
-    //뒤로 가기 버튼이 눌렸을 경우 드로워(메뉴)를 닫는다.
+        //뒤로 가기 버튼이 눌렸을 경우 드로워(메뉴)를 닫는다.
     @Override
     public void onBackPressed() {
 

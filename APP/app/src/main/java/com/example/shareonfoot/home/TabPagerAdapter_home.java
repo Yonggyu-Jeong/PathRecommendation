@@ -1,5 +1,7 @@
 package com.example.shareonfoot.home;
 
+import android.util.Log;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -19,15 +21,26 @@ public class TabPagerAdapter_home extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
+        Log.e("getItem", ""+position);
         // Returning the current tabs
         switch (position) {
+            case 0:
+                return TabFragment_Clothes_inHome.newInstance("즐겨찾는 장소","medium");
+            case 1:
+                return TabFragment_Clothes_inHome.newInstance("최근 가본 장소", "medium");
+            /*
             case 0:
                 return TabFragment_Clothes_inHome.newInstance("favorite","medium");
             case 1:
                 return TabFragment_Codi_large.newInstance("favorite");
+*/
             default:
                 return null;
         }
+    }
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 
     @Override

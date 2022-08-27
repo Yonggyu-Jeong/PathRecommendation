@@ -315,36 +315,36 @@
                         android:layout_height="match_parent"
                         android:descendantFocusability="blocksDescendants"
                         android:background="#cccccc">
+
                         <HorizontalScrollView
 
+                            android:id="@+id/favorite_tab_view"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@color/화이트"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
-                            android:id="@+id/favorite_tab_view"
-                            android:background="@color/화이트"
-                            android:scrollbars="none"
-                            >
+                            android:scrollbars="none">
+
                             <com.google.android.material.tabs.TabLayout
                                 android:id="@+id/favorite_tabLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
 
                                 app:tabMode="fixed"
-                                app:tabTextAppearance="@style/tab_text"
-                                />
+                                app:tabTextAppearance="@style/tab_text" />
 
                         </HorizontalScrollView>
 
 
                         <androidx.viewpager.widget.ViewPager
                             android:id="@+id/favorite_tab_Pager"
-                            android:layout_marginTop="0.1dp"
-                            android:padding="10dp"
                             android:layout_width="match_parent"
                             android:layout_height="380dp"
+                            android:layout_below="@+id/favorite_tab_view"
+                            android:layout_marginTop="0.1dp"
                             android:background="@color/closet"
-                            android:layout_below="@+id/favorite_tab_view" >
+                            android:padding="10dp">
 
                         </androidx.viewpager.widget.ViewPager>
                     </RelativeLayout>

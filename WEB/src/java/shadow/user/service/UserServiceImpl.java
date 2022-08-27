@@ -340,6 +340,20 @@ public class UserServiceImpl extends SuperService implements UserService {
 		return resultABox;
 	}
 	
+	@Override
+	public ABox getCategoryUserList2(ABox jsonBox) {
+		ABox resultABox = new ABox();
+		try {
+			ABoxList<ABox> categoryList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectCategoryUserList2SQL", jsonBox);
+			resultABox.set("check", "ok");
+			resultABox.set("result", categoryList);
+			
+		} catch (Exception ex) {
+			resultABox.set("check", "fail");
+			ex.printStackTrace();
+		} 
+		return resultABox;
+	}
 	
 	@Override
 	public ABox getLocation(ABox aBox) {

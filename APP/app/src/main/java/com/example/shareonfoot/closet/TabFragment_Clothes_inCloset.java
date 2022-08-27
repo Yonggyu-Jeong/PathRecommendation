@@ -138,8 +138,6 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         String coordinates[] = {page.toString(), ""};
-        //Log.i("qe",String.valueOf(page));
-        //현재 페이지수와 함께 웹서버에 옷 데이터 요청
         String result = getLocateList(json);
         Log.e("result 작동 테스트", result);
         //리사이클러 뷰 설정하기

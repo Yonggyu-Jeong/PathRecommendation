@@ -1,6 +1,7 @@
 package com.example.shareonfoot.util;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class ClothesListAdapter extends RecyclerView.Adapter<ClothesListAdapter.
         this.mContext=context;
         this.item_layout=item_layout;
         this.listData=items;
+        Log.e("ClothesListAdapter", ""+items);
 
     }
     //뷰홀더 객체 생성하며 리턴 (아이템뷰를 위한)

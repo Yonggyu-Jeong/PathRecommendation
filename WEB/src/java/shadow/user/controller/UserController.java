@@ -255,9 +255,25 @@ public class UserController {
 	public ResponseEntity<String> getCategoryUserList(@PathVariable("option") String option) throws Exception {
 		String result = "";
 		ABox jsonBox = new ABox();
-		jsonBox.set("category", option);			
+		jsonBox.set("option", option);			
 		try {
 			result = userService.getCategoryUserList(jsonBox).aBoxToJsonObject().toString();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(result, HttpStatus.SERVICE_UNAVAILABLE);
+
+		}
+		return new ResponseEntity<String>(result, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/user/list2/{option}", produces = "application/json; charset=utf8", method = RequestMethod.GET)
+	public ResponseEntity<String> getCategoryUserList2(@PathVariable("option") String option) throws Exception {
+		String result = "";
+		ABox jsonBox = new ABox();
+		jsonBox.set("option", option);			
+		try {
+			result = userService.getCategoryUserList2(jsonBox).aBoxToJsonObject().toString();
 
 		} catch (Exception e) {
 			e.printStackTrace();

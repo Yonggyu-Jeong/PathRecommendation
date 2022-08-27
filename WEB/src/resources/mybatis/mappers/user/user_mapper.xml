@@ -174,7 +174,29 @@
 			b.id = #{option} AND
 			c.member_id = b.member_seq AND
 			a.locate_id = c.locate_id AND
-			d.locate_seq = a.locate_id
+			d.locate_seq = a.locate_id AND
+			c.choose = "CH01"
+		ORDER BY 
+			locate_id 
+		LIMIT 
+			0, 7;
+	]]>
+	</select>
+	
+	<select id="selectCategoryUserList2SQL"
+		resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		SELECT 
+			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, d.tag1, d.tag2, d.tag3, d.tag4
+		FROM 
+			locate a, member b, member_path c, locate_label d
+		WHERE 
+			b.id = #{option} AND
+			c.member_id = b.member_seq AND
+			a.locate_id = c.locate_id AND
+			d.locate_seq = a.locate_id AND
+			c.choose = "CH02"
 		ORDER BY 
 			locate_id 
 		LIMIT 

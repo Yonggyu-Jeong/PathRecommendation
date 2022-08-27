@@ -1,23 +1,42 @@
 package com.example.shareonfoot.home.subfragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.example.shareonfoot.closet.TabFragment_Clothes_inCloset;
+import com.example.shareonfoot.util.ClothesListAdapter;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.shareonfoot.HTTP.Service.MapService;
 import com.example.shareonfoot.R;
+import com.example.shareonfoot.VO.ClothesVO;
 import com.example.shareonfoot.home.fragment_home;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import retrofit2.Call;
 
 /* 그리드 사이즈 조절 방법 :
 어댑터 변경, 그리드 사이즈 변경, 페이지사이즈 변경
@@ -27,15 +46,17 @@ import java.util.ArrayList;
 public class TabFragment_Clothes_inHome extends Fragment {
 
     fragment_home parentFragment;
+    private static String json;
 
     String identifier; //프래그먼트의 종류를 알려줌
     String size;
+    ArrayList<ClothesVO> clothesList = new ArrayList<ClothesVO>();
 
     int gridsize;
     String pagesize;
-
+    ClothesListAdapter clothesListAdapter;
     public RelativeLayout Cloth_Info;
-
+    public int choose;
     int page=0;
     RecyclerView rv_clothes;
     ArrayList<String> ImageUrlList = new ArrayList<String>();
@@ -48,6 +69,7 @@ public class TabFragment_Clothes_inHome extends Fragment {
         Bundle args = new Bundle();
         args.putString("identifier", identifier);  // 키값, 데이터
         args.putString("size", size);
+        Log.e("home", identifier.toString());
 
         TabFragment_Clothes_inHome fragment = new TabFragment_Clothes_inHome();
         fragment.setArguments(args);
@@ -60,7 +82,6 @@ public class TabFragment_Clothes_inHome extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         parentFragment = ((fragment_home)getParentFragment());
-
 
         Bundle args = getArguments(); // 데이터 받기
         if(args != null)
@@ -84,22 +105,37 @@ public class TabFragment_Clothes_inHome extends Fragment {
                 break;
         }
 
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("tab_home",0);
+        choose = sharedPreferences.getInt("pos", choose);
+        Log.e("sharedPreferences", ""+choose);
+        if(choose == 0) {
+            json = "CS02";
+        } else if(choose == 1) {
+            json = "CS03";
+        } else {
+            json = "CS02";
+        }
+        Log.e("json", json);
+
         //리사이클러뷰 어댑터 초기화
-
-
-
+        clothesListAdapter = new ClothesListAdapter(getContext(), clothesList, R.layout.fragment_recyclerview);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        //현재 페이지수와 함께 웹서버에 옷 데이터 요청
-
+        int i = 0;
+        i++;
+        Log.e("count", ""+i);
+        //        String result = getLocateUserList("hello", json);
+        String result = getLocateUserList("hello");
+        Log.e("result 작동 테스트", result);
         //리사이클러 뷰 설정하기
+
         View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
         rv_clothes = (RecyclerView) view.findViewById(R.id.tab_clothes_rv);
-        rv_clothes.setLayoutManager(new GridLayoutManager(getContext(), gridsize)); //그리드 사이즈 설정
+        rv_clothes.setLayoutManager(new LinearLayoutManager(getContext())); //그리드 사이즈 설정
+        rv_clothes.setAdapter(clothesListAdapter);
         rv_clothes.setNestedScrollingEnabled(true);
         rv_clothes.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
@@ -123,7 +159,11 @@ public class TabFragment_Clothes_inHome extends Fragment {
             @Override
             public void onRefresh() {
                 //스크롤이 최상단이면 데이터를 갱신한다
-
+                //clothesList.clear();
+                //page = 0;
+                //String result = getLocateUserList(json);
+                //clothesListAdapter.notifyDataSetChanged();
+                //mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -143,6 +183,104 @@ public class TabFragment_Clothes_inHome extends Fragment {
     private void refresh(){
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.detach(this).attach(this).commit();
+    }
+
+    public String getLocateUserList(String name) {
+        GetCategoryUserListTask mapTask = new GetCategoryUserListTask(requireContext());
+        String result = null;
+        try {
+            result = mapTask.execute(name).get();
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public class GetCategoryUserListTask extends AsyncTask<String, Void, String> {
+        public Context context;
+
+        public GetCategoryUserListTask(Context getContext) {
+            context = getContext;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... obj) {
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getCategoryUserList(obj[0]);
+            try {
+                Object result = objectCall.execute().body();
+                Gson gson = new Gson();
+                JsonObject json = gson.toJsonTree(result).getAsJsonObject();
+                return json.toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "fail";
+            }
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            super.onPostExecute(result);
+            int i = 0;
+            Integer image = 0;
+            ArrayList<String> jidx = new ArrayList();
+            ArrayList<String> jname = new ArrayList();
+            ArrayList<String> jcategory = new ArrayList();
+            ArrayList<String> jstar = new ArrayList();
+            ArrayList<String> jadress = new ArrayList();
+            ArrayList<String> jreview = new ArrayList();
+            ArrayList<Integer> jimage = new ArrayList();
+
+            try {
+                JSONArray jarray = new JSONObject(result).getJSONArray("result");
+                if (jarray != null) {
+                    final int numberOfItemsInResp = jarray.length();
+
+                    for (i = 0; i < numberOfItemsInResp; i++) {
+                        JSONObject jsonObject = jarray.getJSONObject(i);
+                        String idx = jsonObject.getString("locate_id");
+                        String star = "2.5";
+                        String review = "";
+                        if(!jsonObject.isNull("info")) {
+                            review = jsonObject.getString("info");
+                        }
+                        String adress = jsonObject.getString("area");
+                        String name = jsonObject.getString("name");
+                        String category = jsonObject.getString("category");
+                        jidx.add(idx);
+                        jname.add(name);
+                        jcategory.add(category);
+                        jstar.add(star);
+                        jadress.add(adress);
+                        jreview.add(review);
+                        ClothesVO data = new ClothesVO();
+
+                        data.setidx(idx);
+                        data.setname(name);
+                        data.setcategory(category);
+                        data.setstar(star);
+                        data.setadress(adress);
+                        data.setreview(review);
+                        data.setimage(image);
+                        clothesListAdapter.addItem(data);
+                        clothesListAdapter.notifyDataSetChanged();
+                    }
+                    //clothesList.clear();
+                } else {
+                    Toast.makeText(getContext(), "가까운 곳 없습니다.", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Log.e("ErrMag", e.toString());
+            }
+        }
     }
 
 
