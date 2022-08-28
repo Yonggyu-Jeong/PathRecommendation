@@ -44,9 +44,6 @@ public class infoWindowAdapter extends InfoWindow.DefaultViewAdapter {
     {
         View view = (View) LayoutInflater.from(mContext).inflate(R.layout.info_window_view, mParent, false);
 
-        Button buttonAdd = (Button) view.findViewById(R.id.btnAddForLocate);
-        Button buttonDelete = (Button) view.findViewById(R.id.btnDeleteForLocate);
-
         TextView title = (TextView) view.findViewById(R.id.txttitle);
         ImageView imagePoint = (ImageView) view.findViewById(R.id.imagepoint);
         TextView category = (TextView) view.findViewById(R.id.store_category);

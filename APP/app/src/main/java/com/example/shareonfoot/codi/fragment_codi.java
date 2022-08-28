@@ -59,6 +59,7 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
@@ -158,8 +159,9 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     private int pathOverlayMapCount = 0;
     private int stopMarkerCount = 0;
     private int loadCount = 0;
+    private int loadSearchCount = 0;
     private String option = "trafast";
-
+    private Marker myMarker = new Marker();
 
     private static class InfoWindowAdapter extends InfoWindow.ViewAdapter {
         @NonNull
@@ -273,7 +275,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         final String[] Category = {""};
 
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
-
+        viewMenu.clear();
         Calendar calendar = Calendar.getInstance();
         weekDay = dayFormat.format(calendar.getTime());
 
@@ -431,28 +433,29 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                double locationLat = 0.0;
-                double locationLng = 0.0;
                 if(location != null){
                     try {
                         Log.e("checkLocationServicesStatus3", "성공");
 
                         //location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         locationManager.requestLocationUpdates(String.valueOf(new String[]{"GPS", "Network"}), 0, 0, locationListener);
-                        locationLat = location.getLatitude();
-                        locationLng = location.getLongitude();
+
+                        myMarker.setMap(null);
+                        myMarker.setIcon(OverlayImage.fromResource(R.drawable.icon_footer_bus));
+                        Tm128 tm128 = new Tm128(location.getLatitude(), location.getLongitude());
+                        myMarker.setPosition(tm128.toLatLng());
+                        myMarker.setWidth(100);
+                        myMarker.setHeight(140);
+                        myMarker.setSubCaptionColor(Color.GRAY);
+                        myMarker.setSubCaptionText("내 위치");
+                        myMarker.setSubCaptionMinZoom(13);
+                        myMarker.setMap(naverMap);
 
                     } catch (SecurityException e) {
-                        Log.e("onLocationChanged_exception", "" + locationLat + locationLng);
+                        Log.e("onLocationChanged_exception", "");
                     }
-
-                    double latitude= location.getLatitude();
-                    double longitude = location.getLongitude();
                 }
                 Log.e("checkLocationServicesStatus2", "성공");
-
-
-                Log.e("onLocationChanged", "" + locationLat + locationLng);
             }
         };
 
@@ -500,8 +503,19 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 WorkTask.GetPathLocateTask pathLocateTask = new WorkTask.GetPathLocateTask(requireContext());
                 try {
                     Log.i("fabAdd3", responseMap.toString());
+                    PathOverlay path = new PathOverlay();
+                    path.setWidth(30);
+                    if(loadSearchCount == 0) {
+                        path.setColor(Color.WHITE);
+                    } else if (loadSearchCount == 1) {
+                        path.setColor(Color.BLUE);
+                    } else {
+                        path.setColor(Color.BLACK);
+                    }
+                    loadSearchCount++;
 
                     HashMap<String, Object> resultMap = pathLocateTask.execute(responseMap).get();
+                    resultMap.put("loadMapCheck", "loadMap"+loadCount);
                     loadMap.put("loadMap"+loadCount, resultMap);
                     loadCount++;
                     ArrayList<LatLng> latLngArrayList = (ArrayList<LatLng>) resultMap.get("list");
@@ -513,16 +527,13 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     }
                     pathOverlayMapCount = 0;
                     */
-                    PathOverlay path = new PathOverlay();
                     path.setCoords(latLngArrayList);
-                    path.setWidth(30);
-                    path.setColor(Color.BLUE);
 
                     path.setOnClickListener(overlay -> {
                         for(int j=0; j<loadCount; j++) {
-                            if(resultMap.equals(loadMap.get(j))) {
+                            if(loadMap.containsKey(resultMap.get("loadMapCheck"))) {
                                 Toast.makeText(requireContext(), "해당 경로로 지정되었습니다.", Toast.LENGTH_SHORT).show();
-                                HashMap<String, Object> chooseLoadMap = loadMap.get(j);
+                                HashMap<String, Object> chooseLoadMap = loadMap.get(resultMap.get("loadMapCheck"));
                                 int hour = ((Integer.parseInt((String) chooseLoadMap.get("duration")))/(1000 * 60 *60 ))%24;
                                 int min = ((Integer.parseInt((String) chooseLoadMap.get("duration")))/(1000 * 60 ))%60;
 
@@ -532,6 +543,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                                 textView_time_var.setText(hour+"시간 "+min+"분  ("+kmt+"."+mt+"km)");
                                 textView_cost_var.setText((String) chooseLoadMap.get("cost")+"원");
                                 setGuideList(chooseLoadMap);
+                                return true;
                             }
                         }
                         /*
@@ -585,6 +597,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         fabMake.setOnClickListener(view -> {
             if(editText.getText() != null) {
                 getLocateNameforStart(editText.getText().toString(), naverMap, infoWindow);
+
                 checkStart = true;
                 if(checkStart && checkGoal) {
                     //setCircle(naverMap, start_lng, goal_lng, start_lat, goal_lat);
@@ -706,35 +719,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         return addressStringBuilder.toString();
     }
 
-    /*
-    LocationCallback locationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            super.onLocationResult(locationResult);
-
-            List<Location> locationList = locationResult.getLocations();
-
-            if (locationList.size() > 0) {
-                Location location = locationList.get(locationList.size() - 1);
-
-                LatLng currentPosition
-                        = new LatLng(location.getLatitude(), location.getLongitude());
-
-                String markerTitle = getCurrentAddress(currentPosition);
-                String markerSnippet = "위도:" + String.valueOf(location.getLatitude())
-                        + " 경도:" + String.valueOf(location.getLongitude());
-
-                Log.d("TAG", "Time :" + CurrentTime() + " onLocationResult : " + markerSnippet);
-
-                //현재 위치에 마커 생성하고 이동
-                setCurrentLocation(location, markerTitle, markerSnippet);
-                mCurrentLocatiion = location;
-
-            }
-        }
-
-    };
-*/
     private String CurrentTime(){
         Date today = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd");
@@ -782,8 +766,18 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             markerNameMap.put("markerStart", hashMap.get("title").toString());
             markerStart.setMap(naverMap);
             editText.setText("");
+
             CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(start_lat, start_lng));
             naverMap.moveCamera(cameraUpdate);
+
+            myMarker.setIcon(OverlayImage.fromResource(R.drawable.icon_footer_bus));
+            myMarker.setPosition(tm128.toLatLng());
+            myMarker.setWidth(100);
+            myMarker.setHeight(140);
+            myMarker.setSubCaptionColor(Color.GRAY);
+            myMarker.setSubCaptionText("내 위치");
+            myMarker.setSubCaptionMinZoom(13);
+            myMarker.setMap(naverMap);
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -866,7 +860,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 }
 
                 try {
-                    for (int j = 0; j < 1; j++) {
+                    for (int j = 0; j < 3; j++) {
                         HashMap<String, Object> requestMap = new HashMap();
                         String waypoint = "";
                         requestMap.put("start", markerLatLngMap.get("markerStart").longitude+","+markerLatLngMap.get("markerStart").latitude+",name="+markerNameMap.get("markerStart"));
@@ -879,8 +873,26 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                         ArrayList<LatLng> latLngArrayList = (ArrayList<LatLng>) pathMap.get("list");
                         PathOverlay path = new PathOverlay();
                         path.setCoords(latLngArrayList);
+
+                        pathMap.put("loadMapCheck", "loadMap"+loadCount);
+                        loadMap.put("loadMap"+loadCount, pathMap);
+                        loadCount++;
+
                         path.setOnClickListener(overlay -> {
-                            Toast.makeText(requireContext(), "해당 경로로 지정되었습니다.", Toast.LENGTH_SHORT).show();
+                            if(loadMap.containsKey(pathMap.get("loadMapCheck"))) {
+                                Toast.makeText(requireContext(), "해당 경로로 지정되었습니다.", Toast.LENGTH_SHORT).show();
+                                HashMap<String, Object> chooseLoadMap = loadMap.get(pathMap.get("loadMapCheck"));
+                                int hour = ((Integer.parseInt((String) chooseLoadMap.get("duration")))/(1000 * 60 *60 ))%24;
+                                int min = ((Integer.parseInt((String) chooseLoadMap.get("duration")))/(1000 * 60 ))%60;
+
+                                int kmt = Integer.parseInt((String) chooseLoadMap.get("distance"))/1000;
+                                int mt = (Integer.parseInt((String) chooseLoadMap.get("distance"))%1000);
+
+                                textView_time_var.setText(hour+"시간 "+min+"분  ("+kmt+"."+mt+"km)");
+                                textView_cost_var.setText((String) chooseLoadMap.get("cost")+"원");
+                                setGuideList(chooseLoadMap);
+                                return true;
+                            }
                             return true;
                         });
                         path.setWidth(20);
@@ -1036,7 +1048,11 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 infoWindow.open(marker);
                 return true;
             });
-            marker.setIcon(MarkerIcons.GRAY);
+            if(category.equals("음식점")) {
+                marker.setIcon(MarkerIcons.GRAY);
+            } else {
+                marker.setIcon(MarkerIcons.GREEN);
+            }
             marker.setCaptionTextSize(14);
             marker.setCaptionText(paramMap.get("name").toString());
             marker.setCaptionMinZoom(12);

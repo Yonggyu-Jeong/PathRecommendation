@@ -101,7 +101,7 @@
 			locate a, locate_label b
 		WHERE 
 			a.locate_id = b.label_seq AND
-			category != "CS01" AND lng < #{maxLng} AND lat < #{maxLat} AND lng > #{minLng} AND lat > #{minLat}
+			lng < #{maxLng} AND lat < #{maxLat} AND lng > #{minLng} AND lat > #{minLat}
 		]]>
 	</select>
 
