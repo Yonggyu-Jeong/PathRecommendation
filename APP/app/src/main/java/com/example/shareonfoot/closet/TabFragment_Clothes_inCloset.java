@@ -80,6 +80,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
     private boolean mLocationPermissionGranted;
     //리사이클러뷰 어댑터
     ClothesListAdapter clothesListAdapter;
+    public SwipeRefreshLayout mSwipeRefreshLayout;
     public static String ErrMag = "ErrMag";
     public String err;
     private int choose = 0;
@@ -138,18 +139,28 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         String coordinates[] = {page.toString(), ""};
-        String result = getLocateList(option);
-        Log.e("result 작동 테스트", result);
         //리사이클러 뷰 설정하기
         View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
         rv_clothes = (RecyclerView) view.findViewById(R.id.tab_clothes_rv);
         rv_clothes.setLayoutManager(new LinearLayoutManager(getContext()));
         rv_clothes.setAdapter(clothesListAdapter);
         rv_clothes.setNestedScrollingEnabled(true);
+
+        String result = getLocateList(option);
+        Log.e("result 작동 테스트", result);
+        clothesListAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
         rv_clothes.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View view, int i, int i1, int i2, int i3) {
                 if (!rv_clothes.canScrollVertically(-1)) {
+
+                    //String result = getLocateList(option);
+                    //Log.e("result 작동 테스트", result);
+                    //clothesListAdapter.notifyDataSetChanged();
+                    //mSwipeRefreshLayout.setRefreshing(false);
+
                     //스크롤이 최상단이면 데이터를 갱신한다
                     /*clothesList.clear();
                     page=0;
@@ -171,7 +182,6 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
             }
         });
 
-        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -190,6 +200,11 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        String result = getLocateList(option);
+        Log.e("result 작동 테스트", result);
+        clothesListAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
+
     }
 
     //프래그먼트 갱신

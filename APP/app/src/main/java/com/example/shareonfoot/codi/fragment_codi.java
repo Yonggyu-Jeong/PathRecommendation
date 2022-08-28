@@ -149,12 +149,15 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     private HashMap<String, LatLng> stopMarkerLatLngMap = new HashMap<String, LatLng>();
     private HashMap<String, String> stopMarkerNameMap = new HashMap<String, String>();
     private HashMap<String, PathOverlay> pathOverlayMap = new HashMap<String, PathOverlay>();
+    private HashMap<String, HashMap<String, Object>> loadMap = new HashMap<String, HashMap<String, Object>>();
+
     private String[] optionList = {"trafast", "traavoidtoll", "tracomfort"};
     private Marker targetMarker = null;
     private LatLng targetLatLng = null;
     private String targetName = "";
     private int pathOverlayMapCount = 0;
     private int stopMarkerCount = 0;
+    private int loadCount = 0;
     private String option = "trafast";
 
 
@@ -494,11 +497,13 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     responseMap.put("waypoints", waypoint.substring(0, waypoint.length()-1));
                 }
                 responseMap.put("option", option);
-                WorkTask.GetPathLocateTask2 pathLocateTask = new WorkTask.GetPathLocateTask2(requireContext());
+                WorkTask.GetPathLocateTask pathLocateTask = new WorkTask.GetPathLocateTask(requireContext());
                 try {
                     Log.i("fabAdd3", responseMap.toString());
 
                     HashMap<String, Object> resultMap = pathLocateTask.execute(responseMap).get();
+                    loadMap.put("loadMap"+loadCount, resultMap);
+                    loadCount++;
                     ArrayList<LatLng> latLngArrayList = (ArrayList<LatLng>) resultMap.get("list");
 
                     /*
@@ -514,6 +519,21 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     path.setColor(Color.BLUE);
 
                     path.setOnClickListener(overlay -> {
+                        for(int j=0; j<loadCount; j++) {
+                            if(resultMap.equals(loadMap.get(j))) {
+                                Toast.makeText(requireContext(), "해당 경로로 지정되었습니다.", Toast.LENGTH_SHORT).show();
+                                HashMap<String, Object> chooseLoadMap = loadMap.get(j);
+                                int hour = ((Integer.parseInt((String) chooseLoadMap.get("duration")))/(1000 * 60 *60 ))%24;
+                                int min = ((Integer.parseInt((String) chooseLoadMap.get("duration")))/(1000 * 60 ))%60;
+
+                                int kmt = Integer.parseInt((String) chooseLoadMap.get("distance"))/1000;
+                                int mt = (Integer.parseInt((String) chooseLoadMap.get("distance"))%1000);
+
+                                textView_time_var.setText(hour+"시간 "+min+"분  ("+kmt+"."+mt+"km)");
+                                textView_cost_var.setText((String) chooseLoadMap.get("cost")+"원");
+                                setGuideList(chooseLoadMap);
+                            }
+                        }
                         /*
                         switch (stopMarkerCount) {
                             case 0:
@@ -532,7 +552,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                          */
 
                         //TODO 경로 지정
-                        Toast.makeText(requireContext(), "출력됨", Toast.LENGTH_SHORT).show();
                         return true;
                     });
 
@@ -549,7 +568,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
                     textView_time_var.setText(hour+"시간 "+min+"분  ("+kmt+"."+mt+"km)");
                     textView_cost_var.setText((String) resultMap.get("cost")+"원");
-
                     setGuideList(resultMap);
 
                 } catch (ExecutionException e) {
@@ -601,6 +619,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
     }
 
     public void setGuideList(HashMap<String, Object> map) {
+        viewMenu.clear();
         ArrayList<HashMap<String, Object>> guideList = (ArrayList<HashMap<String, Object>>) map.get("guideList");
         for(int i=0; i<guideList.size(); i++) {
             Double km = Double.parseDouble(guideList.get(i).get("distance").toString())/1000;
@@ -880,15 +899,12 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
                         int hour = ((Integer.parseInt((String) pathMap.get("duration")))/(1000 * 60 *60 ))%24;
                         int min = ((Integer.parseInt((String) pathMap.get("duration")))/(1000 * 60 ))%60;
-
                         int kmt = Integer.parseInt((String) pathMap.get("distance"))/1000;
                         int mt = (Integer.parseInt((String) pathMap.get("distance"))%1000);
 
                         textView_time_var.setText(hour+"시간 "+min+"분  ("+kmt+"."+mt+"km)");
                         textView_cost_var.setText((String) pathMap.get("cost")+"원");
-
                         setGuideList(pathMap);
-
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

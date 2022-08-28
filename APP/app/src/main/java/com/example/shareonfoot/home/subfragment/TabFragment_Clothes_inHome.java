@@ -174,6 +174,7 @@ public class TabFragment_Clothes_inHome extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
     }
 
     //프래그먼트 갱신
