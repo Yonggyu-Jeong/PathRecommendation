@@ -187,8 +187,10 @@ public class TabFragment_Clothes_inHome extends Fragment {
                             String tags = "";
                             for(int j=1; j<5; j++) {
                                 tags += "#"+utils.getTagCategory(jsonObject.getString("tag"+j).toString());
-                                if(j!=4) {
+                                if(j == 2 ) {
                                     tags += "\n";
+                                } else {
+                                    tags += "  ";
                                 }
                             }
                             if (!jsonObject.isNull("info")) {
@@ -235,7 +237,6 @@ public class TabFragment_Clothes_inHome extends Fragment {
                             }
                             jimage.add(image);
                             ClothesVO data = new ClothesVO();
-
                             data.setidx(idx);
                             data.setname(name1+"  ("+star+")");
                             data.setcategory(tags);
@@ -296,57 +297,7 @@ public class TabFragment_Clothes_inHome extends Fragment {
         @Override
         public void onPostExecute(String result) {
             super.onPostExecute(result);
-            int i = 0;
-            Integer image = 0;
-            ArrayList<String> jidx = new ArrayList();
-            ArrayList<String> jname = new ArrayList();
-            ArrayList<String> jcategory = new ArrayList();
-            ArrayList<String> jstar = new ArrayList();
-            ArrayList<String> jadress = new ArrayList();
-            ArrayList<String> jreview = new ArrayList();
-            ArrayList<Integer> jimage = new ArrayList();
 
-            try {
-                JSONArray jarray = new JSONObject(result).getJSONArray("result");
-                if (jarray != null) {
-                    final int numberOfItemsInResp = jarray.length();
-
-                    for (i = 0; i < numberOfItemsInResp; i++) {
-                        JSONObject jsonObject = jarray.getJSONObject(i);
-                        String idx = jsonObject.getString("locate_id");
-                        String star = "2.5";
-                        String review = "";
-                        if(!jsonObject.isNull("info")) {
-                            review = jsonObject.getString("info");
-                        }
-                        String adress = jsonObject.getString("area");
-                        String name = jsonObject.getString("name");
-                        String category = jsonObject.getString("category");
-                        jidx.add(idx);
-                        jname.add(name);
-                        jcategory.add(category);
-                        jstar.add(star);
-                        jadress.add(adress);
-                        jreview.add(review);
-                        ClothesVO data = new ClothesVO();
-
-                        data.setidx(idx);
-                        data.setname(name);
-                        data.setcategory(category);
-                        data.setstar(star);
-                        data.setadress(adress);
-                        data.setreview(review);
-                        data.setimage(image);
-                        clothesListAdapter.addItem(data);
-                        clothesListAdapter.notifyDataSetChanged();
-                    }
-                    //clothesList.clear();
-                } else {
-                    Toast.makeText(getContext(), "가까운 곳 없습니다.", Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                Log.e("ErrMag", e.toString());
-            }
         }
     }
 

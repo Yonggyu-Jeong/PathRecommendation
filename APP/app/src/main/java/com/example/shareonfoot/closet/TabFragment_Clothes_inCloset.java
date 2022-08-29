@@ -223,8 +223,10 @@ public class TabFragment_Clothes_inCloset extends Fragment {
                             String tags = "";
                             for(int j=1; j<5; j++) {
                                 tags += "#"+utils.getTagCategory(jsonObject.getString("tag"+j).toString());
-                                if(j!=4) {
+                                if(j == 2) {
                                     tags += "\n";
+                                } else {
+                                    tags += "  ";
                                 }
                             }
                             if (!jsonObject.isNull("info")) {
