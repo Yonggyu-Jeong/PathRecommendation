@@ -187,8 +187,9 @@ public class fragment_closet extends Fragment implements OnBackPressedListener {
 //        });
 
         //플로팅 액션 버튼 설정
-        fabAdd = (FloatingActionButton) viewGroup.findViewById(R.id.fab_add_photo);
-        fabBring = (FloatingActionButton) viewGroup.findViewById(R.id.fab_bring_data);
+        //fabAdd = (FloatingActionButton) viewGroup.findViewById(R.id.fab_add_photo);
+        //fabBring = (FloatingActionButton) viewGroup.findViewById(R.id.fab_bring_data);
+        /*
         fam = (FloatingActionMenu) viewGroup.findViewById(R.id.fab_menu);
 
         //handling menu status (open or close)
@@ -221,7 +222,7 @@ public class fragment_closet extends Fragment implements OnBackPressedListener {
         //fam.open(true);
         //fam.close(true);
         fam.setClosedOnTouchOutside(true);
-
+*/
 
 
         return viewGroup;

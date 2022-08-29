@@ -235,6 +235,8 @@ public class TabFragment_Clothes_inHome extends Fragment {
                                     image = R.drawable.desert;
                                     break;
                             }
+
+
                             jimage.add(image);
                             ClothesVO data = new ClothesVO();
                             data.setidx(idx);

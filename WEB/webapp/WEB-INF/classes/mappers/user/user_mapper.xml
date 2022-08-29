@@ -163,8 +163,28 @@
 		DESC
 		LIMIT 
 			0, 7;
-
 	</select>
+	
+		<select id="selectCategoryListCS99SQL"
+		resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		SELECT 
+			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, b.rate, b.tag1, b.tag2, b.tag3, b.tag4
+		FROM 
+			locate a, locate_label b
+		WHERE 
+			b.locate_seq = a.locate_id AND (a.city = "시흥시" OR a.city = "안산시")
+			AND a.category != "CS01"
+		ORDER BY 
+			b.rate
+		DESC
+		LIMIT 
+			0, 7;
+	]]>
+	</select>
+	
+	
 	
 	<select id="selectCategoryListCS08SQL"
 		resultType="common.collection.ABox"

@@ -452,6 +452,87 @@ public class Utils {
             return korean;
     }
 
+    public static int convertImage(String name) {
+        int image = 0;
+        switch(name) {
+            case "":
+                image = R.drawable.icon_footer_bus;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable.;
+                break;
+            case "":
+                image = R.drawable;
+                break;
+            default:
+                return 0;
+        }
+        return image;
+    }
+
     public static String convertEng(String english){
         String korean="";
         switch(english){

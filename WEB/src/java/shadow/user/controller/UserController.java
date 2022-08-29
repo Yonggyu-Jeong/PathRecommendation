@@ -239,9 +239,7 @@ public class UserController {
 	public ResponseEntity<String> getCategoryList(@PathVariable("category") String category) throws Exception {
 		String result = "";
 		ABox jsonBox = new ABox();
-		if(!category.equals("CS99")) {
-			jsonBox.set("category", category);			
-		}
+		jsonBox.set("category", category);			
 		try {
 			result = userService.getCategoryList(jsonBox).aBoxToJsonObject().toString();
 
