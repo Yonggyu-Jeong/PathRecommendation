@@ -242,35 +242,33 @@ public class TabFragment_Clothes_inCloset extends Fragment {
                             jadress.add(adress);
                             jreview.add(review);
 
-                            switch (category) {
-                                case "CS01": //모든 옷 조회
-                                    image = R.drawable.all;
-                                    break;
-                                case "CS02": //카테고리 top 조회
-                                    image = R.drawable.desert;
-                                    break;
-                                case "CS03": //카테고리 bottom 조회
-                                    image = R.drawable.food1;
-                                    break;
-                                case "CS04": //카테고리 suit 조회
-                                    image = R.drawable.sports;
-                                    break;
-                                case "CS05": //카테고리 outer 조회
-                                    image = R.drawable.movie;
-                                    break;
-                                case "CS06": //카테고리 shoes 조회
-                                    image = R.drawable.soju;
-                                    break;
-                                case "CS07": //카테고리 bag 조회
-                                    image = R.drawable.play;
-                                    break;
-                                case "CS08": //카테고리 bag 조회
-                                    image = R.drawable.icon_footer_bus;
-                                    break;
-                                default:
-                                    image = R.drawable.desert;
-                                    break;
+                            image = utils.convertImage(name1);
+                            if(image == 0) {
+                                switch (category) {
+                                    case "CS01": //모든 옷 조회
+                                        image = R.drawable.foodc;
+                                        break;
+                                    case "CS04": //카테고리 suit 조회
+                                        image = R.drawable.hisc;
+                                        break;
+                                    case "CS05": //카테고리 outer 조회
+                                        image = R.drawable.naturec;
+                                        break;
+                                    case "CS06": //카테고리 shoes 조회
+                                        image = R.drawable.expc;
+                                        break;
+                                    case "CS07": //카테고리 bag 조회
+                                        image = R.drawable.themec;
+                                        break;
+                                    case "CS08": //카테고리 bag 조회
+                                        image = R.drawable.etcc;
+                                        break;
+                                    default:
+                                        image = R.drawable.naturec;
+                                        break;
+                                }
                             }
+                                jimage.add(image);
                             jimage.add(image);
                             ClothesVO data = new ClothesVO();
 

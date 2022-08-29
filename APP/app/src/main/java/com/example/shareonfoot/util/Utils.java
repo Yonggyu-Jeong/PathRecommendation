@@ -452,80 +452,116 @@ public class Utils {
             return korean;
     }
 
-    public static int convertImage(String name) {
+    public int convertImage(String name) {
         int image = 0;
         switch(name) {
-            case "":
-                image = R.drawable.icon_footer_bus;
+            case "애기봉":
+                image = R.drawable.aegi;
+                break;
+            case "안산패션일번가":
+                image = R.drawable.ansanfashion;
+                break;
+            case "아라뱃길김포터미널":
+                image = R.drawable.arabat;
+                break;
+            case "다도박물관":
+                image = R.drawable.dado;
                 break;
             case "":
-                image = R.drawable.;
+                image = R.drawable.dojagi;
                 break;
-            case "":
-                image = R.drawable.;
+            case "시흥갯골생태공원":
+                image = R.drawable.gatgoal;
                 break;
-            case "":
-                image = R.drawable.;
+            case "김포평화누리길 1코스":
+                image = R.drawable.gimpo1;
                 break;
-            case "":
-                image = R.drawable.;
+            case "김포평화누리길 2코스":
+                image = R.drawable.gimpo2;
                 break;
-            case "":
-                image = R.drawable.;
+            case "공릉관광지":
+                image = R.drawable.gong;
                 break;
-            case "":
-                image = R.drawable.;
+            case "구봉도낙조전망대":
+                image = R.drawable.gubong;
                 break;
-            case "":
-                image = R.drawable.;
+            case "과림저수지":
+                image = R.drawable.gwarim;
                 break;
-            case "":
-                image = R.drawable.;
+            case "배곧한울공원":
+                image = R.drawable.hanul;
                 break;
-            case "":
-                image = R.drawable.;
+            case "배곧한울공원해수체험장":
+                image = R.drawable.hanulhaesu;
                 break;
-            case "":
-                image = R.drawable.;
+            case "임진각관광지":
+                image = R.drawable.imjin;
                 break;
-            case "":
-                image = R.drawable.;
+            case "문수산성":
+                image = R.drawable.munsu;
                 break;
-            case "":
-                image = R.drawable.;
+            case "노적봉 공원":
+                image = R.drawable.nojeok;
                 break;
-            case "":
-                image = R.drawable.;
+            case "상록수된장마을":
+                image = R.drawable.sangloksu;
                 break;
-            case "":
-                image = R.drawable.;
+            case "소래산":
+                image = R.drawable.sorae;
                 break;
-            case "":
-                image = R.drawable.;
+            case "쌍계사":
+                image = R.drawable.ssanggye;
                 break;
-            case "":
-                image = R.drawable.;
+            case "시흥오이도선사유적공원":
+                image = R.drawable.sunsa;
                 break;
-            case "":
-                image = R.drawable.;
+            case "연천세계캠핑체험존 - 펜션":
+                image = R.drawable.yeoncheon;
                 break;
-            case "":
-                image = R.drawable.;
+            case "유리섬박물관":
+                image = R.drawable.yuri;
                 break;
-            case "":
-                image = R.drawable.;
+            case "안탄대 선생 묘":
+                image = R.drawable.antandae;
                 break;
-            case "":
-                image = R.drawable.;
+            case "청문당":
+                image = R.drawable.chungmun;
                 break;
-            case "":
-                image = R.drawable.;
+            case "주식회사 청연":
+                image = R.drawable.chungyeon;
                 break;
-            case "":
-                image = R.drawable.;
+            case "도토리마을묵집":
+                image = R.drawable.dotori;
                 break;
-            case "":
-                image = R.drawable;
+            case "고기나라":
+                image = R.drawable.goginara;
+                break;
+            case "고송정지":
+                image = R.drawable.goseung;
+                break;
+            case "화정동메밀꽃필무렵":
+                image = R.drawable.hwajung;
+                break;
+            case "이익선생묘소":
+                image = R.drawable.iik;
+                break;
+            case "강희맹선생묘":
+                image = R.drawable.kanghee;
+                break;
+            case "관곡지":
+                image = R.drawable.kwangok;
+                break;
+            case "오양순추어탕":
+                image = R.drawable.ohyangsun;
+                break;
+            case "산골송어":
+                image = R.drawable.sangol;
+                break;
+            case "사세충렬문":
+                image = R.drawable.sasae;
+                break;
+            case "우강":
+                image = R.drawable.woogang;
                 break;
             default:
                 return 0;
