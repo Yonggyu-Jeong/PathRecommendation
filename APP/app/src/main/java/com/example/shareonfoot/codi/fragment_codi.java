@@ -1090,23 +1090,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                             targetMarker.setMap(naverMap);
                             Toast.makeText(getContext(), (stopMarkerCount) + "번째 경유지가 삭제되었습니다. ", Toast.LENGTH_SHORT).show();
 
-                            MenuItem menuItem = null;
-                            //TODO 도중 삭제시 에러, 선입선출 구현
-                            switch (stopMarkerCount) {
-                                case 0:
-                                    menuItem = viewMenu.getItem(0);
-                                    menuItem.setTitle("");
-                                    break;
-                                case 1:
-                                    menuItem = viewMenu.getItem(1);
-                                    menuItem.setTitle("");
-                                    break;
-                                default:
-                                    menuItem = viewMenu.getItem(2);
-                                    menuItem.setTitle("");
-                                    break;
-                            }
-
                         }
                     } catch (Exception e) {
                     }
@@ -1117,12 +1100,20 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     stopMarkerMap.put("marker"+stopMarkerCount, targetMarker);
                     stopMarkerLatLngMap.put("marker"+stopMarkerCount, targetLatLng);
                     stopMarkerNameMap.put("marker"+stopMarkerCount, targetName);
-                    targetMarker.setIcon(MarkerIcons.LIGHTBLUE);
+                    targetMarker.setIcon(MarkerIcons.BLUE);
                     targetMarker.setMap(naverMap);
                     Toast.makeText(getContext(), targetName+"을(를) "+(stopMarkerCount)+"번째 경유지로 등록했습니다", Toast.LENGTH_SHORT).show();
-
+                    WorkTask.AddMapPathTask addMapTask = new WorkTask.AddMapPathTask(requireContext());
+                    try {
+                        addMapTask.execute(paramMap.get("name").toString(), "CH02").get();
+                        Log.e("addMap", "등록되었습니다");
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    /*
                     MenuItem menuItem = null;
-                    //TODO 도중 삭제시 에러, 선입선출 구현
                     switch (stopMarkerCount) {
                         case 1:
                             menuItem = viewMenu.getItem(0);
@@ -1137,6 +1128,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                             menuItem.setTitle(targetName);
                             break;
                     }
+
+                     */
 
                 } else if((stopMarkerCheck == false) && stopMarkerCount >= 3){
                     Log.e("stopMarker", stopMarkerNameMap.toString());

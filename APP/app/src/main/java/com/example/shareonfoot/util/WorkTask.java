@@ -506,5 +506,43 @@ public class WorkTask {
     }
 
 
+    public static class AddMapPathTask extends AsyncTask<String, Void, String> {
+        public Context context;
+        private HashMap resultMap;
+
+        public AddMapPathTask(Context getContext) {
+            context = getContext;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... obj) {
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).addMap(obj[0], obj[1]);
+            try {
+                Object jsonObject = objectCall.execute().body();
+                Gson gson = new Gson();
+                JsonObject json = gson.toJsonTree(jsonObject).getAsJsonObject();
+                String result = json.get("check").toString();
+                return result;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s.equals("fail")) {
+                Toast.makeText(context, "네트워크 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
 }

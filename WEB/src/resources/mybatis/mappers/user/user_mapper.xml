@@ -131,7 +131,7 @@
 		parameterType="common.collection.ABox">
 	<![CDATA[
 		SELECT 
-			a.locate_id, b.label_seq, a.name, a.category, a.road, a.lng, a.lat, b.tag1, b.tag2, b.tag3, b.tag4, b.door_tag, b.rate
+			a.locate_id, b.label_seq, a.name, a.category, a.road, a.lng, a.lat, b.rate, b.tag1, b.tag2, b.tag3, b.tag4, b.door_tag, b.rate
 		FROM 
 			locate a, locate_label b
 		WHERE
@@ -149,7 +149,7 @@
 		parameterType="common.collection.ABox">
 	<![CDATA[
 		SELECT 
-			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, b.tag1, b.tag2, b.tag3, b.tag4
+			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, b.rate, b.tag1, b.tag2, b.tag3, b.tag4
 		FROM 
 			locate a, locate_label b
 		WHERE 
@@ -167,7 +167,7 @@
 		parameterType="common.collection.ABox">
 	<![CDATA[
 		SELECT 
-			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, d.tag1, d.tag2, d.tag3, d.tag4
+			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, d.rate, d.tag1, d.tag2, d.tag3, d.tag4
 		FROM 
 			locate a, member b, member_path c, locate_label d
 		WHERE 
@@ -188,7 +188,7 @@
 		parameterType="common.collection.ABox">
 	<![CDATA[
 		SELECT 
-			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, d.tag1, d.tag2, d.tag3, d.tag4
+			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, d.rate, d.tag1, d.tag2, d.tag3, d.tag4
 		FROM 
 			locate a, member b, member_path c, locate_label d
 		WHERE 
@@ -231,4 +231,20 @@
 				)
 		]]>
 	</insert>
+	
+	<select id="selectMapInfoSQL"
+		resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+	
+		SELECT 
+			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, b.rate, b.tag1, b.tag2, b.tag3, b.tag4
+		FROM 
+			locate a, locate_label b
+		WHERE 
+			a.name = #{name} AND
+			b.locate_seq = a.locate_id
+	]]>
+	</select>
+	
 </mapper>

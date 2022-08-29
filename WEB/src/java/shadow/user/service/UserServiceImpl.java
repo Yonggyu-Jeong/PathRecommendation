@@ -389,12 +389,18 @@ public class UserServiceImpl extends SuperService implements UserService {
 	}
 	
 	@Override
-	public ABox addMap(ABoxList<ABox> jsonBoxList) {
+	public ABox addMap(ABox jsonBox) {
 		ABox resultABox = new ABox();
 		try {
-			for(int i=0; i<jsonBoxList.size(); i++) {
-				commonDao.insert("mybatis.shadow.user.user_mapper.insertUserLocationSQL", jsonBoxList.get(i));
-			}
+			ABox insertBox = new ABox();
+			ABox mapBox = commonDao.select("mybatis.shadow.user.user_mapper.selectMapInfoSQL", jsonBox);
+			insertBox.set("member_id", 1);
+			insertBox.set("locate_id", mapBox.getInt("locate_id"));
+			insertBox.set("star", mapBox.getInt("rate"));
+			insertBox.set("mapId", 0);
+			insertBox.set("choose", jsonBox.getString("option"));
+			
+			commonDao.insert("mybatis.shadow.user.user_mapper.insertUserLocationSQL", insertBox);
 			resultABox.set("check", "ok");
 			
 		} catch (Exception ex) {

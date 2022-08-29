@@ -89,10 +89,10 @@ public class ClothesListAdapter extends RecyclerView.Adapter<ClothesListAdapter.
         ItemViewHolder(View itemView) {
             super(itemView);
 
-            textView1 = (TextView)itemView.findViewById(R.id.idx);
+            //textView1 = (TextView)itemView.findViewById(R.id.idx);
             textView2 = (TextView)itemView.findViewById(R.id.title);
             textView3 = (TextView)itemView.findViewById(R.id.category);
-            textView4 = (TextView)itemView.findViewById(R.id.star);
+            //textView4 = (TextView)itemView.findViewById(R.id.star);
             textView5 = (TextView)itemView.findViewById(R.id.adress);
             textView6 = (TextView)itemView.findViewById(R.id.review);
             imageView = (ImageView)itemView.findViewById(R.id.image);
@@ -114,10 +114,10 @@ public class ClothesListAdapter extends RecyclerView.Adapter<ClothesListAdapter.
         }
 
         void onBind(ClothesVO data) {
-            textView1.setText(data.getidx());
+            //textView1.setText(data.getidx());
             textView2.setText(data.getname());
             textView3.setText(data.getcategory());
-            textView4.setText(data.getstar());
+            //textView4.setText(data.getstar());
             textView5.setText(data.getadress());
             textView6.setText(data.getreview());
             imageView.setImageResource(data.getimage());
