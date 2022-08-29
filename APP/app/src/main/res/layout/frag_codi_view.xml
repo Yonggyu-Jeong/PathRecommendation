@@ -96,7 +96,7 @@
                     android:layout_marginLeft="100dp"
                     android:layout_marginTop="1dp"
                     android:background="@color/화이트"
-                    android:padding="10dp"
+                    android:padding="3dp"
                     android:text="오늘은 카페랑 디저트!!"
                     android:textAlignment="center"
                     android:textSize="20sp" />
@@ -149,6 +149,73 @@
 
             </RelativeLayout>
 
+            <com.github.clans.fab.FloatingActionMenu
+
+                android:id="@+id/fab_menu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
+                app:fab_shadowColor="#444"
+                app:fab_showShadow="true"
+
+
+                app:layout_anchor="@+id/relativeLayout"
+                app:layout_anchorGravity="center"
+                app:menu_backgroundColor="#ffffff"
+                app:menu_colorNormal="#FFB805"
+                app:menu_colorPressed="#F2AB00"
+
+                app:menu_colorRipple="#99FFFFFF"
+                app:menu_icon="@drawable/make_codi"
+                app:menu_labels_colorNormal="#333333"
+                app:menu_labels_colorPressed="#444444"
+                app:menu_labels_colorRipple="#66FFFFFF"
+                app:menu_labels_ellipsize="end"
+                app:menu_labels_maxLines="-1"
+
+                app:menu_labels_position="left"
+                app:menu_labels_showShadow="true"
+                app:menu_labels_singleLine="true"
+                app:menu_openDirection="up">
+
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_add_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_reco"
+                    app:fab_colorNormal="#000000"
+                    app:fab_colorPressed="#F2AB00"
+                    app:fab_colorRipple="#99FFFFFF"
+                    app:fab_label="검색"
+                    app:fab_size="normal" />
+
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_make_codi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_footer_store"
+                    app:fab_colorNormal="#000000"
+                    app:fab_colorPressed="#F2AB00"
+                    app:fab_colorRipple="#99FFFFFF"
+                    app:fab_label="출발지"
+                    app:fab_size="normal" />
+
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_recommend_codi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_recommend"
+                    app:fab_colorNormal="#000000"
+                    app:fab_colorPressed="#F2AB00"
+                    app:fab_colorRipple="#99FFFFFF"
+                    app:fab_label="목적지"
+                    app:fab_size="normal" />
+
+            </com.github.clans.fab.FloatingActionMenu>
+
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
@@ -181,71 +248,6 @@
 <!--        android:fitsSystemWindows="true"-->
 <!--        app:headerLayout="@layout/header"-->
 <!--        app:menu="@menu/drawerlayout"/>-->
-
-    <com.github.clans.fab.FloatingActionMenu
-
-        android:id="@+id/fab_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_horizontal_margin"
-        app:fab_shadowColor="#444"
-        app:fab_showShadow="true"
-
-
-        app:menu_backgroundColor="#ffffff"
-        app:menu_colorNormal="#FFB805"
-        app:menu_colorPressed="#F2AB00"
-        app:menu_colorRipple="#99FFFFFF"
-        app:menu_icon="@drawable/make_codi"
-
-        app:menu_labels_colorNormal="#333333"
-        app:menu_labels_colorPressed="#444444"
-        app:menu_labels_colorRipple="#66FFFFFF"
-        app:menu_labels_ellipsize="end"
-        app:menu_labels_maxLines="-1"
-        app:menu_labels_position="left"
-        app:menu_labels_showShadow="true"
-
-        app:menu_labels_singleLine="true"
-        app:menu_openDirection="up">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_add_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_reco"
-            app:fab_colorNormal="#000000"
-            app:fab_colorPressed="#F2AB00"
-            app:fab_colorRipple="#99FFFFFF"
-            app:fab_label="검색"
-            app:fab_size="normal" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_make_codi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_footer_store"
-            app:fab_colorNormal="#000000"
-            app:fab_colorPressed="#F2AB00"
-            app:fab_colorRipple="#99FFFFFF"
-            app:fab_label="출발지"
-            app:fab_size="normal" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_recommend_codi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_recommend"
-            app:fab_colorNormal="#000000"
-            app:fab_colorPressed="#F2AB00"
-            app:fab_colorRipple="#99FFFFFF"
-            app:fab_label="목적지"
-            app:fab_size="normal" />
-
-    </com.github.clans.fab.FloatingActionMenu>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

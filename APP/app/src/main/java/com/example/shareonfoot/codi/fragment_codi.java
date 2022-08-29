@@ -274,7 +274,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
         final String[] Category = {""};
 
-        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.KOREAN);
         viewMenu.clear();
         Calendar calendar = Calendar.getInstance();
         weekDay = dayFormat.format(calendar.getTime());
@@ -282,32 +282,25 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         weekday.setText(weekDay);
         switch (day_return(weekDay)) {
             case 1:
-                theme.setText("오늘은 카페랑 디저트!!");
-
+                theme.setText("[정왕동] 오후 3시 기준 27도\n \"채선당\" 어떠신가요?");
                 break;
             case 2:
-                theme.setText("오늘은 맛집이야!!");
-
+                theme.setText("[정왕동] 오후 3시 기준 26도\n \"황제해물보쌈\" 어떠신가요?");
                 break;
             case 3:
-                theme.setText("오늘은 운동하러 가자!!");
-
+                theme.setText("[정왕동] 오후 3시 기준 24도\n \"뒷방울저수지\" 어떠신가요?");
                 break;
             case 4:
-                theme.setText("오늘은 마음의 양식!!");
-
+                theme.setText("[정왕동] 오후 3시 기준 25도\n \"배곧한울공원\" 어떠신가요?");
                 break;
             case 5:
-                theme.setText("오늘은 불금!!");
-
+                theme.setText("[정왕동] 오후 3시 기준 24도\n \"강희맹선생묘\" 어떠신가요?");
                 break;
             case 6:
-                theme.setText("오늘은 놀러 가자!!");
-
+                theme.setText("[정왕동] 오후 3시 기준 23도\n \"관곡지\" 어떠신가요?");
                 break;
             case 7:
-                theme.setText("오늘은 전부 다!!");
-
+                theme.setText("[정왕동] 오후 6시 기준 21도\n \"신나는쭈꾸미\" 어떠신가요?");
                 break;
         }
 
