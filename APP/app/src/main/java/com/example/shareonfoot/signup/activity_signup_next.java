@@ -151,7 +151,8 @@ public class activity_signup_next extends AppCompatActivity {
 
                         try {
                             // DB에 회원정보 저장
-                            String result = new InsertTask().execute(id, pw, nickname, gender, birth).get();
+                            String result = "ok";
+                            //String result = new InsertTask().execute(id, pw, nickname, gender, birth).get();
 
                             if(result.equals("ok")) {
                                 Toast.makeText(activity_signup_next.this, "회원 가입 완료", Toast.LENGTH_SHORT).show();

@@ -26,6 +26,7 @@ import com.example.shareonfoot.HTTP.Service.MapService;
 import com.example.shareonfoot.R;
 import com.example.shareonfoot.VO.ClothesVO;
 import com.example.shareonfoot.home.fragment_home;
+import com.example.shareonfoot.util.Utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -64,11 +65,9 @@ public class TabFragment_Clothes_inHome extends Fragment {
 
 
     public static TabFragment_Clothes_inHome newInstance(String identifier, String size) {
-
         Bundle args = new Bundle();
         args.putString("identifier", identifier);  // 키값, 데이터
         args.putString("size", size);
-        Log.e("home", identifier.toString());
 
         TabFragment_Clothes_inHome fragment = new TabFragment_Clothes_inHome();
         fragment.setArguments(args);
@@ -83,12 +82,49 @@ public class TabFragment_Clothes_inHome extends Fragment {
         parentFragment = ((fragment_home)getParentFragment());
 
         Bundle args = getArguments(); // 데이터 받기
-        if(args != null)
-        {
+        if(args != null) {
             identifier = args.getString("identifier");
             size = args.getString("size");
-        }
+            Log.e("onCreate-identifier", identifier);
+            Log.e("onCreate-identifier", identifier);
 
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
+        rv_clothes = (RecyclerView) view.findViewById(R.id.tab_clothes_rv);
+        rv_clothes.setLayoutManager(new LinearLayoutManager(getContext())); //그리드 사이즈 설정
+        rv_clothes.setAdapter(clothesListAdapter);
+        rv_clothes.setNestedScrollingEnabled(true);
+
+        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                clothesList.clear();
+                init();
+                clothesListAdapter.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        return view;
+    }
+
+    public void init() {
+        Log.e("init-identifier", identifier);
+        switch (identifier) {
+            case "즐겨찾는 장소":
+                option = "CH01";
+                break;
+            case "최근 가본 장소":
+                option = "CH02";
+                break;
+        }
+        Log.e("init-size", size);
         switch (size){
             case "small":
                 gridsize = 4; //스몰 그리드 4x5
@@ -103,78 +139,16 @@ public class TabFragment_Clothes_inHome extends Fragment {
                 pagesize="7"; //라지 페이지 사이즈 7
                 break;
         }
-
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("tab_home",0);
-        choose = sharedPreferences.getInt("pos", choose);
-        Log.e("sharedPreferences", ""+choose);
-        //TODO
-        if(choose == 0) {
-            option = "CH02";
-        } else if(choose == 1) {
-            option = "CH01";
-        } else {
-            option = "CH02";
-        }
-        Log.e("option", option);
-
-        //리사이클러뷰 어댑터 초기화
-        clothesListAdapter = new ClothesListAdapter(getContext(), clothesList, R.layout.fragment_recyclerview);
+        clothesList.clear();
+        getLocateUserList("hello", option);
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //        String result = getLocateUserList("hello", json);
-        String result = getLocateUserList("hello", option);
-        Log.e("result 작동 테스트", result);
-        //리사이클러 뷰 설정하기
-
-        View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
-        rv_clothes = (RecyclerView) view.findViewById(R.id.tab_clothes_rv);
-        rv_clothes.setLayoutManager(new LinearLayoutManager(getContext())); //그리드 사이즈 설정
-        rv_clothes.setAdapter(clothesListAdapter);
-        rv_clothes.setNestedScrollingEnabled(true);
-        rv_clothes.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-                if (!rv_clothes.canScrollVertically(-1)) {
-                    //스크롤이 최상단이면 데이터를 갱신한다
-                    //page = 0;
-                    //new networkTask().execute(Integer.toString(page));
-                    //Log.e("test","데이터 갱신");
-                }
-                else if (!rv_clothes.canScrollVertically(1)) {
-
-                }
-                else {
-                }
-            }
-        });
-
-        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                //스크롤이 최상단이면 데이터를 갱신한다
-                //clothesList.clear();
-                //page = 0;
-                //String result = getLocateUserList(json);
-                //clothesListAdapter.notifyDataSetChanged();
-                //mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
-        return view;
-    }
-
-
 
 
 
     @Override
     public void onResume() {
         super.onResume();
-
+        init();
     }
 
     //프래그먼트 갱신
@@ -183,19 +157,111 @@ public class TabFragment_Clothes_inHome extends Fragment {
         transaction.detach(this).attach(this).commit();
     }
 
-    public String getLocateUserList(String name, String option) {
+    public void getLocateUserList(String name, String option) {
         GetCategoryUserListTask mapTask = new GetCategoryUserListTask(requireContext());
-        String result = null;
+        String result = "";
+        Utils utils = new Utils();
         try {
             result = mapTask.execute(name, option).get();
+            if(!result.equals("fail")){
+                int i = 0;
+                Integer image = 0;
+                ArrayList<String> jidx = new ArrayList();
+                ArrayList<String> jname = new ArrayList();
+                ArrayList<String> jcategory = new ArrayList();
+                ArrayList<String> jstar = new ArrayList();
+                ArrayList<String> jadress = new ArrayList();
+                ArrayList<String> jreview = new ArrayList();
+                ArrayList<Integer> jimage = new ArrayList();
 
+                try {
+                    JSONArray jarray = new JSONObject(result).getJSONArray("result");
+                    if (jarray != null) {
+                        final int numberOfItemsInResp = jarray.length();
+
+                        for (i = 0; i < numberOfItemsInResp; i++) {
+                            JSONObject jsonObject = jarray.getJSONObject(i);
+                            String idx = jsonObject.getString("locate_id");
+                            String star = jsonObject.getString("rate");
+                            String review = "";
+                            String tags = "";
+                            for(int j=1; j<5; j++) {
+                                tags += "#"+utils.getTagCategory(jsonObject.getString("tag"+j).toString());
+                                if(j!=4) {
+                                    tags += "\n";
+                                }
+                            }
+                            if (!jsonObject.isNull("info")) {
+                                review = jsonObject.getString("info");
+                            }
+                            String adress = jsonObject.getString("area");
+                            String name1 = jsonObject.getString("name");
+                            String category = jsonObject.getString("category");
+                            jidx.add(idx);
+                            jname.add(name1);
+                            jcategory.add(tags);
+                            jstar.add(star);
+                            jadress.add(adress);
+                            jreview.add(review);
+
+                            switch (category) {
+                                case "CS01": //모든 옷 조회
+                                    image = R.drawable.all;
+                                    break;
+                                case "CS02": //카테고리 top 조회
+                                    image = R.drawable.desert;
+                                    break;
+                                case "CS03": //카테고리 bottom 조회
+                                    image = R.drawable.food1;
+                                    break;
+                                case "CS04": //카테고리 suit 조회
+                                    image = R.drawable.sports;
+                                    break;
+                                case "CS05": //카테고리 outer 조회
+                                    image = R.drawable.movie;
+                                    break;
+                                case "CS06": //카테고리 shoes 조회
+                                    image = R.drawable.soju;
+                                    break;
+                                case "CS07": //카테고리 bag 조회
+                                    image = R.drawable.play;
+                                    break;
+                                case "CS08": //카테고리 bag 조회
+                                    image = R.drawable.icon_footer_bus;
+                                    break;
+                                default:
+                                    image = R.drawable.desert;
+                                    break;
+                            }
+                            jimage.add(image);
+                            ClothesVO data = new ClothesVO();
+
+                            data.setidx(idx);
+                            data.setname(name1+"  ("+star+")");
+                            data.setcategory(tags);
+                            //data.setstar(star);
+                            data.setadress(adress);
+                            data.setreview(review);
+                            data.setimage(image);
+                            clothesList.add(data);
+                        }
+                        clothesListAdapter = new ClothesListAdapter(getContext(), clothesList, R.layout.fragment_recyclerview);
+                        rv_clothes.setAdapter(clothesListAdapter);
+                        clothesListAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getContext(), "가까운 곳 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e("ErrMsg", e.toString());
+                }
+            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return result;
     }
+
 
     public class GetCategoryUserListTask extends AsyncTask<String, Void, String> {
         public Context context;
@@ -211,12 +277,7 @@ public class TabFragment_Clothes_inHome extends Fragment {
 
         @Override
         protected String doInBackground(String... obj) {
-            Call<JsonObject> objectCall = null;
-            if(obj[1].equals("CH02")) {
-                objectCall = MapService.getRetrofit(context).getCategoryUserList(obj[0]);
-            } else {
-                objectCall = MapService.getRetrofit(context).getCategoryUserList2(obj[0]);
-            }
+            Call<JsonObject> objectCall = MapService.getRetrofit(context).getCategoryUserList(obj[0], obj[1]);
             try {
                 Object result = objectCall.execute().body();
                 Gson gson = new Gson();

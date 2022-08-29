@@ -138,9 +138,7 @@ public class TabFragment_Clothes_inCloset extends Fragment {
             public void onRefresh() {
                 //스크롤이 최상단이면 데이터를 갱신한다
                 clothesList.clear();
-                page = 0;
-                String coordinates[] = {page.toString()};
-                getLocateList(option);
+                init();
                 clothesListAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
             }

@@ -232,6 +232,8 @@ public class UserController {
 		}
 		return new ResponseEntity<String>(resultBox.aBoxToJsonObject().toString(), HttpStatus.OK);
 	}
+	
+	
 
 	@RequestMapping(value = "/category/list/{category}", produces = "application/json; charset=utf8", method = RequestMethod.GET)
 	public ResponseEntity<String> getCategoryList(@PathVariable("category") String category) throws Exception {
@@ -251,10 +253,11 @@ public class UserController {
 		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/user/list/{option}", produces = "application/json; charset=utf8", method = RequestMethod.GET)
-	public ResponseEntity<String> getCategoryUserList(@PathVariable("option") String option) throws Exception {
+	@RequestMapping(value = "/user/list/{name}/{option}", produces = "application/json; charset=utf8", method = RequestMethod.GET)
+	public ResponseEntity<String> getCategoryUserList(@PathVariable("name") String name, @PathVariable("option") String option) throws Exception {
 		String result = "";
 		ABox jsonBox = new ABox();
+		jsonBox.set("name", name);			
 		jsonBox.set("option", option);			
 		try {
 			result = userService.getCategoryUserList(jsonBox).aBoxToJsonObject().toString();

@@ -315,6 +315,9 @@ public class UserServiceImpl extends SuperService implements UserService {
 		ABox resultABox = new ABox();
 		try {
 			ABoxList<ABox> categoryList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectCategoryListSQL", jsonBox);
+			if(jsonBox.getString("category").equals("CS08") || jsonBox.getString("category").equals("CS07")) {
+				categoryList = commonDao.selectList("mybatis.shadow.user.user_mapper.selectCategoryListCS08SQL", jsonBox);
+			}
 			resultABox.set("check", "ok");
 			resultABox.set("result", categoryList);
 			

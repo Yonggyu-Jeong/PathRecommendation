@@ -153,14 +153,38 @@
 		FROM 
 			locate a, locate_label b
 		WHERE 
+	]]>
+		<if test="category != '' and category != null">
+			a.category = #{category} AND
+		</if>
+			b.locate_seq = a.locate_id AND (a.city = "시흥시" OR a.city = "안산시")
+		ORDER BY 
+			b.rate
+		DESC
+		LIMIT 
+			0, 7;
+
+	</select>
+	
+	<select id="selectCategoryListCS08SQL"
+		resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		SELECT 
+			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, b.rate, b.tag1, b.tag2, b.tag3, b.tag4
+		FROM 
+			locate a, locate_label b
+		WHERE 
 			a.category = #{category} AND
 			b.locate_seq = a.locate_id
 		ORDER BY 
-			a.locate_id 
+			b.rate
+		DESC
 		LIMIT 
 			0, 7;
 	]]>
 	</select>
+	
 	
 	<select id="selectCategoryUserListSQL"
 		resultType="common.collection.ABox"
@@ -171,34 +195,13 @@
 		FROM 
 			locate a, member b, member_path c, locate_label d
 		WHERE 
-			b.id = #{option} AND
+			b.id = #{name} AND c.choose = #{option} AND
 			c.member_id = b.member_seq AND
 			a.locate_id = c.locate_id AND
-			d.locate_seq = a.locate_id AND
-			c.choose = "CH01"
-		ORDER BY 
-			locate_id 
-		LIMIT 
-			0, 7;
-	]]>
-	</select>
-	
-	<select id="selectCategoryUserList2SQL"
-		resultType="common.collection.ABox"
-		parameterType="common.collection.ABox">
-	<![CDATA[
-		SELECT 
-			a.locate_id, a.name, a.category, a.city, a.area, a.road, a.info, a.lng, a.lat, d.rate, d.tag1, d.tag2, d.tag3, d.tag4
-		FROM 
-			locate a, member b, member_path c, locate_label d
-		WHERE 
-			b.id = #{option} AND
-			c.member_id = b.member_seq AND
-			a.locate_id = c.locate_id AND
-			d.locate_seq = a.locate_id AND
-			c.choose = "CH02"
-		ORDER BY 
-			locate_id 
+			d.locate_seq = a.locate_id 
+		ORDER BY
+			d.rate
+		DESC 
 		LIMIT 
 			0, 7;
 	]]>

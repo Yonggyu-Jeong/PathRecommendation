@@ -79,11 +79,8 @@ public class MapService extends APIAdapter {
         @GET("/category/list/{category}")
         Call<JsonObject> getCategoryList(@Path("category") String category);
 
-        @GET("/user/list/{option}")
-        Call<JsonObject> getCategoryUserList(@Path("option") String option);
-
-        @GET("/user/list2/{option}")
-        Call<JsonObject> getCategoryUserList2(@Path("option") String option);
+        @GET("/user/list/{name}/{option}")
+        Call<JsonObject> getCategoryUserList(@Path("name") String name, @Path("option") String option);
 
         @GET("/user/addMap/{name}/{option}")
         Call<JsonObject> addMap(@Path("name") String name, @Path("option") String option);

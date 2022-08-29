@@ -21,9 +21,10 @@ public class TabPagerAdapter_closet extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         // Returning the current tabs
+        Log.e("getItem", ""+position);
         switch (position) {
             case 0:
-                return TabFragment_Clothes_inCloset.newInstance("private","share");
+                return TabFragment_Clothes_inCloset.newInstance("private","모두");
             case 1:
                 return TabFragment_Clothes_inCloset.newInstance("private","음식점");
             case 2:

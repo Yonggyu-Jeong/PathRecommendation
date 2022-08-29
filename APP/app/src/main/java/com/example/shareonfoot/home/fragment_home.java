@@ -165,10 +165,6 @@ public class fragment_home extends Fragment implements OnBackPressedListener {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
                     Log.e("onTabSelected", "성공 : "+tab.getPosition());
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("tab_home",0);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt("pos",tab.getPosition());
-                    editor.commit();
                     finalPager_favorite.setCurrentItem(tab.getPosition());
                 }
 
@@ -287,25 +283,3 @@ public class fragment_home extends Fragment implements OnBackPressedListener {
 
     }
 }
-               /* int dp40;
-                int dp50;
-                switch (view.getId()) {
-                    case R.id.iv_codi1 :
-                    case R.id.iv_codi2 :
-                    case R.id.iv_codi3 :
-                    case R.id.iv_codi4 :
-                    case R.id.iv_codi5 :
-                        if(selected_index!=index_resourceID.indexOf(resourceID)){
-                            //이전 선택 이미지뷰 작게 변경
-                            dp40 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,40,getResources().getDisplayMetrics());
-                            dp50 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,50,getResources().getDisplayMetrics());
-                            selected_iv.getLayoutParams().height=dp40;
-                            selected_iv.getLayoutParams().width=dp40;
-                            selected_iv.requestLayout();
-                            //현재 선택된 페이지로 바꾸고 이미지뷰 크게 변경
-                            selected_index = index_resourceID.indexOf(resourceID);
-                            selected_iv = iv_codi_list.get(selected_index);
-                            selected_iv.getLayoutParams().height=dp50;
-                            selected_iv.getLayoutParams().width=dp50;
-                            selected_iv.requestLayout();
-                        }*/
