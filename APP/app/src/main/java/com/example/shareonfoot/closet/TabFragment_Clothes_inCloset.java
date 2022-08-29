@@ -1,7 +1,6 @@
 package com.example.shareonfoot.closet;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,12 +19,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.shareonfoot.HTTP.Service.CategoryService;
 import com.example.shareonfoot.HTTP.Service.MapService;
 import com.example.shareonfoot.R;
 import com.example.shareonfoot.VO.ClothesVO;
 import com.example.shareonfoot.util.ClothesListAdapter;
-import com.example.shareonfoot.util.WorkTask;
+import com.example.shareonfoot.util.Utils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.LatLng;
@@ -35,19 +33,8 @@ import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
@@ -57,7 +44,7 @@ import retrofit2.Call;
 (small(4), medium(3), large(2)) 20p, 15p, 10p
 */
 
-public class   TabFragment_Clothes_inCloset extends Fragment {
+public class TabFragment_Clothes_inCloset extends Fragment {
 
     private static String option;
     fragment_closet parentFragment;
@@ -108,7 +95,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
             identifier = args.getString("identifier");
         }
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("tab",0);
+       /* SharedPreferences sharedPreferences = getContext().getSharedPreferences("tab",0);
         choose = sharedPreferences.getInt("pos", choose);
         Log.e("sharedPreferences", ""+choose);
         if(choose == 0) {
@@ -130,7 +117,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
         }
         Log.e("option", option);
 
-        clothesListAdapter = new ClothesListAdapter(getContext(), clothesList, R.layout.fragment_recyclerview);
+        clothesListAdapter = new ClothesListAdapter(getContext(), clothesList, R.layout.fragment_recyclerview);*/
 
     }
 
@@ -144,43 +131,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
         rv_clothes = (RecyclerView) view.findViewById(R.id.tab_clothes_rv);
         rv_clothes.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv_clothes.setAdapter(clothesListAdapter);
         rv_clothes.setNestedScrollingEnabled(true);
-
-        String result = getLocateList(option);
-        Log.e("result 작동 테스트", result);
-        clothesListAdapter.notifyDataSetChanged();
-        mSwipeRefreshLayout.setRefreshing(false);
-        rv_clothes.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-                if (!rv_clothes.canScrollVertically(-1)) {
-
-                    //String result = getLocateList(option);
-                    //Log.e("result 작동 테스트", result);
-                    //clothesListAdapter.notifyDataSetChanged();
-                    //mSwipeRefreshLayout.setRefreshing(false);
-
-                    //스크롤이 최상단이면 데이터를 갱신한다
-                    /*clothesList.clear();
-                    page=0;
-                    new networkTask().execute(Integer.toString(page));
-                    clothesListAdapter.notifyDataSetChanged();
-                    rv_clothes.setAdapter(clothesListAdapter);
-                    //Log.e("test","데이터 갱신");*/
-                    //String result = getLocateList(json);
-
-                } else if (!rv_clothes.canScrollVertically(1)) {
-                    //String coordinates[] = {(++page).toString()};
-                    //String result = getLocateList(json);
-                    //clothesListAdapter.notifyDataSetChanged();
-                    //rv_clothes.setAdapter(clothesListAdapter);
-
-                    Log.e("test", "페이지 수 증가");
-                } else {
-                }
-            }
-        });
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -189,22 +140,52 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
                 clothesList.clear();
                 page = 0;
                 String coordinates[] = {page.toString()};
-                String result = getLocateList(option);
+                getLocateList(option);
                 clothesListAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+       /* String result = getLocateList(option);
+        Log.e("result 작동 테스트", result);
+        clothesListAdapter.notifyDataSetChanged();*/
+        // mSwipeRefreshLayout.setRefreshing(false);
+
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        String result = getLocateList(option);
-        Log.e("result 작동 테스트", result);
-        clothesListAdapter.notifyDataSetChanged();
-        mSwipeRefreshLayout.setRefreshing(false);
+        init();
+    }
 
+    public void init() {
+        Log.e("init-identifier", identifier);
+        switch (identifier) {
+            case "모두":
+                option = "CS99";
+                break;
+            case "음식점":
+                option = "CS01";
+                break;
+            case "역사관광지":
+                option = "CS04";
+                break;
+            case "자연관광지":
+                option = "CS05";
+                break;
+            case "체험관광지":
+                option = "CS06";
+                break;
+            case "테마관광지":
+                option = "CS07";
+                break;
+            case "기타관광지":
+                option = "CS08";
+                break;
+        }
+        clothesList.clear();
+        getLocateList(option);
     }
 
     //프래그먼트 갱신
@@ -214,18 +195,109 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
     }
 
 
-    public String getLocateList(String name) {
+    public void getLocateList(String name) {
         GetCategoryListTask mapTask = new GetCategoryListTask(requireContext());
-        String result = null;
+        String result;
+        Utils utils = new Utils();
         try {
             result = mapTask.execute(name).get();
+            if(!result.equals("fail")){
+                int i = 0;
+                Integer image = 0;
+                ArrayList<String> jidx = new ArrayList();
+                ArrayList<String> jname = new ArrayList();
+                ArrayList<String> jcategory = new ArrayList();
+                ArrayList<String> jstar = new ArrayList();
+                ArrayList<String> jadress = new ArrayList();
+                ArrayList<String> jreview = new ArrayList();
+                ArrayList<Integer> jimage = new ArrayList();
 
+                try {
+                    JSONArray jarray = new JSONObject(result).getJSONArray("result");
+                    if (jarray != null) {
+                        final int numberOfItemsInResp = jarray.length();
+
+                        for (i = 0; i < numberOfItemsInResp; i++) {
+                            JSONObject jsonObject = jarray.getJSONObject(i);
+                            String idx = jsonObject.getString("locate_id");
+                            String star = jsonObject.getString("rate");
+                            String review = "";
+                            String tags = "";
+                            for(int j=1; j<5; j++) {
+                                tags += "#"+utils.getTagCategory(jsonObject.getString("tag"+j).toString());
+                                if(j!=4) {
+                                    tags += "\n";
+                                }
+                            }
+                            if (!jsonObject.isNull("info")) {
+                                review = jsonObject.getString("info");
+                            }
+                            String adress = jsonObject.getString("area");
+                            String name1 = jsonObject.getString("name");
+                            String category = jsonObject.getString("category");
+                            jidx.add(idx);
+                            jname.add(name1);
+                            jcategory.add(tags);
+                            jstar.add(star);
+                            jadress.add(adress);
+                            jreview.add(review);
+
+                            switch (category) {
+                                case "CS01": //모든 옷 조회
+                                    image = R.drawable.all;
+                                    break;
+                                case "CS02": //카테고리 top 조회
+                                    image = R.drawable.desert;
+                                    break;
+                                case "CS03": //카테고리 bottom 조회
+                                    image = R.drawable.food1;
+                                    break;
+                                case "CS04": //카테고리 suit 조회
+                                    image = R.drawable.sports;
+                                    break;
+                                case "CS05": //카테고리 outer 조회
+                                    image = R.drawable.movie;
+                                    break;
+                                case "CS06": //카테고리 shoes 조회
+                                    image = R.drawable.soju;
+                                    break;
+                                case "CS07": //카테고리 bag 조회
+                                    image = R.drawable.play;
+                                    break;
+                                case "CS08": //카테고리 bag 조회
+                                    image = R.drawable.icon_footer_bus;
+                                    break;
+                                default:
+                                    image = R.drawable.desert;
+                                    break;
+                            }
+                            jimage.add(image);
+                            ClothesVO data = new ClothesVO();
+
+                            data.setidx(idx);
+                            data.setname(name1+"  ("+star+")");
+                            data.setcategory(tags);
+                            //data.setstar(star);
+                            data.setadress(adress);
+                            data.setreview(review);
+                            data.setimage(image);
+                            clothesList.add(data);
+                        }
+                        clothesListAdapter = new ClothesListAdapter(getContext(), clothesList, R.layout.fragment_recyclerview);
+                        rv_clothes.setAdapter(clothesListAdapter);
+                        clothesListAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getContext(), "가까운 곳 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e(ErrMag, e.toString());
+                }
+            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return result;
     }
 
     public class GetCategoryListTask extends AsyncTask<String, Void, String> {
@@ -258,87 +330,7 @@ public class   TabFragment_Clothes_inCloset extends Fragment {
         @Override
         public void onPostExecute(String result) {
             super.onPostExecute(result);
-            int i = 0;
-            Integer image = 0;
-            ArrayList<String> jidx = new ArrayList();
-            ArrayList<String> jname = new ArrayList();
-            ArrayList<String> jcategory = new ArrayList();
-            ArrayList<String> jstar = new ArrayList();
-            ArrayList<String> jadress = new ArrayList();
-            ArrayList<String> jreview = new ArrayList();
-            ArrayList<Integer> jimage = new ArrayList();
 
-            try {
-                JSONArray jarray = new JSONObject(result).getJSONArray("result");
-                if (jarray != null) {
-                    final int numberOfItemsInResp = jarray.length();
-
-                    for (i = 0; i < numberOfItemsInResp; i++) {
-                        JSONObject jsonObject = jarray.getJSONObject(i);
-                        String idx = jsonObject.getString("locate_id");
-                        String star = "2.5";
-                        String review = "";
-                        if(!jsonObject.isNull("info")) {
-                             review = jsonObject.getString("info");
-                        }
-                        String adress = jsonObject.getString("area");
-                        String name = jsonObject.getString("name");
-                        String category = jsonObject.getString("category");
-                        jidx.add(idx);
-                        jname.add(name);
-                        jcategory.add(category);
-                        jstar.add(star);
-                        jadress.add(adress);
-                        jreview.add(review);
-
-                        switch (pos) {
-                            case 0: //모든 옷 조회
-                                image = R.drawable.all;
-                                break;
-                            case 1: //카테고리 top 조회
-                                image = R.drawable.desert;
-                                break;
-                            case 2: //카테고리 bottom 조회
-                                image = R.drawable.food1;
-                                break;
-                            case 3: //카테고리 suit 조회
-                                image = R.drawable.sports;
-                                break;
-                            case 4: //카테고리 outer 조회
-                                image = R.drawable.movie;
-                                break;
-                            case 5: //카테고리 shoes 조회
-                                image = R.drawable.soju;
-                                break;
-                            case 6: //카테고리 bag 조회
-                                image = R.drawable.play;
-                                break;
-                            default:
-                                image = R.drawable.desert;
-                                break;
-                        }
-                        jimage.add(image);
-                        ClothesVO data = new ClothesVO();
-
-                        data.setidx(idx);
-                        data.setname(name);
-                        data.setcategory(category);
-                        data.setstar(star);
-                        data.setadress(adress);
-                        data.setreview(review);
-                        data.setimage(image);
-                        clothesListAdapter.addItem(data);
-                        clothesListAdapter.notifyDataSetChanged();
-                    }
-                    //clothesList.clear();
-                } else {
-                    Toast.makeText(getContext(), "가까운 곳 없습니다.", Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                Log.e(ErrMag, e.toString());
-            }
         }
     }
-
-
 }

@@ -51,7 +51,6 @@ public class activity_signup extends AppCompatActivity {
             }
         });
 
-
         final TextInputLayout input_pwd = (TextInputLayout) findViewById(R.id.input_pwd);
         input_pwd.setCounterEnabled(true);
         input_pwd.setCounterMaxLength(45);
@@ -114,16 +113,6 @@ public class activity_signup extends AppCompatActivity {
 
         joinBtn = (Button) findViewById(R.id.bt_join);
     }
-
-
-
-
-
-
-
-
-
-
 
     class BtnOnClickListener implements Button.OnClickListener {
         @Override

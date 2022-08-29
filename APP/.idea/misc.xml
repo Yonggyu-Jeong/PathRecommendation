@@ -33,6 +33,7 @@
         <entry key="..\:/PL/PathRecommendation/APP/app/src/main/res/layout/frag_codi.xml" value="0.33" />
         <entry key="..\:/PL/PathRecommendation/APP/app/src/main/res/layout/fragment_recyclerview.xml" value="0.33" />
         <entry key="..\:/PL/PathRecommendation/APP/app/src/main/res/layout/info_window_view.xml" value="0.33" />
+        <entry key="..\:/Path/APP/app/src/main/res/layout-v21/layout_login.xml" value="0.2672239108409321" />
         <entry key="..\:/Path/APP/app/src/main/res/layout/activity_main_content.xml" value="0.5494791666666666" />
         <entry key="..\:/Path/APP/app/src/main/res/layout/activity_space.xml" value="0.5" />
         <entry key="..\:/Path/APP/app/src/main/res/layout/cardview_cloth_info.xml" value="0.1272644927536232" />
@@ -52,7 +53,11 @@
         <entry key="..\:/Path/APP/app/src/main/res/layout/fragment_recyclerview.xml" value="0.1" />
         <entry key="..\:/Path/APP/app/src/main/res/layout/header_main.xml" value="0.5" />
         <entry key="..\:/Path/APP/app/src/main/res/layout/info_window_view.xml" value="0.321875" />
+        <entry key="..\:/Path/APP/app/src/main/res/layout/layout_login.xml" value="0.2672239108409321" />
         <entry key="..\:/Path/APP/app/src/main/res/layout/layout_share.xml" value="0.2672239108409321" />
+        <entry key="..\:/Path/APP/app/src/main/res/layout/layout_signup.xml" value="0.2672239108409321" />
+        <entry key="..\:/Path/APP/app/src/main/res/layout/layout_signup_next.xml" value="0.2672239108409321" />
+        <entry key="..\:/Path/APP/app/src/main/res/layout/layout_signup_next_next.xml" value="0.2672239108409321" />
         <entry key="..\:/Path/APP/app/src/main/res/layout/listitem.xml" value="0.33" />
         <entry key="..\:/Path/APP/app/src/main/res/layout/nav_header_main.xml" value="0.25" />
         <entry key="..\:/Path/APP/app/src/main/res/menu/drawer.xml" value="0.4883720930232558" />

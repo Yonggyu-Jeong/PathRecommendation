@@ -232,6 +232,22 @@
 		]]>
 	</insert>
 	
+	<select id="selectMapMemberPathSQL"
+		resultType="common.collection.ABox"
+		parameterType="common.collection.ABox">
+	<![CDATA[
+		SELECT 
+			COUNT(*) AS cnt
+		FROM
+			member_path a, locate b
+		WHERE 
+			b.name = #{name} AND
+			b.locate_id = a.locate_id AND
+			a.member_id = 1
+	]]>
+	</select>
+	
+	
 	<select id="selectMapInfoSQL"
 		resultType="common.collection.ABox"
 		parameterType="common.collection.ABox">

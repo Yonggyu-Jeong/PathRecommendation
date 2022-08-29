@@ -1099,7 +1099,6 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     WorkTask.AddMapPathTask addMapTask = new WorkTask.AddMapPathTask(requireContext());
                     try {
                         addMapTask.execute(paramMap.get("name").toString(), "CH02").get();
-                        Log.e("addMap", "등록되었습니다");
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {

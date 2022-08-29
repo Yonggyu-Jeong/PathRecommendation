@@ -69,11 +69,12 @@ public class activity_login extends AppCompatActivity {
                 case R.id.bt_login: // 로그인 버튼 눌렀을 경우
                     String loginid = userId.getText().toString();
                     String loginpwd = userPwd.getText().toString();
-                    SharedPreferences sharedPreferences=getSharedPreferences("pref",0);
+                    SharedPreferences sharedPreferences = getSharedPreferences("pref", 0);
 
                     Intent intent = new Intent(activity_login.this, activity_home.class);
                     startActivity(intent);
                     finish();
+                    break;
                      /*
                     if (loginid.length() == 0||loginpwd.length()==0) {
                         Toast.makeText(activity_login.this, "회원정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
@@ -138,11 +139,11 @@ public class activity_login extends AppCompatActivity {
 //                        finish();
 //                    }
 //                    break;
+*/
                 case R.id.bt_signup: // 회원가입
-                    Intent intent = new Intent(activity_login.this, activity_signup.class);
+                    intent = new Intent(activity_login.this, activity_signup.class);
                     startActivity(intent);
                     break;
-                     */
             }
         }
     }
