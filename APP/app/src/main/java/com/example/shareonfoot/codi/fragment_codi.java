@@ -282,19 +282,19 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
         weekday.setText(weekDay);
         switch (day_return(weekDay)) {
             case 1:
-                theme.setText("[정왕동] 오후 3시 기준 27도\n \"채선당\" 어떠신가요?");
+                theme.setText("[정왕동] 오후 3시 기준 27도\n \"우강\" 어떠신가요?");
                 break;
             case 2:
-                theme.setText("[정왕동] 오후 3시 기준 26도\n \"황제해물보쌈\" 어떠신가요?");
+                theme.setText("[정왕동] 오후 3시 기준 26도\n \"청문당\" 어떠신가요?");
                 break;
             case 3:
                 theme.setText("[정왕동] 오후 3시 기준 24도\n \"뒷방울저수지\" 어떠신가요?");
                 break;
             case 4:
-                theme.setText("[정왕동] 오후 3시 기준 25도\n \"배곧한울공원\" 어떠신가요?");
+                theme.setText("[정왕동] 오후 3시 기준 25도\n \"쌍계사\" 어떠신가요?");
                 break;
             case 5:
-                theme.setText("[정왕동] 오후 3시 기준 24도\n \"강희맹선생묘\" 어떠신가요?");
+                theme.setText("[정왕동] 오후 3시 기준 24도\n \"배곧한울공원\" 어떠신가요?");
                 break;
             case 6:
                 theme.setText("[정왕동] 오후 3시 기준 23도\n \"관곡지\" 어떠신가요?");
@@ -1098,7 +1098,7 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     Toast.makeText(getContext(), targetName+"을(를) "+(stopMarkerCount)+"번째 경유지로 등록했습니다", Toast.LENGTH_SHORT).show();
                     WorkTask.AddMapPathTask addMapTask = new WorkTask.AddMapPathTask(requireContext());
                     try {
-                        addMapTask.execute(paramMap.get("name").toString(), "CH02").get();
+                        addMapTask.execute(targetName, "CH02").get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {

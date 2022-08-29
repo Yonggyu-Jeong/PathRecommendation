@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ public class activity_signup_profile_contents extends AppCompatActivity {
 
     String userID, userPW, userNAME;
     Button joinBtn, joinBtn1;
+    TextView editText, editText2;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -43,7 +45,7 @@ public class activity_signup_profile_contents extends AppCompatActivity {
         Btnonclicker btnonclicker = new Btnonclicker();
         joinBtn.setOnClickListener(btnonclicker);
         joinBtn1.setOnClickListener(btnonclicker);
-
+        //TextView =
 
     }
 

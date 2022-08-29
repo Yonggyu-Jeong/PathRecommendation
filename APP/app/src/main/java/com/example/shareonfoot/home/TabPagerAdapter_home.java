@@ -28,12 +28,7 @@ public class TabPagerAdapter_home extends FragmentStatePagerAdapter {
                 return TabFragment_Clothes_inHome.newInstance("즐겨찾는 장소","medium");
             case 1:
                 return TabFragment_Clothes_inHome.newInstance("최근 가본 장소", "medium");
-            /*
-            case 0:
-                return TabFragment_Clothes_inHome.newInstance("favorite","medium");
-            case 1:
-                return TabFragment_Codi_large.newInstance("favorite");
-*/
+
             default:
                 return null;
         }

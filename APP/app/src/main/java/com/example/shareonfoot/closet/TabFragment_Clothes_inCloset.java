@@ -143,11 +143,6 @@ public class TabFragment_Clothes_inCloset extends Fragment {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
-       /* String result = getLocateList(option);
-        Log.e("result 작동 테스트", result);
-        clothesListAdapter.notifyDataSetChanged();*/
-        // mSwipeRefreshLayout.setRefreshing(false);
-
         return view;
     }
 

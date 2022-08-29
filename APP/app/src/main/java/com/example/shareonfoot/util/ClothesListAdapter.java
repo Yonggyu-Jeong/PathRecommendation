@@ -92,7 +92,6 @@ public class ClothesListAdapter extends RecyclerView.Adapter<ClothesListAdapter.
             //textView1 = (TextView)itemView.findViewById(R.id.idx);
             textView2 = (TextView)itemView.findViewById(R.id.title);
             textView3 = (TextView)itemView.findViewById(R.id.category);
-            //textView4 = (TextView)itemView.findViewById(R.id.star);
             textView5 = (TextView)itemView.findViewById(R.id.adress);
             textView6 = (TextView)itemView.findViewById(R.id.review);
             imageView = (ImageView)itemView.findViewById(R.id.image);
