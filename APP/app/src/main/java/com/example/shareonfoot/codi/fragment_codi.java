@@ -1067,12 +1067,16 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
             });
 
             naverMap.setOnMapLongClickListener((point, coord) -> {
+                Log.e("test-count-b", ""+stopMarkerCount);
+                Log.e("test-map-name-b", stopMarkerNameMap.toString());
+
                 Boolean stopMarkerCheck = false;
                 for(int j=0; j<stopMarkerCount; j++) {
                     String tempMarker = stopMarkerNameMap.get("marker"+(j));
-
                     try {
                         if ((tempMarker.equals(targetName)) && (stopMarkerCount > 0)) {
+                            Log.e("test-count-checker-a", ""+tempMarker+targetName);
+
                             Log.e("equals", stopMarkerNameMap.toString());
                             stopMarkerCheck = true;
                             stopMarkerMap.remove("marker" + (j+1));
@@ -1089,6 +1093,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                 }
 
                 if((stopMarkerCheck == false) && (stopMarkerCount < 3)) {
+                    Log.e("test-count-checker-b", ""+stopMarkerCount);
+
                     stopMarkerCount++;
                     stopMarkerMap.put("marker"+stopMarkerCount, targetMarker);
                     stopMarkerLatLngMap.put("marker"+stopMarkerCount, targetLatLng);
@@ -1130,6 +1136,9 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
                     Log.e("stopMarker", stopMarkerNameMap.toString());
                     Toast.makeText(getContext(), "경유지를 클릭 후 눌러주세요", Toast.LENGTH_SHORT).show();
                 }
+
+                Log.e("test-count-a", ""+stopMarkerCount);
+                Log.e("test-map-name-a", stopMarkerNameMap.toString());
             });
         }
     }

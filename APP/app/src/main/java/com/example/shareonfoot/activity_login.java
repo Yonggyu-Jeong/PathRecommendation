@@ -64,13 +64,16 @@ public class activity_login extends AppCompatActivity {
     public class BtnOnClickListener implements Button.OnClickListener {
         @Override
         public void onClick(View view) {
+            SharedPreferences sharedPreferences = getSharedPreferences("check", 0);
+            SharedPreferences.Editor editor=sharedPreferences.edit();
+
             switch (view.getId()) {
 
                 case R.id.bt_login: // 로그인 버튼 눌렀을 경우
                     String loginid = userId.getText().toString();
                     String loginpwd = userPwd.getText().toString();
-                    SharedPreferences sharedPreferences = getSharedPreferences("pref", 0);
-
+                    editor.putString("check", "login");
+                    editor.commit();
                     Intent intent = new Intent(activity_login.this, activity_home.class);
                     startActivity(intent);
                     finish();
@@ -142,6 +145,8 @@ public class activity_login extends AppCompatActivity {
 */
                 case R.id.bt_signup: // 회원가입
                     intent = new Intent(activity_login.this, activity_signup.class);
+                    editor.putString("check", "signup");
+                    editor.commit();
                     startActivity(intent);
                     break;
             }

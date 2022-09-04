@@ -136,29 +136,31 @@ public class fragment_mySpace extends Fragment implements OnBackPressedListener 
 
         //프사 설정
         ImageView iv_profileImage = v.findViewById(R.id.iv_profileImage);
-        //아이디 설정
         TextView tv_id = v.findViewById(R.id.tv_id);
-
-        targetID = "yonggyu_0509";
-        tv_id.setText("@"+targetID);
-        //닉네임 설정
         TextView tv_nickname = v.findViewById(R.id.tv_nickname);
-        //게시물, 팔로워, 팔로잉 수 설정
         TextView tv_numBoard = v.findViewById(R.id.tv_numBoard);
         tv_numFollower = v.findViewById(R.id.tv_numFollower);
         TextView tv_numFollowing = v.findViewById(R.id.tv_numFollowing);
-
         TextView tv_pfContents = v.findViewById(R.id.tv_pfContents);
         imageButton=v.findViewById(R.id.camera);
-
-        //LinearLayout ll_following_friends = v.findViewById(R.id.ll_following_friends);
-
-        //팔로우 여부 설정
-
-        targetName = "한국공학대학교_19";
-        tv_nickname.setText(targetName);
-
         imageView=v.findViewById(R.id.iv_image);
+
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("check",0);
+        Log.e("checker-home", sharedPreferences.getString("check", "default"));
+        if(!sharedPreferences.getString("check", "default").equals("signup")) {
+            targetID = "yonggyu_0509";
+            tv_id.setText("@"+targetID);
+            targetName = "한국공학대학교_19";
+            tv_nickname.setText(targetName);
+
+        } else {
+            tv_id.setText("@RyuJongBum");
+            tv_pfContents.setText("");
+            tv_nickname.setText("RyuJongBum");
+            tv_numBoard.setText("0");
+        }
+
+
      //  잠금화면 기능 활성화
 
         toast = Toast.makeText(getContext(),"한번 더 누르면 종료됩니다.",Toast.LENGTH_SHORT);

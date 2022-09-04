@@ -148,8 +148,14 @@ public class TabFragment_Clothes_inHome extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        init();
+
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("check",0);
+        Log.e("checker-home", sharedPreferences.getString("check", "default"));
+        if(!sharedPreferences.getString("check", "default").equals("signup")) {
+            init();
+        }
     }
+
 
     //프래그먼트 갱신
     private void refresh(){
