@@ -1072,7 +1072,8 @@ public class fragment_codi extends Fragment implements OnBackPressedListener, On
 
                 Boolean stopMarkerCheck = false;
                 for(int j=0; j<stopMarkerCount; j++) {
-                    String tempMarker = stopMarkerNameMap.get("marker"+(j));
+                    String tempMarker = stopMarkerNameMap.get("marker"+(j+1));
+                    Log.e("test-tempMarker-name-b", tempMarker);
                     try {
                         if ((tempMarker.equals(targetName)) && (stopMarkerCount > 0)) {
                             Log.e("test-count-checker-a", ""+tempMarker+targetName);
